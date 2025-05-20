@@ -2,13 +2,11 @@ import cv2
 import numpy as np
 import tensorflow as tf
 import tensorflow_hub as hub
+from PIL import Image
+
+
 
 def video_transfer_style(input_video_path, output_video_path, style_image_path):
-    import cv2
-    import numpy as np
-    from PIL import Image
-    import tensorflow as tf
-    import tensorflow_hub as hub
 
     # Load the pre-trained model from TensorFlow Hub
     model = hub.load('https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2')
