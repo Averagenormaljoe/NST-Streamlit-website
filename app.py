@@ -4,7 +4,8 @@ from PIL import Image
 import numpy as np
 from io import BytesIO
 from API import transfer_style
-
+from video_transfer import video_transfer_style
+# Set the title and icon of the app
 
 st.markdown("<hr>", unsafe_allow_html=True)
 tab1, tab2 = st.tabs(["Image", "Video"])
@@ -165,12 +166,19 @@ with tab2:
             # Path of the pre-trained TF model
             model_path = r"model"
             # Stylize video (implement this function in your API)
-            output_video_bytes = transfer_video_style(video_bytes, style_imgs, model_path)
+            output_video_bytes = video_transfer_style(video_bytes, style_imgs, model_path)
             # Display result
-            st.video(output_video_bytes)
-            st.download_button(
-                label="Download Stylized Video",
-                data=output_video_bytes,
-                file_name="stylized_output.mp4",
-                mime="video/mp4"
-            )
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                st.video(output_video_bytes)
+            with col2:
+                st.markdown("</br>", unsafe_allow_html=True)
+                st.markdown(
+                    "<b> Your Stylized Video is Ready ! Click below to download it. </b>", unsafe_allow_html=True)
+                st.download_button(
+                    label="Download Stylized Video",
+                    data=output_video_bytes,
+                    file_name="stylized_output.mp4",
+                    mime="video/mp4"
+                )

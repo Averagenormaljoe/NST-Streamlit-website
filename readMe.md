@@ -2,9 +2,11 @@
 
 2. activate the environment with:
 
-yenv\Scripts\activate
+venv\Scripts\activate
 
 3. Install the libraries using:
+
+pip install -r requirements.txt
 
 4. To start streamlit project, run:
 
