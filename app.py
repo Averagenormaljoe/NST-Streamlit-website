@@ -14,7 +14,7 @@ st.set_page_config(page_title="PixelMix - Style Transfer",
 # Set the title and icon of the app
 
 st.markdown("<hr>", unsafe_allow_html=True)
-tab1, tab2 = st.tabs(["Image", "Video"])
+tab1, tab2, tab3,tab4,tab5 = st.tabs(["Image", "Video","Gatys model", "Johnson model", "Huang model"])
 
 # -------------Header Section------------------------------------------------
 
@@ -222,3 +222,5 @@ with tab2:
                         mime="video/mp4"
                     )
                
+with tab3:
+    
