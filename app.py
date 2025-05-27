@@ -3,10 +3,11 @@ import streamlit as st
 from PIL import Image
 import numpy as np
 from io import BytesIO
+import tensorflow_hub as hub
 from API import transfer_style
 from components import processingBtn
 from video_transfer import video_transfer_style
-
+from data import style_models_name
 # Set page configs. Get emoji names from WebFx
 st.set_page_config(page_title="PixelMix - Style Transfer",
                    page_icon="./assets/favicon.png", layout="centered")
@@ -112,10 +113,10 @@ with tab1:
                 style_image = np.array(style_image)
 
                 # Path of the pre-trained TF model
-                model_path = "https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2"
-
+                model_path: str = "https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2"
+                hub_module = hub.load(model_path)
                 # output image
-                styled_image = transfer_style(content_image, style_image, model_path)
+                styled_image = transfer_style(content_image, style_image, hub_module)
                 is_processing = processingBtn(is_processing)
                     
                 if style_image is not None:
@@ -200,10 +201,11 @@ with tab2:
                 # Read style images as numpy arrays
                 style_imgs = [np.array(Image.open(img)) for img in style_images]
                 # Path of the pre-trained TF model
-                model_path = r"model"
+                model_path : str = "https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2"
+                hub_module = hub.load(model_path)
                 # Stylize video (implement this function in your API)
                 output_video_bytes = video_transfer_style(
-                    video_bytes, style_imgs, model_path, height_resolution, width_resolution,fps=fps
+                    video_bytes,  hub_module, height_resolution, width_resolution,fps=fps
                 )
                 # Display result
                 col1, col2 = st.columns(2)
@@ -227,9 +229,19 @@ with tab3:
     method = st.sidebar.radio('Go To ->', options=['Webcam', 'Image'])
     st.sidebar.header('Options')
 
-    style_model_name = st.sidebar.selectbox("Choose the style model: ", style_models_name)
+    select_model_name = st.sidebar.selectbox("Choose the style model: ", style_models_name)
 
     if method == 'Image':
-        image_input(style_model_name)
+        image_input(select_model_name)
     else:
-        webcam_input(style_model_name)
+        webcam_input(select_model_name)
+        
+        
+with tab4:
+      st.markdown('<h3 style="text-align:center;">Gatys model</h3>', unsafe_allow_html=True)
+    
+    
+
+
+with tab5:
+      st.markdown('<h3 style="text-align:center;">Huang Style Transfer</h3>', unsafe_allow_html=True)

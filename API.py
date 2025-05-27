@@ -1,12 +1,15 @@
+from tkinter import Image
 import streamlit as st
 from streamlit_webrtc import webrtc_streamer, get_ice_servers
 import cv2
 import numpy as np
 import tensorflow as tf
 import tensorflow_hub as hub
+import av
+from turn import get_ice_servers
+from streamlit_session_memo import st_session_memo
 
-
-def transfer_style(content_image, style_image, model_path ):
+def transfer_style(content_image, style_image, hub_module):
 
     """
     :param content_image: content image as numpy array
@@ -59,7 +62,7 @@ def transfer_style(content_image, style_image, model_path ):
 
     print("Loading pre-trained model...")
     # The hub.load() loads any TF Hub model
-    hub_module = hub.load(model_path)
+    
 
     print("Generating stylized image now...wait a minute")
     # Stylize image.
