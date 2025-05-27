@@ -6,7 +6,7 @@ from PIL import Image
 
 
 
-def video_transfer_style(input_video_path, output_video_path, style_image_path):
+def video_transfer_style(input_video_path, output_video_path, style_image_path, width=256,height=256,fps=30):
 
     # Load the pre-trained model from TensorFlow Hub
     model = hub.load('https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2')

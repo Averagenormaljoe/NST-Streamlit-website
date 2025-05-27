@@ -6,14 +6,18 @@ venv\Scripts\activate
 
 3. Install the libraries using:
 
+pip install --force-reinstall setuptools==49.1.2
+
 pip install -r requirements.txt
 
-4. To start streamlit project, run:
+4. Use pip list to ensure that the packages were correctly installed
+
+5. To start streamlit project, run:
 
 streamlit run app.py
 
-5. Use the application
+6. Use the application
 
-6. To deactivate the environment run:
+7. To deactivate the environment run:
 
 deactivate

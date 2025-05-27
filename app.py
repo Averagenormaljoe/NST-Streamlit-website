@@ -5,14 +5,15 @@ import numpy as np
 from io import BytesIO
 from API import transfer_style
 from video_transfer import video_transfer_style
-# Set the title and icon of the app
-
-st.markdown("<hr>", unsafe_allow_html=True)
-tab1, tab2 = st.tabs(["Image", "Video"])
 
 # Set page configs. Get emoji names from WebFx
 st.set_page_config(page_title="PixelMix - Style Transfer",
                    page_icon="./assets/favicon.png", layout="centered")
+
+# Set the title and icon of the app
+
+st.markdown("<hr>", unsafe_allow_html=True)
+tab1, tab2 = st.tabs(["Image", "Video"])
 
 # -------------Header Section------------------------------------------------
 
@@ -141,19 +142,28 @@ with tab1:
 
 # -------------Video Style Transfer Section------------------------------------------------
 
-
-
-
-
 with tab2:
     st.markdown('<h3 style="text-align:center;">Video Style Transfer</h3>', unsafe_allow_html=True)
 
     video_file = st.file_uploader(
-        "Upload Video (MP4 only)", type=['mp4'], key="video_uploader"
+        "Upload Video (MP4 & gif only)", type=['mp4','gif'], key="video_uploader"
     )
 
     style_images = st.file_uploader(
         "Upload Style Images (PNG & JPG, select multiple)", type=['png', 'jpg'], accept_multiple_files=True, key="style_images_uploader"
+    )
+    # Resolution slider
+    # width
+    width_resolution = st.slider(
+        "Select Output Resolution (Width)", 
+        min_value=256, max_value=1080, value=512, step=64, 
+        help="Set the width (in pixels) for the output video. Height will be scaled proportionally."
+    )
+    # height
+    height_resolution = st.slider(
+        "Select Output Resolution (WHeight)", 
+        min_value=256, max_value=1080, value=512, step=64, 
+        help="Set the Height(in pixels) for the output video."
     )
 
     if video_file is not None and style_images and len(style_images) > 0:
@@ -166,9 +176,10 @@ with tab2:
             # Path of the pre-trained TF model
             model_path = r"model"
             # Stylize video (implement this function in your API)
-            output_video_bytes = video_transfer_style(video_bytes, style_imgs, model_path)
+            output_video_bytes = video_transfer_style(
+                video_bytes, style_imgs, model_path, height_resolution, width_resolution
+            )
             # Display result
-            
             col1, col2 = st.columns(2)
             with col1:
                 st.video(output_video_bytes)
