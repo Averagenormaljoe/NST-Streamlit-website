@@ -97,47 +97,59 @@ with tab1:
 
 
     if content_image is not None and style_image is not None:
+        if st.button("Clear"):
+            content_image = None
+            style_image = None
+            st.success("Cleared the images successfully!")
+        if st.button("Generate Styled Image"):
+            with st.spinner("Styling Images...will take about 20-30 secs"):
+                is_processing = True
+                content_image = Image.open(content_image)
+                style_image = Image.open(style_image)
 
-        with st.spinner("Styling Images...will take about 20-30 secs"):
+                # Convert PIL Image to numpy array
+                content_image = np.array(content_image)
+                style_image = np.array(style_image)
 
-            content_image = Image.open(content_image)
-            style_image = Image.open(style_image)
+                # Path of the pre-trained TF model
+                model_path = "https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2"
 
-            # Convert PIL Image to numpy array
-            content_image = np.array(content_image)
-            style_image = np.array(style_image)
+                # output image
+                styled_image = transfer_style(content_image, style_image, model_path)
+                if is_processing:
+                    if st.button("Stop Processing"):
+                        is_processing = False
+                        st.warning("Processing stopped by user.")
+                    
+                if style_image is not None:
+                    # some baloons
+                    st.balloons()
 
-            # Path of the pre-trained TF model
-            model_path = r"model"
+                col1, col2 = st.columns(2)
+                with col1:
+                    # Display the output
+                    st.image(styled_image)
+                with col2:
+                    is_processing = False
+                    st.markdown("</br>", unsafe_allow_html=True)
+                    st.markdown(
+                        "<b> Your Image is Ready ! Click below to download it. </b>", unsafe_allow_html=True)
 
-            # output image
-            styled_image = transfer_style(content_image, style_image, model_path)
-            if style_image is not None:
-                # some baloons
-                st.balloons()
-
-            col1, col2 = st.columns(2)
-            with col1:
-                # Display the output
-                st.image(styled_image)
-            with col2:
-
-                st.markdown("</br>", unsafe_allow_html=True)
-                st.markdown(
-                    "<b> Your Image is Ready ! Click below to download it. </b>", unsafe_allow_html=True)
-
-                # de-normalize the image
-                styled_image = (styled_image * 255).astype(np.uint8)
-                # convert to pillow image
-                img = Image.fromarray(styled_image)
-                buffered = BytesIO()
-                img.save(buffered, format="JPEG")
-                st.download_button(
-                    label="Download image",
-                    data=buffered.getvalue(),
-                    file_name="output.png",
-                    mime="image/png")
-                
+                    # de-normalize the image
+                    styled_image = (styled_image * 255).astype(np.uint8)
+                    # convert to pillow image
+                    img = Image.fromarray(styled_image)
+                    buffered = BytesIO()
+                    img.save(buffered, format="JPEG")
+                    st.download_button(
+                        label="Download image",
+                        data=buffered.getvalue(),
+                        file_name="output.png",
+                        mime="image/png")
+                   
+                    
+               
+                    
 
 
 # -------------Video Style Transfer Section------------------------------------------------

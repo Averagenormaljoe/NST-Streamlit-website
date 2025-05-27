@@ -4,7 +4,7 @@ import tensorflow as tf
 import tensorflow_hub as hub
 
 
-def transfer_style(content_image, style_image, model_path, ):
+def transfer_style(content_image, style_image, model_path ):
 
     """
     :param content_image: content image as numpy array
@@ -25,7 +25,7 @@ def transfer_style(content_image, style_image, model_path, ):
 
     size_threshold = 2000
     resizing_shape = (1000,1000)
-    style_shape = (256,256)
+    resize_style_shape = (256,256)
     content_shape = content_image.shape
     style_shape = style_image.shape
 
@@ -53,7 +53,7 @@ def transfer_style(content_image, style_image, model_path, ):
     # Optionally resize the images. It is recommended that the style image is about
     # 256 pixels (this size was used when training the style transfer network).
     # The content image can be any size.
-    style_image = tf.image.resize(style_image, style_shape)
+    style_image = tf.image.resize(style_image, resize_style_shape)
 
     print("Loading pre-trained model...")
     # The hub.load() loads any TF Hub model
