@@ -165,6 +165,12 @@ with tab2:
         min_value=256, max_value=1080, value=512, step=64, 
         help="Set the Height(in pixels) for the output video."
     )
+    # FPS slider
+    fps = st.slider(
+        "Select Output FPS (Frames Per Second)", 
+        min_value=1, max_value=30, value=30, step=1, 
+        help="Set the frames per second for the output video."
+    )
 
     if video_file is not None and style_images and len(style_images) > 0:
         st.info(f"{len(style_images)} style image(s) selected.")
@@ -177,7 +183,7 @@ with tab2:
             model_path = r"model"
             # Stylize video (implement this function in your API)
             output_video_bytes = video_transfer_style(
-                video_bytes, style_imgs, model_path, height_resolution, width_resolution
+                video_bytes, style_imgs, model_path, height_resolution, width_resolution,fps=fps
             )
             # Display result
             col1, col2 = st.columns(2)
