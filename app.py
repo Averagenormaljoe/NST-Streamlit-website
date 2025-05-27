@@ -223,4 +223,13 @@ with tab2:
                     )
                
 with tab3:
-    
+    st.sidebar.title('Fast neural style transfer (Johnson)')
+    method = st.sidebar.radio('Go To ->', options=['Webcam', 'Image'])
+    st.sidebar.header('Options')
+
+    style_model_name = st.sidebar.selectbox("Choose the style model: ", style_models_name)
+
+    if method == 'Image':
+        image_input(style_model_name)
+    else:
+        webcam_input(style_model_name)
