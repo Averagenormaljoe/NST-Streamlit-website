@@ -4,6 +4,7 @@ from PIL import Image
 import numpy as np
 from io import BytesIO
 from API import transfer_style
+from components import processingBtn
 from video_transfer import video_transfer_style
 
 # Set page configs. Get emoji names from WebFx
@@ -98,8 +99,7 @@ with tab1:
 
     if content_image is not None and style_image is not None:
         if st.button("Clear"):
-            content_image = None
-            style_image = None
+            
             st.success("Cleared the images successfully!")
         if st.button("Generate Styled Image"):
             with st.spinner("Styling Images...will take about 20-30 secs"):
@@ -116,10 +116,7 @@ with tab1:
 
                 # output image
                 styled_image = transfer_style(content_image, style_image, model_path)
-                if is_processing:
-                    if st.button("Stop Processing"):
-                        is_processing = False
-                        st.warning("Processing stopped by user.")
+                is_processing = processingBtn(is_processing)
                     
                 if style_image is not None:
                     # some baloons
@@ -183,31 +180,45 @@ with tab2:
         min_value=1, max_value=30, value=30, step=1, 
         help="Set the frames per second for the output video."
     )
+    # style intensity slider
+    st.markdown("</br>", unsafe_allow_html=True)
+    st.markdown(
+        '<p style="text-align:center;font-size: 20px;font-weight: 550;">Select Style Intensity</p>', unsafe_allow_html=True)
+    style_intensity = st.slider(
+        "Style Intensity",
+        min_value=0.1, max_value=1.0, value=0.5, step=0.1,
+        help="Adjust the intensity of the style transfer effect."
+    )
 
     if video_file is not None and style_images and len(style_images) > 0:
         st.info(f"{len(style_images)} style image(s) selected.")
-        with st.spinner("Stylizing video... This may take a few minutes."):
-            # Read video bytes
-            video_bytes = video_file.read()
-            # Read style images as numpy arrays
-            style_imgs = [np.array(Image.open(img)) for img in style_images]
-            # Path of the pre-trained TF model
-            model_path = r"model"
-            # Stylize video (implement this function in your API)
-            output_video_bytes = video_transfer_style(
-                video_bytes, style_imgs, model_path, height_resolution, width_resolution,fps=fps
-            )
-            # Display result
-            col1, col2 = st.columns(2)
-            with col1:
-                st.video(output_video_bytes)
-            with col2:
-                st.markdown("</br>", unsafe_allow_html=True)
-                st.markdown(
-                    "<b> Your Stylized Video is Ready ! Click below to download it. </b>", unsafe_allow_html=True)
-                st.download_button(
-                    label="Download Stylized Video",
-                    data=output_video_bytes,
-                    file_name="stylized_output.mp4",
-                    mime="video/mp4"
+        if st.button("Generate Styled Image"):
+            with st.spinner("Stylizing video... This may take a few minutes."):
+                is_processing = True
+                # Read video bytes
+                video_bytes = video_file.read()
+                # Read style images as numpy arrays
+                style_imgs = [np.array(Image.open(img)) for img in style_images]
+                # Path of the pre-trained TF model
+                model_path = r"model"
+                # Stylize video (implement this function in your API)
+                output_video_bytes = video_transfer_style(
+                    video_bytes, style_imgs, model_path, height_resolution, width_resolution,fps=fps
                 )
+                # Display result
+                col1, col2 = st.columns(2)
+                is_processing = processingBtn(is_processing)
+                with col1:
+                    st.video(output_video_bytes)
+                with col2:
+                    is_processing = False
+                    st.markdown("</br>", unsafe_allow_html=True)
+                    st.markdown(
+                        "<b> Your Stylized Video is Ready ! Click below to download it. </b>", unsafe_allow_html=True)
+                    st.download_button(
+                        label="Download Stylized Video",
+                        data=output_video_bytes,
+                        file_name="stylized_output.mp4",
+                        mime="video/mp4"
+                    )
+               
