@@ -77,7 +77,9 @@ def transfer_style(content_image, style_image, hub_module):
     print("Stylizing completed...")
     return stylized_image
 
-
+def get_model_from_path(style_model_path):
+    model = cv2.dnn.readNetFromTorch(style_model_path)
+    return model
 
 def webcam_input(style_model_name):
     st.header("Webcam Live Feed")
