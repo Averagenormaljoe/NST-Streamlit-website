@@ -7,6 +7,7 @@ import tensorflow as tf
 import tensorflow_hub as hub
 import av
 from turn import get_ice_servers
+from data import style_models_dict
 from streamlit_session_memo import st_session_memo
 
 def transfer_style(content_image, style_image, hub_module):
