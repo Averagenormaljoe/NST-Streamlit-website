@@ -1,4 +1,5 @@
 
+from email.policy import default
 import streamlit as st
 from PIL import Image
 import numpy as np
@@ -6,7 +7,8 @@ from typing import Any
 from numpy.typing import NDArray
 from io import BytesIO
 import tensorflow_hub as hub
-from API import transfer_style, webcam_input
+from API import transfer_style
+from webcam import webcam_input
 from components import processingBtn
 from video_transfer import video_transfer_style
 from data import style_models_name
@@ -87,9 +89,11 @@ with tab1:
     col1, col2, col3 = st.columns(3)
     content_image = None
     style_image = None
+    method = st.sidebar.radio('Go To ->', options=['Webcam', 'Image'])
     with col1:
-        content_image = st.file_uploader(
-            "Upload Content Image (PNG & JPG images only)", type=['png', 'jpg'])
+        if method == 'Image':
+            content_image = st.file_uploader(
+                "Upload Content Image (PNG & JPG images only)", type=['png', 'jpg'])
     with col2:
         style_image = st.file_uploader(
             "Upload Style Image (PNG & JPG images only)", type=['png', 'jpg'])
@@ -98,7 +102,7 @@ with tab1:
     st.warning('NOTE : You need atleast Intel i3 with 8GB memory for proper functioning of this application. ' +
     ' Images greater then (2000x2000) are resized to (1000x1000).')
     st.sidebar.header('Options')
-    method = st.sidebar.radio('Go To ->', options=['Webcam', 'Image'])
+    
 
 
     if (content_image is not None or method == "webcam") and style_image is not None:

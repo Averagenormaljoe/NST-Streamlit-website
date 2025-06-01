@@ -1,6 +1,6 @@
 from PIL import Image
 import streamlit as st
-from streamlit_webrtc import webrtc_streamer, get_ice_servers
+from streamlit_webrtc import webrtc_streamer
 import cv2
 import numpy as np
 import tensorflow as tf
@@ -12,22 +12,6 @@ from streamlit_session_memo import st_session_memo
 
 def transfer_style(content_image, style_image, hub_module):
 
-    """
-    :param content_image: content image as numpy array
-    :param style_image: style image as numpy array
-    :param model_path: path to the downloaded pre-trained model.
-
-    The 'model' directory already contains the downloaded pre-trained model,but 
-    you can also download the pre-trained model from the below TF HUB link:
-    https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2
-
-    :return: A Styled image as 3D numpy array.
-
-    """
-
-    #--------------------------------------------------------------
-
-    # resize the images to (1000,1000) if greater than (2000 x 2000)
 
     size_threshold = 2000
     resizing_shape = (1000,1000)
@@ -50,8 +34,6 @@ def transfer_style(content_image, style_image, hub_module):
 
     #--------------------------------------------------------------
 
-
-    print("Resizing and Normalizing images...")
     # Convert to float32 numpy array, add batch dimension, and normalize to range [0, 1]. Example using numpy:
     content_image = content_image.astype(np.float32)[np.newaxis, ...] / 255.
     style_image = style_image.astype(np.float32)[np.newaxis, ...] / 255.
@@ -78,44 +60,3 @@ def transfer_style(content_image, style_image, hub_module):
     print("Stylizing completed...")
     return stylized_image
 
-def get_model_from_path(style_model_path):
-    model = cv2.dnn.readNetFromTorch(style_model_path)
-    return model
-
-def webcam_input(style_model_name,style_image):
-    st.header("Webcam Live Feed")
-    WIDTH = st.sidebar.select_slider('QUALITY (May reduce the speed)', list(range(150, 501, 50)))
-    width = WIDTH
-
-    @st_session_memo
-    def load_model(model_name, width):  # `width` is not used when loading the model, but is necessary as a cache key.
-        hub_module = hub.load(model_name)
-        return hub_module
-
-    model_path: str = "https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2"
-    model = load_model(model_path, width)
-
-    def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
-        image = frame.to_ndarray(format="bgr24")
-
-        if model is None:
-            return image
-
-        orig_h, orig_w = image.shape[0:2]
-
-        # cv2.resize used in a forked thread may cause memory leaks
-        input = np.asarray(Image.fromarray(image).resize((width, int(width * orig_h / orig_w))))
-
-        #transferred = style_transfer(input, model)
-  
-        transferred = transfer_style(input,style_image,hub_module)
-        result = Image.fromarray((transferred * 255).astype(np.uint8))
-        image = np.asarray(result.resize((orig_w, orig_h)))
-        return av.VideoFrame.from_ndarray(image, format="bgr24")
-
-    ctx = webrtc_streamer(
-        key="neural-style-transfer",
-        video_frame_callback=video_frame_callback,
-        rtc_configuration={"iceServers": get_ice_servers()},
-        media_stream_constraints={"video": True, "audio": False},
-    )

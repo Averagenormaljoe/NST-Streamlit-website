@@ -3,34 +3,44 @@ import numpy as np
 import tensorflow as tf
 import tensorflow_hub as hub
 from PIL import Image
-
+from API import transfer_style
 
 
 def video_transfer_style(input_video_path : str,style_image_path : str, width : int =256,height : int =256,fps : int =30):
 
-    # Load the pre-trained model from TensorFlow Hub
-    model = hub.load('https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2')
-
-    # Load the content and style images
-    content_image = cv2.imread(input_video_path)
+    # Load the style image
     style_image = cv2.imread(style_image_path)
-
-    # Convert images to float32 and normalize
-    content_image = tf.image.convert_image_dtype(content_image, dtype=tf.float32)
-    style_image = tf.image.convert_image_dtype(style_image, dtype=tf.float32)
-
-    # Resize the style image to match the content image size
-    style_image = tf.image.resize(style_image, (content_image.shape[0], content_image.shape[1]))
-
-    # Add batch dimension
-    content_image = content_image[tf.newaxis, :]
-    style_image = style_image[tf.newaxis, :]
-
-    # Perform style transfer
-    stylized_image = model(tf.constant(content_image), tf.constant(style_image))[0]
-
-    # Convert the result to uint8 and save it
-    stylized_image = tf.image.convert_image_dtype(stylized_image[0], dtype=tf.uint8)
-    
-    # Save the stylized image
-    cv2.imwrite(output_video_path, stylized_image.numpy())
+    if style_image is None:
+        raise ValueError(f"Could not read style image from {style_image_path}")
+    style_image = cv2.resize(style_image, (width, height))
+    style_image = style_image.astype(np.float32)[np.newaxis, ...] / 255.
+    style_image = tf.image.resize(style_image, (256, 256))
+    # Load the video
+    cap = cv2.VideoCapture(input_video_path)
+    if not cap.isOpened():
+        raise ValueError(f"Could not open video file {input_video_path}")
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    output_video_path = input_video_path.replace('.mp4', '_styled.mp4')
+    out = cv2.VideoWriter(output_video_path, fourcc, fps, (width, height))
+    # Load the pre-trained model
+    hub_module = hub.load("https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2")
+    # Process each frame
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break
+        # Resize the frame to the desired width and height
+        frame = cv2.resize(frame, (width, height))
+        # Convert to float32 numpy array and normalize to range [0, 1]
+        content_image = frame.astype(np.float32)[np.newaxis, ...] / 255.
+        # Stylize the image
+        stylized_image = transfer_style(content_image, style_image, hub_module)
+        # Convert back to uint8 and write to output video
+        stylized_image = (stylized_image * 255).astype(np.uint8)
+        out.write(stylized_image[0])
+    # Release resources
+    cap.release()
+    out.release()
+    output_video_path = input_video_path.replace('.mp4', '_styled.mp4')
+    print(f"Styled video saved to {output_video_path}")
+    return output_video_path
