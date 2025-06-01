@@ -103,7 +103,6 @@ with tab1:
 
     if (content_image is not None or method == "webcam") and style_image is not None:
         if st.button("Clear"):
-            
             st.success("Cleared the images successfully!")
 
         if method == 'Image':
@@ -154,7 +153,7 @@ with tab1:
         elif method == 'Webcam':
             st.markdown('<h3 style="text-align:center;">Webcam Style Transfer</h3>', unsafe_allow_html=True)
             model_path: str = "https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2"
-            webcam_input(model_path)        
+            webcam_input(model_path,style_image)        
                         
                     
                

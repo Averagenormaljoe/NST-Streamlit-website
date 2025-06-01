@@ -1,4 +1,4 @@
-from tkinter import Image
+from PIL import Image
 import streamlit as st
 from streamlit_webrtc import webrtc_streamer, get_ice_servers
 import cv2
@@ -82,7 +82,7 @@ def get_model_from_path(style_model_path):
     model = cv2.dnn.readNetFromTorch(style_model_path)
     return model
 
-def webcam_input(style_model_name):
+def webcam_input(style_model_name,style_image):
     st.header("Webcam Live Feed")
     WIDTH = st.sidebar.select_slider('QUALITY (May reduce the speed)', list(range(150, 501, 50)))
     width = WIDTH
@@ -93,7 +93,6 @@ def webcam_input(style_model_name):
         return hub_module
 
     model_path: str = "https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2"
-    hub_module = hub.load(model_path)
     model = load_model(model_path, width)
 
     def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
@@ -109,7 +108,7 @@ def webcam_input(style_model_name):
 
         #transferred = style_transfer(input, model)
   
-        transferred = transfer_style(input,hub_module)
+        transferred = transfer_style(input,style_image,hub_module)
         result = Image.fromarray((transferred * 255).astype(np.uint8))
         image = np.asarray(result.resize((orig_w, orig_h)))
         return av.VideoFrame.from_ndarray(image, format="bgr24")
