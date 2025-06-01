@@ -2,9 +2,11 @@
 import streamlit as st
 from PIL import Image
 import numpy as np
+from typing import Any
+from numpy.typing import NDArray
 from io import BytesIO
 import tensorflow_hub as hub
-from API import transfer_style
+from API import transfer_style, webcam_input
 from components import processingBtn
 from video_transfer import video_transfer_style
 from data import style_models_name
@@ -82,7 +84,7 @@ with tab1:
 
 
     # Upload Images
-    col1, col2 = st.columns(2)
+    col1, col2, col3 = st.columns(3)
     content_image = None
     style_image = None
     with col1:
@@ -92,59 +94,68 @@ with tab1:
         style_image = st.file_uploader(
             "Upload Style Image (PNG & JPG images only)", type=['png', 'jpg'])
 
-
     st.markdown("</br>", unsafe_allow_html=True)
     st.warning('NOTE : You need atleast Intel i3 with 8GB memory for proper functioning of this application. ' +
     ' Images greater then (2000x2000) are resized to (1000x1000).')
+    st.sidebar.header('Options')
+    method = st.sidebar.radio('Go To ->', options=['Webcam', 'Image'])
 
 
-    if content_image is not None and style_image is not None:
+    if (content_image is not None or method == "webcam") and style_image is not None:
         if st.button("Clear"):
             
             st.success("Cleared the images successfully!")
-        if st.button("Generate Styled Image"):
-            with st.spinner("Styling Images...will take about 20-30 secs"):
-                is_processing = True
-                content_image = Image.open(content_image)
-                style_image = Image.open(style_image)
 
-                # Convert PIL Image to numpy array
-                content_image = np.array(content_image)
-                style_image = np.array(style_image)
-
-                # Path of the pre-trained TF model
-                model_path: str = "https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2"
-                hub_module = hub.load(model_path)
-                # output image
-                styled_image = transfer_style(content_image, style_image, hub_module)
-                is_processing = processingBtn(is_processing)
+        if method == 'Image':
+            st.markdown('<h3 style="text-align:center;">Image Style Transfer</h3>', unsafe_allow_html=True)
+            if st.button("Generate Styled Image"):
+                with st.spinner("Styling Images...will take about 20-30 secs"):
+                    is_processing : bool = True
                     
-                if style_image is not None:
-                    # some baloons
-                    st.balloons()
+                    content_image = Image.open(content_image)
+                    style_image = Image.open(style_image)
 
-                col1, col2 = st.columns(2)
-                with col1:
-                    # Display the output
-                    st.image(styled_image)
-                with col2:
-                    is_processing = False
-                    st.markdown("</br>", unsafe_allow_html=True)
-                    st.markdown(
-                        "<b> Your Image is Ready ! Click below to download it. </b>", unsafe_allow_html=True)
+                    # Convert PIL Image to numpy array
+                    content_image = np.array(content_image)
+                    style_image = np.array(style_image)
 
-                    # de-normalize the image
-                    styled_image = (styled_image * 255).astype(np.uint8)
-                    # convert to pillow image
-                    img = Image.fromarray(styled_image)
-                    buffered = BytesIO()
-                    img.save(buffered, format="JPEG")
-                    st.download_button(
-                        label="Download image",
-                        data=buffered.getvalue(),
-                        file_name="output.png",
-                        mime="image/png")
-                   
+                    # Path of the pre-trained TF model
+                    model_path: str = "https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2"
+                    hub_module = hub.load(model_path)
+                    # output image
+                    styled_image = transfer_style(content_image, style_image, hub_module)
+                    is_processing = processingBtn(is_processing)
+                        
+                    if style_image is not None:
+                        # some baloons
+                        st.balloons()
+
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        # Display the output
+                        st.image(styled_image)
+                    with col2:
+                        is_processing = False
+                        st.markdown("</br>", unsafe_allow_html=True)
+                        st.markdown(
+                            "<b> Your Image is Ready ! Click below to download it. </b>", unsafe_allow_html=True)
+
+                        # de-normalize the image
+                        styled_image = (styled_image * 255).astype(np.uint8)
+                        # convert to pillow image
+                        img = Image.fromarray(styled_image)
+                        buffered = BytesIO()
+                        img.save(buffered, format="JPEG")
+                        st.download_button(
+                            label="Download image",
+                            data=buffered.getvalue(),
+                            file_name="output.png",
+                            mime="image/png")
+        elif method == 'Webcam':
+            st.markdown('<h3 style="text-align:center;">Webcam Style Transfer</h3>', unsafe_allow_html=True)
+            model_path: str = "https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2"
+            webcam_input(model_path)        
+                        
                     
                
                     
@@ -205,7 +216,7 @@ with tab2:
                 hub_module = hub.load(model_path)
                 # Stylize video (implement this function in your API)
                 output_video_bytes = video_transfer_style(
-                    video_bytes,  hub_module, height_resolution, width_resolution,fps=fps
+                    video_bytes,  style_imgs[0], height_resolution, width_resolution,fps=fps
                 )
                 # Display result
                 col1, col2 = st.columns(2)
@@ -231,10 +242,10 @@ with tab3:
 
     select_model_name = st.sidebar.selectbox("Choose the style model: ", style_models_name)
 
-    if method == 'Image':
-        image_input(select_model_name)
-    else:
-        webcam_input(select_model_name)
+    #if method == 'Image':
+        # image_input(select_model_name)
+    #else:
+        # webcam_input(select_model_name)
         
         
 with tab4:

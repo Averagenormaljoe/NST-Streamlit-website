@@ -89,9 +89,12 @@ def webcam_input(style_model_name):
 
     @st_session_memo
     def load_model(model_name, width):  # `width` is not used when loading the model, but is necessary as a cache key.
-        return get_model_from_path(model_name)
+        hub_module = hub.load(model_name)
+        return hub_module
 
-    model = load_model(style_models_dict[style_model_name], width)
+    model_path: str = "https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2"
+    hub_module = hub.load(model_path)
+    model = load_model(model_path, width)
 
     def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
         image = frame.to_ndarray(format="bgr24")
@@ -104,8 +107,9 @@ def webcam_input(style_model_name):
         # cv2.resize used in a forked thread may cause memory leaks
         input = np.asarray(Image.fromarray(image).resize((width, int(width * orig_h / orig_w))))
 
-        transferred = style_transfer(input, model)
-
+        #transferred = style_transfer(input, model)
+  
+        transferred = transfer_style(input,hub_module)
         result = Image.fromarray((transferred * 255).astype(np.uint8))
         image = np.asarray(result.resize((orig_w, orig_h)))
         return av.VideoFrame.from_ndarray(image, format="bgr24")
