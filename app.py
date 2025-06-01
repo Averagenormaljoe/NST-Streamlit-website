@@ -19,7 +19,7 @@ st.set_page_config(page_title="PixelMix - Style Transfer",
 # Set the title and icon of the app
 
 st.markdown("<hr>", unsafe_allow_html=True)
-tab1, tab2, tab3,tab4,tab5 = st.tabs(["Image", "Video","Gatys model", "Johnson model", "Huang model"])
+tab1, tab2, tab3,tab4,tab5 = st.tabs(["Image", "Video", "Johnson model","Gatys model", "Huang model"])
 
 # -------------Header Section------------------------------------------------
 
@@ -89,7 +89,7 @@ with tab1:
     col1, col2, col3 = st.columns(3)
     content_image = None
     style_image = None
-    method = st.sidebar.radio('Go To ->', options=['Webcam', 'Image'])
+    method = st.sidebar.radio('Go To ->', options=['Webcam', 'Image'], key="method_selector")
     with col1:
         if method == 'Image':
             content_image = st.file_uploader(
@@ -104,11 +104,13 @@ with tab1:
     st.sidebar.header('Options')
     
 
-
-    if (content_image is not None or method == "webcam") and style_image is not None:
+    
+    if (content_image is not None or method == "Webcam") and style_image is not None:
         if st.button("Clear"):
             st.success("Cleared the images successfully!")
-
+            
+        
+  
         if method == 'Image':
             st.markdown('<h3 style="text-align:center;">Image Style Transfer</h3>', unsafe_allow_html=True)
             if st.button("Generate Styled Image"):
@@ -240,10 +242,10 @@ with tab2:
                
 with tab3:
     st.sidebar.title('Fast neural style transfer (Johnson)')
-    method = st.sidebar.radio('Go To ->', options=['Webcam', 'Image'])
     st.sidebar.header('Options')
 
     select_model_name = st.sidebar.selectbox("Choose the style model: ", style_models_name)
+
 
     #if method == 'Image':
         # image_input(select_model_name)
