@@ -11,14 +11,14 @@ def video_transfer_style(input_video_path : str,style_image_path : str, width : 
     # Load the style image
     style_image = cv2.imread(style_image_path)
     if style_image is None:
-        raise ValueError(f"Could not read style image from {style_image_path}")
+        raise "Could not read style image from {style_image_path}"
     style_image = cv2.resize(style_image, (width, height))
     style_image = style_image.astype(np.float32)[np.newaxis, ...] / 255.
     style_image = tf.image.resize(style_image, (256, 256))
     # Load the video
     cap = cv2.VideoCapture(input_video_path)
     if not cap.isOpened():
-        raise ValueError(f"Could not open video file {input_video_path}")
+        raise "Could not open video file {input_video_path}"
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     output_video_path = input_video_path.replace('.mp4', '_styled.mp4')
     out = cv2.VideoWriter(output_video_path, fourcc, fps, (width, height))

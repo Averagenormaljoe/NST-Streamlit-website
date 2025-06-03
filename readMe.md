@@ -2,7 +2,7 @@
 
 2. activate the environment with:
 
-venv\Scripts\activate
+venv\Scripts\activate (Windows) or source venv\Scripts\activate (MacOS and Linux).
 
 3. Install the libraries using:
 

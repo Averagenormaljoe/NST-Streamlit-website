@@ -12,15 +12,16 @@ def get_model_from_path(style_model_path):
     model = cv2.dnn.readNetFromTorch(style_model_path)
     return model
 
-def webcam_input(style_model_name,style_image):
+def webcam_input(style_model_name,style_image, type: str = "main"):
     st.header("Webcam Live Feed")
     WIDTH = st.sidebar.select_slider('QUALITY (May reduce the speed)', list(range(150, 501, 50)))
     width = WIDTH
 
     @st_session_memo
     def load_model(model_name, width):  # `width` is not used when loading the model, but is necessary as a cache key.
-        hub_module = hub.load(model_name)
-        return hub_module
+        if type == "main":
+            hub_module = hub.load(model_name)
+            return hub_module
 
     model_path: str = "https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2"
     model = load_model(model_path, width)
@@ -37,7 +38,7 @@ def webcam_input(style_model_name,style_image):
         input = np.asarray(Image.fromarray(image).resize((width, int(width * orig_h / orig_w))))
 
         #transferred = style_transfer(input, model)
-  
+        
         transferred = transfer_style(input,style_image,model)
         result = Image.fromarray((transferred * 255).astype(np.uint8))
         image = np.asarray(result.resize((orig_w, orig_h)))

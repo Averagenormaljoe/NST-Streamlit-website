@@ -1,5 +1,5 @@
 import streamlit as st
-def processingBtn(is_processing : bool) -> bool:
+def processing_btn(is_processing : bool) -> bool:
     if is_processing:
         if st.button("Stop Processing"):
             is_processing = False

@@ -4,13 +4,14 @@ import streamlit as st
 from PIL import Image
 import numpy as np
 from typing import Any
-from numpy.typing import NDArray
-from io import BytesIO
 import tensorflow_hub as hub
 from API import transfer_style
+from UI_components import render_ui_sliders
 from webcam import webcam_input
-from components import processingBtn
+from components import processing_btn
 from video_transfer import video_transfer_style
+from gatys import render_gatys_ui_sliders
+from helper import generate_image_btn, generate_styled_image, process_webcam
 from data import style_models_name
 # Set page configs. Get emoji names from WebFx
 st.set_page_config(page_title="PixelMix - Style Transfer",
@@ -105,65 +106,21 @@ with tab1:
     
 
     
-    if (content_image is not None or method == "Webcam") and style_image is not None:
+    if style_image is not None:
         if st.button("Clear"):
             st.success("Cleared the images successfully!")
-            
-        
-  
         if method == 'Image':
             st.markdown('<h3 style="text-align:center;">Image Style Transfer</h3>', unsafe_allow_html=True)
-            if st.button("Generate Styled Image"):
-                with st.spinner("Styling Images...will take about 20-30 secs"):
-                    is_processing : bool = True
-                    
-                    content_image = Image.open(content_image)
-                    style_image = Image.open(style_image)
-
-                    # Convert PIL Image to numpy array
-                    content_image = np.array(content_image)
-                    style_image = np.array(style_image)
-
-                    # Path of the pre-trained TF model
-                    model_path: str = "https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2"
-                    hub_module = hub.load(model_path)
-                    # output image
-                    styled_image = transfer_style(content_image, style_image, hub_module)
-                    is_processing = processingBtn(is_processing)
-                        
-                    if style_image is not None:
-                        # some baloons
-                        st.balloons()
-
-                    col1, col2 = st.columns(2)
-                    with col1:
-                        # Display the output
-                        st.image(styled_image)
-                    with col2:
-                        is_processing = False
-                        st.markdown("</br>", unsafe_allow_html=True)
-                        st.markdown(
-                            "<b> Your Image is Ready ! Click below to download it. </b>", unsafe_allow_html=True)
-
-                        # de-normalize the image
-                        styled_image = (styled_image * 255).astype(np.uint8)
-                        # convert to pillow image
-                        img = Image.fromarray(styled_image)
-                        buffered = BytesIO()
-                        img.save(buffered, format="JPEG")
-                        st.download_button(
-                            label="Download image",
-                            data=buffered.getvalue(),
-                            file_name="output.png",
-                            mime="image/png")
+            if content_image is not None:
+                generate_image_btn(content_image, style_image)
         elif method == 'Webcam':
-            st.markdown('<h3 style="text-align:center;">Webcam Style Transfer</h3>', unsafe_allow_html=True)
-            model_path: str = "https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2"
-            webcam_input(model_path,style_image)        
-                        
-                    
-               
-                    
+            process_webcam(style_image)   
+        elif method == 'Camera':
+            enable = st.checkbox("Enable camera")
+            picture = st.camera_input("Take a picture", disabled=not enable)
+            generate_image_btn(picture, style_image)
+
+
 
 
 # -------------Video Style Transfer Section------------------------------------------------
@@ -178,25 +135,8 @@ with tab2:
     style_images = st.file_uploader(
         "Upload Style Images (PNG & JPG, select multiple)", type=['png', 'jpg'], accept_multiple_files=True, key="style_images_uploader"
     )
-    # Resolution slider
-    # width
-    width_resolution = st.slider(
-        "Select Output Resolution (Width)", 
-        min_value=256, max_value=1080, value=512, step=64, 
-        help="Set the width (in pixels) for the output video. Height will be scaled proportionally."
-    )
-    # height
-    height_resolution = st.slider(
-        "Select Output Resolution (WHeight)", 
-        min_value=256, max_value=1080, value=512, step=64, 
-        help="Set the Height(in pixels) for the output video."
-    )
-    # FPS slider
-    fps = st.slider(
-        "Select Output FPS (Frames Per Second)", 
-        min_value=1, max_value=30, value=30, step=1, 
-        help="Set the frames per second for the output video."
-    )
+    # resolution slider
+    width_resolution, height_resolution, fps = render_ui_sliders()
     # style intensity slider
     st.markdown("</br>", unsafe_allow_html=True)
     st.markdown(
@@ -225,7 +165,7 @@ with tab2:
                 )
                 # Display result
                 col1, col2 = st.columns(2)
-                is_processing = processingBtn(is_processing)
+                is_processing = processing_btn(is_processing)
                 with col1:
                     st.video(output_video_bytes)
                 with col2:
@@ -254,13 +194,8 @@ with tab3:
         
         
 with tab4:
-      st.markdown('<h3 style="text-align:center;">Gatys model</h3>', unsafe_allow_html=True)
-      st.markdown('<h4 style="text-align:center;">Provides the highest style quality at the cost of speed (will take around 5 minutes)</h4>', unsafe_allow_html=True)
-      epoch_slider = st.slider(
-          "Select Epochs",
-          min_value=1, max_value=1000, value=10, step=1,
-          help="Set the number of epochs for the style transfer. More epochs may yield better results but will take longer."
-      )
+    render_gatys_ui_sliders()
+   
     
     
 

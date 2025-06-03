@@ -11,7 +11,8 @@ from data import style_models_dict
 from streamlit_session_memo import st_session_memo
 
 def transfer_style(content_image, style_image, hub_module):
-
+    if style_image is None:
+        return content_image
 
     size_threshold = 2000
     resizing_shape = (1000,1000)
