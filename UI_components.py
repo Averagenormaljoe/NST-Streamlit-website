@@ -21,11 +21,35 @@ def render_ui_sliders():
         help="Set the frames per second for the output video."
     )
     return width_resolution, height_resolution, fps
-def method_slider():
-    method = st.sidebar.radio('Go To ->', options=['Webcam', 'Image', 'Camera'], key="method_selector")
+def method_slider(key="method_selector"):
+    method = st.sidebar.radio('Go To ->', options=['Webcam', 'Image', 'Camera'], key=key)
     return method
 def camera_component():
     enable = st.checkbox("Enable camera")
     picture = st.camera_input("Take a picture", disabled=not enable)
     return picture
+def example_images():
+    col1, col2 = st.columns(2)
+    with col1:
+        st.image(image="./assets/content1.jpg")
+    with col2:
+        st.image(image="./assets/art1.png")
+
+    col1, col2 = st.columns(2)
+    with col1:
+        st.image(image="./assets/content2.jpg")
+    with col2:
+        st.image(image="./assets/art2.png")
+
+    col1, col2 = st.columns(2)
+    with col1:
+        st.image(image="./assets/content3.jpg")
+    with col2:
+        st.image(image="./assets/art3.png")
+
+    col1, col2 = st.columns(2)
+    with col1:
+        st.image(image="./assets/content4.jpg")
+    with col2:
+        st.image(image="./assets/art4.png")
     

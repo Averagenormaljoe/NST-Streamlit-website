@@ -11,32 +11,37 @@ from turn import get_ice_servers
 from data import style_models_dict
 from streamlit_session_memo import st_session_memo
 
+
+
+def resize_image(input_image,name="Content Image"):
+    size_threshold = (2000,2000)
+    resizing_shape = (1000,1000)
+
+    input_image_shape = input_image.shape
+
+    
+    resize_content = True if input_image_shape[0] > size_threshold[0] or input_image_shape[1] > size_threshold[1] else False
+  
+
+    if resize_content is True:
+        print(f"{name} bigger than {size_threshold}, resizing to {resizing_shape}")
+        input_image = cv2.resize(input_image,(resizing_shape[0],resizing_shape[1]))
+        input_image = np.array(input_image)
+
+    print(f"{name} Shape: ", input_image_shape)
+    return input_image
+
 def transfer_style(content_image, style_image, hub_module):
     if style_image is None:
         return content_image
     print("Starting style transfer: ", style_image)
-    size_threshold = 2000
-    resizing_shape = (1000,1000)
     resize_style_shape = (256,256)
-    content_shape = content_image.shape
-    style_shape = style_image.shape
-
-    print("Content Image Shape: ", content_shape)
-    print("Style Image Shape: ", style_shape)
-    resize_content = True if content_shape[0] > size_threshold or content_shape[1] > size_threshold else False
-    resize_style = True if style_shape[0] > size_threshold or style_shape[1] > size_threshold else False
-
-    if resize_content is True:
-        print("Content Image bigger than (2000x2000), resizing to (1000x1000)")
-        content_image = cv2.resize(content_image,(resizing_shape[0],resizing_shape[1]))
-        content_image = np.array(content_image)
     
-    if resize_style is True :
-        print("Style Image bigger than (2000x2000), resizing to (1000x1000)")
-        style_image = cv2.resize(style_image,(resizing_shape[0],resizing_shape[1]))
-        style_image = np.array(style_image)
 
-    #--------------------------------------------------------------
+    content_image = resize_image(content_image, "Content Image")
+    style_image = resize_image(style_image, "Style Image")
+
+
 
     # Convert to float32 numpy array, add batch dimension, and normalize to range [0, 1]. Example using numpy:
     content_image = content_image.astype(np.float32)[np.newaxis, ...] / 255.

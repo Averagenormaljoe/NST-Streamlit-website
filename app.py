@@ -4,7 +4,7 @@ from PIL import Image
 import numpy as np
 from typing import Any
 import tensorflow_hub as hub
-from UI_components import render_ui_sliders, method_slider, camera_component
+from UI_components import example_images, render_ui_sliders, method_slider, camera_component
 from johnson import johnson_header, johnson_video_input, johnson_image_input, johnson_webcam_input
 from components import processing_btn
 from video_transfer import video_transfer_style
@@ -38,29 +38,7 @@ with st.sidebar:
 
     # ---------------------Example art images------------------------------
 
-    col1, col2 = st.columns(2)
-    with col1:
-        st.image(image="./assets/content1.jpg")
-    with col2:
-        st.image(image="./assets/art1.png")
-
-    col1, col2 = st.columns(2)
-    with col1:
-        st.image(image="./assets/content2.jpg")
-    with col2:
-        st.image(image="./assets/art2.png")
-
-    col1, col2 = st.columns(2)
-    with col1:
-        st.image(image="./assets/content3.jpg")
-    with col2:
-        st.image(image="./assets/art3.png")
-
-    col1, col2 = st.columns(2)
-    with col1:
-        st.image(image="./assets/content4.jpg")
-    with col2:
-        st.image(image="./assets/art4.png")
+    example_images()
 
  # ----------------------------------------------------------------------
 
@@ -70,10 +48,10 @@ with tab1:
 
 
     # Upload Images
-    col1, col2 = st.columns(3)
+    col1, col2 = st.columns(2)
     content_image = None
     style_image = None
-    method = method_slider()
+    method = method_slider(key="main_method")
     with col1:
         if method == 'Image':
             content_image = st.file_uploader(
@@ -164,7 +142,7 @@ with tab2:
 with tab3:
     johnson_header()
     select_model_name = st.sidebar.selectbox("Choose the style model: ", style_models_name)
-    method = method_slider()
+    method = method_slider(key="johnson_method")
 
     if method == 'Image':
         content_image = st.file_uploader(
