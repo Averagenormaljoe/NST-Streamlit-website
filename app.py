@@ -7,7 +7,8 @@ import numpy as np
 from typing import Any
 import tensorflow_hub as hub
 from API import transfer_style
-from UI_components import render_ui_sliders
+from UI_components import render_ui_sliders, method_slider, camera_input
+from johnson import johnson_header, johnson_video_input, johnson_image_input, johnson_webcam_input
 from webcam import webcam_input
 from components import processing_btn
 from video_transfer import video_transfer_style
@@ -88,10 +89,10 @@ with tab1:
 
 
     # Upload Images
-    col1, col2, col3 = st.columns(3)
+    col1, col2 = st.columns(3)
     content_image = None
     style_image = None
-    method = st.sidebar.radio('Go To ->', options=['Webcam', 'Image', 'Camera'], key="method_selector")
+    method = method_slider()
     with col1:
         if method == 'Image':
             content_image = st.file_uploader(
@@ -107,17 +108,17 @@ with tab1:
     
     if st.button("Clear"):
         st.success("Cleared the images successfully!")
-    if method == 'Image':
-        st.markdown('<h3 style="text-align:center;">Image Style Transfer</h3>', unsafe_allow_html=True)
-        print("Content Image: ", content_image)
-        print("Style Image: ", style_image)
-        generate_image_btn(content_image, style_image)
-    elif method == 'Webcam':
-        process_webcam(style_image)   
-    elif method == 'Camera':
-        enable = st.checkbox("Enable camera")
-        picture = st.camera_input("Take a picture", disabled=not enable)
-        generate_image_btn(picture, style_image)
+        match method:
+            case 'Image':
+                st.markdown('<h3 style="text-align:center;">Image Style Transfer</h3>', unsafe_allow_html=True)
+                print("Content Image: ", content_image)
+                print("Style Image: ", style_image)
+                generate_image_btn(content_image, style_image)
+            case 'Webcam':
+                process_webcam(style_image)
+            case 'Camera':
+                picture = camera_input()
+                generate_image_btn(picture, style_image)
 
 
 
@@ -180,16 +181,20 @@ with tab2:
                     )
                
 with tab3:
-    st.sidebar.title('Fast neural style transfer (Johnson)')
-    st.sidebar.header('Options')
-
+    johnson_header()
     select_model_name = st.sidebar.selectbox("Choose the style model: ", style_models_name)
+    method = method_slider()
 
-
-    #if method == 'Image':
-        # image_input(select_model_name)
-    #else:
-        # webcam_input(select_model_name)
+    if method == 'Image':
+        johnson_image_input(content, select_model_name)
+        pass
+    elif method == 'Webcam':
+        johnson_webcam_input(select_model_name)
+        pass
+    elif method == 'Camera':
+        enable = st.checkbox("Enable camera")
+        picture = st.camera_input("Take a picture", disabled=not enable)
+        johnson_image_input(picture, select_model_name)
         
         
 with tab4:

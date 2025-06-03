@@ -21,3 +21,7 @@ def render_ui_sliders():
         help="Set the frames per second for the output video."
     )
     return width_resolution, height_resolution, fps
+def method_slider():
+    method = st.sidebar.radio('Go To ->', options=['Webcam', 'Image', 'Camera'], key="method_selector")
+    return method
+    
