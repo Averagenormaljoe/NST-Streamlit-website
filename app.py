@@ -195,6 +195,9 @@ with tab3:
         
 with tab4:
     render_gatys_ui_sliders()
+    
+    
+    
    
     
     
