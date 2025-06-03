@@ -41,7 +41,7 @@ def display_styled_image(generated_image, is_processing: bool):
             "<b> Your Image is Ready ! Click below to download it. </b>", unsafe_allow_html=True)
         # de-normalize the image
         generated_image = (generated_image * 255).astype(np.uint8)
-        display_generated_image(generated_image)
+        download_generated_image(generated_image)
         
 
 def download_generated_image(generated_image):
