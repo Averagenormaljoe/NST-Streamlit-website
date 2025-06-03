@@ -15,8 +15,7 @@ from video_transfer import video_transfer_style
 from gatys import render_gatys_ui_sliders
 from helper import generate_image_btn, generate_styled_image, process_webcam
 from data import style_models_name
-# Set page configs. Get emoji names from WebFx
-st.set_page_config(page_title="PixelMix - Style Transfer",
+st.set_page_config(page_title="Style motion - Style Transfer",
                    page_icon="./assets/favicon.png", layout="centered")
 
 # Set the title and icon of the app
@@ -26,15 +25,9 @@ tab1, tab2, tab3,tab4,tab5 = st.tabs(["Image", "Video", "Johnson model","Gatys m
 
 # -------------Header Section------------------------------------------------
 
-title = '<p style="text-align: center;font-size: 50px;font-weight: 350;font-family:Cursive "> PixelMix </p>'
+title = '<p style="text-align: center;font-size: 50px;font-weight: 350;font-family:Cursive "> Style Motion </p>'
 st.markdown(title, unsafe_allow_html=True)
 
-
-st.markdown(
-    "<b> <i> Create Digital Art using Machine Learning ! </i> </b>  &nbsp; We takes 2 images — Content Image & Style Image — and blends "
-    "them together so that the resulting output image retains the core elements of the content image, but appears to "
-    "be “painted” in the style of the style reference image.", unsafe_allow_html=True
-)
 
 
 # Example Image
@@ -52,7 +45,7 @@ with st.sidebar:
 
     st.markdown('<p style="font-size: 25px;font-weight: 550;">Some Inspiration 🎨</p>',
                 unsafe_allow_html=True)
-    st.markdown('Below are some of the art we created using PixelMix.',
+    st.markdown('Below are some of the art we created using Style Motion.',
                 unsafe_allow_html=True)
 
     # ---------------------Example art images------------------------------
