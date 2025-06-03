@@ -14,14 +14,14 @@ def generate_styled_image(content_image, style_image, model_path):
         return None
 
     # Convert PIL Image to numpy array
-    content_image = np.array(content_image)
-    style_image = np.array(style_image)
+    pli_content_image = np.array(content_image)
+    pli_style_image = np.array(style_image)
 
     # Load the pre-trained model
     hub_module = hub.load(model_path)
 
     # Transfer style
-    styled_image = transfer_style(content_image, style_image, hub_module)
+    styled_image = transfer_style(pli_content_image, pli_style_image, hub_module)
     
     return styled_image              
 
@@ -67,16 +67,18 @@ def process_webcam(style_image):
     webcam_input(model_path,style_image)      
     
 def generate_image_btn(content_image,style_image):
-    if st.button("Generate Styled Image"):
-        with st.spinner("Styling Images...will take about 20-30 secs"):
-            is_processing : bool = True
-            # Convert the uploaded image to a PIL Image
-            open_content_image = Image.open(content_image)
-            # Path of the pre-trained TF model
-            model_path: str = "https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2"
-            generated_image = generate_styled_image(open_content_image, style_image, model_path)
-            is_processing = processing_btn(is_processing)
-            display_styled_image(generated_image, is_processing)
-            download_generated_image(generated_image)
-            return generated_image
-            
+    if content_image is not None and style_image is not None:
+        if st.button("Generate Styled Image"):
+            with st.spinner("Styling Images...will take about 20-30 secs"):
+                is_processing : bool = True
+                # Convert the uploaded image to a PIL Image
+                open_content_image = Image.open(content_image)
+                open_style_image = Image.open(style_image)
+                # Path of the pre-trained TF model
+                model_path: str = "https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2"
+                generated_image = generate_styled_image(open_content_image, open_style_image, model_path)
+                is_processing = processing_btn(is_processing)
+                display_styled_image(generated_image, is_processing)
+                download_generated_image(generated_image)
+                return generated_image
+                

@@ -1,3 +1,4 @@
+from tracemalloc import start
 from PIL import Image
 import streamlit as st
 from streamlit_webrtc import webrtc_streamer
@@ -13,13 +14,15 @@ from streamlit_session_memo import st_session_memo
 def transfer_style(content_image, style_image, hub_module):
     if style_image is None:
         return content_image
-
+    print("Starting style transfer: ", style_image)
     size_threshold = 2000
     resizing_shape = (1000,1000)
     resize_style_shape = (256,256)
     content_shape = content_image.shape
     style_shape = style_image.shape
 
+    print("Content Image Shape: ", content_shape)
+    print("Style Image Shape: ", style_shape)
     resize_content = True if content_shape[0] > size_threshold or content_shape[1] > size_threshold else False
     resize_style = True if style_shape[0] > size_threshold or style_shape[1] > size_threshold else False
 
@@ -50,7 +53,11 @@ def transfer_style(content_image, style_image, hub_module):
 
     print("Generating stylized image now...wait a minute")
     # Stylize image.
+    start_time = tf.timestamp()
     outputs = hub_module(tf.constant(content_image), tf.constant(style_image))
+    end_time = tf.timestamp()
+    processing_time = float(end_time - start_time)
+
     stylized_image = outputs[0]
 
     # reshape the stylized image
@@ -58,6 +65,6 @@ def transfer_style(content_image, style_image, hub_module):
     stylized_image = stylized_image.reshape(
         stylized_image.shape[1], stylized_image.shape[2], stylized_image.shape[3])
 
-    print("Stylizing completed...")
+    print(f"Stylizing completed in {processing_time:.2f} seconds...")
     return stylized_image
 

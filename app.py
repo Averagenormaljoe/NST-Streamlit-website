@@ -1,5 +1,6 @@
 
 from email.policy import default
+from math import pi
 import streamlit as st
 from PIL import Image
 import numpy as np
@@ -90,7 +91,7 @@ with tab1:
     col1, col2, col3 = st.columns(3)
     content_image = None
     style_image = None
-    method = st.sidebar.radio('Go To ->', options=['Webcam', 'Image'], key="method_selector")
+    method = st.sidebar.radio('Go To ->', options=['Webcam', 'Image', 'Camera'], key="method_selector")
     with col1:
         if method == 'Image':
             content_image = st.file_uploader(
@@ -104,21 +105,19 @@ with tab1:
     ' Images greater then (2000x2000) are resized to (1000x1000).')
     st.sidebar.header('Options')
     
-
-    
-    if style_image is not None:
-        if st.button("Clear"):
-            st.success("Cleared the images successfully!")
-        if method == 'Image':
-            st.markdown('<h3 style="text-align:center;">Image Style Transfer</h3>', unsafe_allow_html=True)
-            if content_image is not None:
-                generate_image_btn(content_image, style_image)
-        elif method == 'Webcam':
-            process_webcam(style_image)   
-        elif method == 'Camera':
-            enable = st.checkbox("Enable camera")
-            picture = st.camera_input("Take a picture", disabled=not enable)
-            generate_image_btn(picture, style_image)
+    if st.button("Clear"):
+        st.success("Cleared the images successfully!")
+    if method == 'Image':
+        st.markdown('<h3 style="text-align:center;">Image Style Transfer</h3>', unsafe_allow_html=True)
+        print("Content Image: ", content_image)
+        print("Style Image: ", style_image)
+        generate_image_btn(content_image, style_image)
+    elif method == 'Webcam':
+        process_webcam(style_image)   
+    elif method == 'Camera':
+        enable = st.checkbox("Enable camera")
+        picture = st.camera_input("Take a picture", disabled=not enable)
+        generate_image_btn(picture, style_image)
 
 
 
