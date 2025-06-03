@@ -24,4 +24,8 @@ def render_ui_sliders():
 def method_slider():
     method = st.sidebar.radio('Go To ->', options=['Webcam', 'Image', 'Camera'], key="method_selector")
     return method
+def camera_component():
+    enable = st.checkbox("Enable camera")
+    picture = st.camera_input("Take a picture", disabled=not enable)
+    return picture
     

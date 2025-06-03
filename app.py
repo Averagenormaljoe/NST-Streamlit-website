@@ -1,15 +1,11 @@
 
-from email.policy import default
-from math import pi
 import streamlit as st
 from PIL import Image
 import numpy as np
 from typing import Any
 import tensorflow_hub as hub
-from API import transfer_style
-from UI_components import render_ui_sliders, method_slider, camera_input
+from UI_components import render_ui_sliders, method_slider, camera_component
 from johnson import johnson_header, johnson_video_input, johnson_image_input, johnson_webcam_input
-from webcam import webcam_input
 from components import processing_btn
 from video_transfer import video_transfer_style
 from gatys import render_gatys_ui_sliders
@@ -18,7 +14,7 @@ from data import style_models_name
 st.set_page_config(page_title="Style motion - Style Transfer",
                    page_icon="./assets/favicon.png", layout="centered")
 
-# Set the title and icon of the app
+# title 
 
 st.markdown("<hr>", unsafe_allow_html=True)
 tab1, tab2, tab3,tab4,tab5 = st.tabs(["Image", "Video", "Johnson model","Gatys model", "Huang model"])
@@ -39,14 +35,6 @@ st.markdown("</br>", unsafe_allow_html=True)
 
 
 with st.sidebar:
-
-    st.image(image="./assets/speed-brush.gif")
-    st.markdown("</br>", unsafe_allow_html=True)
-
-    st.markdown('<p style="font-size: 25px;font-weight: 550;">Some Inspiration 🎨</p>',
-                unsafe_allow_html=True)
-    st.markdown('Below are some of the art we created using Style Motion.',
-                unsafe_allow_html=True)
 
     # ---------------------Example art images------------------------------
 
@@ -110,7 +98,7 @@ with tab1:
             case 'Webcam':
                 process_webcam(style_image)
             case 'Camera':
-                picture = camera_input()
+                picture = camera_component()
                 generate_image_btn(picture, style_image)
 
 
@@ -165,14 +153,14 @@ with tab2:
                     is_processing = False
                     st.markdown("</br>", unsafe_allow_html=True)
                     st.markdown(
-                        "<b> Your Stylized Video is Ready ! Click below to download it. </b>", unsafe_allow_html=True)
+                        "<b> Your Stylized Video is Ready! Click below to download it. </b>", unsafe_allow_html=True)
                     st.download_button(
                         label="Download Stylized Video",
                         data=output_video_bytes,
                         file_name="stylized_output.mp4",
                         mime="video/mp4"
                     )
-               
+  # -------------Johnson Model Section------------------------------------------------             
 with tab3:
     johnson_header()
     select_model_name = st.sidebar.selectbox("Choose the style model: ", style_models_name)
@@ -187,20 +175,19 @@ with tab3:
         johnson_webcam_input(select_model_name)
         pass
     elif method == 'Camera':
-        enable = st.checkbox("Enable camera")
-        picture = st.camera_input("Take a picture", disabled=not enable)
+        picture = camera_component()
         johnson_image_input(picture, select_model_name)
         
-        
+# -------------Gatys Model Section------------------------------------------------        
 with tab4:
     render_gatys_ui_sliders()
+
     
     
     
    
+# -------------Huang Model Section------------------------------------------------    
     
-    
-
 
 with tab5:
       st.markdown('<h3 style="text-align:center;">Huang Style Transfer</h3>', unsafe_allow_html=True)
