@@ -150,7 +150,7 @@ venv.bak/
 .mypy_cache/
 .dmypy.json
 dmypy.json
-
+*t7
 # Pyre type checker
 .pyre/
 

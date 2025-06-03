@@ -186,7 +186,9 @@ with tab3:
     method = method_slider()
 
     if method == 'Image':
-        johnson_image_input(content, select_model_name)
+        content_image = st.file_uploader(
+                "Upload Content Image (PNG & JPG images only)", type=['png', 'jpg'])
+        johnson_image_input(content_image, select_model_name)
         pass
     elif method == 'Webcam':
         johnson_webcam_input(select_model_name)

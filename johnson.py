@@ -32,14 +32,13 @@ def style_transfer(image, model):
     output = imutils.resize(output, width=500)
     return output
 
-def johnson_image_input(content_image, select_model_name : str):
-    if content_image is None or style_image is None:
+def johnson_image_input(content_image, select_model_name: str | None) :
+    if content_image is None:
         st.error("Please upload both content and style images.")
         return None
 
 
     pli_content_image = np.array(content_image)
-    pli_style_image = np.array(style_image)
 
     model = get_model_from_path(select_model_name)
 
@@ -48,9 +47,9 @@ def johnson_image_input(content_image, select_model_name : str):
     
     return generated_image
 
-def johnson_webcam_input(select_model_name):
+def johnson_webcam_input(select_model_name: str | None ):
     return select_model_name
 
-def johnson_video_input(select_model_name, style_image, width=500):
+def johnson_video_input(select_model_name: str | None, style_image, width=500):
     return select_model_name, style_image, width
 
