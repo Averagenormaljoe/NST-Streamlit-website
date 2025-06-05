@@ -28,9 +28,21 @@ def tensor_toimage(tensor):
     assert tensor.shape[0]==1
     tensor=tensor[0]
 
+
+
   return tensor
 
+
+
+def open_style_image(style_image):
+ 
+    style_im = cv2.imread(style_image)
+    style_im = cv2.cvtColor(style_im, cv2.COLOR_BGR2RGB)
+    style_im = image_read(style_im)
+    
+    return style_im
 def process_video(image):
+  
     hub_model = hub.load('https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2')
     style_im = cv2.imread("assets/content1.jpg")
     style_im = cv2.cvtColor(style_im, cv2.COLOR_BGR2RGB)
