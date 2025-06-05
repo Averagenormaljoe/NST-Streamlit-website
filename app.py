@@ -6,7 +6,7 @@ from typing import Any
 import tensorflow_hub as hub
 from UI_components import example_images, render_ui_sliders, method_slider, camera_component
 from johnson import johnson_header, johnson_video_input, johnson_image_input, johnson_webcam_input
-from components import processing_btn
+from components import file_uploader_for_images
 from video_transfer import video_transfer_style
 from gatys import render_gatys_ui_sliders
 from helper import generate_image_btn, generate_styled_image, process_webcam
@@ -48,17 +48,13 @@ with tab1:
 
 
     # Upload Images
-    col1, col2 = st.columns(2)
+
     content_image = None
     style_image = None
     method = method_slider(key="main_method")
-    with col1:
-        if method == 'Image':
-            content_image = st.file_uploader(
-                "Upload Content Image (PNG & JPG images only)", type=['png', 'jpg'])
-    with col2:
-        style_image = st.file_uploader(
-            "Upload Style Image (PNG & JPG images only)", type=['png', 'jpg'])
+    content_image, style_image = file_uploader_for_images(
+    )
+    
 
     st.markdown("</br>", unsafe_allow_html=True)
     st.warning('NOTE : You need atleast Intel i3 with 8GB memory for proper functioning of this application. ' +
