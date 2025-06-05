@@ -2,6 +2,7 @@ import imutils
 import cv2
 import numpy as np
 import streamlit as st
+from data import style_models_dict
 def johnson_header():
     st.sidebar.title('Fast neural style transfer (Johnson)')
     st.sidebar.header('Options')
@@ -34,13 +35,16 @@ def style_transfer(image, model):
 
 def johnson_image_input(content_image, select_model_name: str | None) :
     if content_image is None:
-        st.error("Please upload both content and style images.")
+        st.error("Please upload the content image.")
         return None
 
 
     pli_content_image = np.array(content_image)
-
-    model = get_model_from_path(select_model_name)
+    if select_model_name is None:
+        st.error("Please provide a style model.")
+        return None
+    style_model_path = style_models_dict[select_model_name]
+    model = get_model_from_path(style_model_path)
 
     # Transfer style
     generated_image = style_transfer(pli_content_image, model)
