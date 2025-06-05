@@ -7,7 +7,7 @@ from PIL import Image
 
 from components import processing_btn
 from webcam import webcam_input
-def generate_styled_image(content_image, style_image, model_path):
+def generate_styled_image(content_image, style_image, model_path : str):
   
     if content_image is None or style_image is None:
         st.error("Please upload both content and style images.")
@@ -16,7 +16,7 @@ def generate_styled_image(content_image, style_image, model_path):
     # Convert PIL Image to numpy array
     pli_content_image = np.array(content_image)
     pli_style_image = np.array(style_image)
-
+    print("model_path: ", model_path)
     # Load the pre-trained model
     hub_module = hub.load(model_path)
 

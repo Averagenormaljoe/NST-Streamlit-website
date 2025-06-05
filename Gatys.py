@@ -20,7 +20,7 @@ def render_gatys_ui_sliders():
       )
     return epoch_slider, style_intensity
 
-def process_gatys():
+def process_gatys(content_image, style_image, epoch_slider, style_intensity):
     pass
 
 def generate_gatys_image(content_image, style_image, model_path, epoch_slider, style_intensity):

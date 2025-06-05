@@ -67,17 +67,22 @@ with tab1:
     
     if st.button("Clear"):
         st.success("Cleared the images successfully!")
-        match method:
-            case 'Image':
-                st.markdown('<h3 style="text-align:center;">Image Style Transfer</h3>', unsafe_allow_html=True)
-                print("Content Image: ", content_image)
-                print("Style Image: ", style_image)
-                generate_image_btn(content_image, style_image)
-            case 'Webcam':
-                process_webcam(style_image)
-            case 'Camera':
-                picture = camera_component()
-                generate_image_btn(picture, style_image)
+    print("Chosen method:",method)
+    match method:
+        case 'Image':
+            st.markdown('<h3 style="text-align:center;">Image Style Transfer</h3>', unsafe_allow_html=True)
+            print("Content Image: ", content_image)
+            print("Style Image: ", style_image)
+            generate_image_btn(content_image, style_image)
+        case 'Webcam':
+            process_webcam(style_image)
+        case 'Camera':
+            picture = camera_component()
+            generate_image_btn(picture, style_image)
+        case 'Video':
+            pass
+        case _:
+            st.error("Please select a valid method from the sidebar.")
 
 
 
@@ -108,54 +113,34 @@ with tab2:
 
     if video_file is not None and style_images and len(style_images) > 0:
         st.info(f"{len(style_images)} style image(s) selected.")
-        if st.button("Generate Styled Image"):
+        if st.button("Generate Styled Video"):
             with st.spinner("Stylizing video... This may take a few minutes."):
                 is_processing = True
-                # Read video bytes
-                video_bytes = video_file.read()
                 # Read style images as numpy arrays
-                style_imgs = [np.array(Image.open(img)) for img in style_images]
-                # Path of the pre-trained TF model
-                model_path : str = "https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2"
-                hub_module = hub.load(model_path)
+                style_imgs = [Image.open(img) for img in style_images]
                 # Stylize video (implement this function in your API)
-                output_video_bytes = video_transfer_style(
-                    video_bytes,  style_imgs[0], height_resolution, width_resolution,fps=fps
+                video_transfer_style(
+                    video_file,  style_imgs[0], width_resolution,height_resolution,fps=fps
                 )
-                # Display result
-                col1, col2 = st.columns(2)
-                is_processing = processing_btn(is_processing)
-                with col1:
-                    st.video(output_video_bytes)
-                with col2:
-                    is_processing = False
-                    st.markdown("</br>", unsafe_allow_html=True)
-                    st.markdown(
-                        "<b> Your Stylized Video is Ready! Click below to download it. </b>", unsafe_allow_html=True)
-                    st.download_button(
-                        label="Download Stylized Video",
-                        data=output_video_bytes,
-                        file_name="stylized_output.mp4",
-                        mime="video/mp4"
-                    )
+              
   # -------------Johnson Model Section------------------------------------------------             
 with tab3:
     johnson_header()
     select_model_name = st.sidebar.selectbox("Choose the style model: ", style_models_name)
     method = method_slider(key="johnson_method")
 
-    if method == 'Image':
-        content_image = st.file_uploader(
-                "Upload Content Image (PNG & JPG images only)", type=['png', 'jpg'])
-        johnson_image_input(content_image, select_model_name)
-        pass
-    elif method == 'Webcam':
-        johnson_webcam_input(select_model_name)
-        pass
-    elif method == 'Camera':
-        picture = camera_component()
-        johnson_image_input(picture, select_model_name)
-        
+    match method:
+        case 'Image':
+            content_image = st.file_uploader(
+                    "Upload Content Image (PNG & JPG images only)", type=['png', 'jpg'])
+            johnson_image_input(content_image, select_model_name)
+        case 'Webcam':
+            johnson_webcam_input(select_model_name)
+        case'Camera':
+            picture = camera_component()
+            johnson_image_input(picture, select_model_name)
+        case "video":
+            pass
 # -------------Gatys Model Section------------------------------------------------        
 with tab4:
     render_gatys_ui_sliders()
