@@ -87,12 +87,13 @@ def display_styled_video(output_video_path : str, is_processing : bool = False):
     return is_processing       
         
         
-def process_frame(width : int, height : int, cap, style_image, model_path : str,out):
+def process_frame(width : int, height : int, cap : cv2.VideoCapture, style_image, model_path : str,out):
     hub_module = hub.load(model_path)
     while True:
         ret, frame = cap.read()
         if not ret:
             break
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         stylized_image = get_transformed_frame(width, height, frame, style_image, hub_module)
         out.write(stylized_image)
     cap.release()
