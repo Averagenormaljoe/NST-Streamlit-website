@@ -2,12 +2,13 @@ import streamlit as st
 import numpy as np
 import tensorflow_hub as hub
 from io import BytesIO
-from API import transfer_style
+
+
 from PIL import Image
 
 from components import processing_btn
-from webcam import webcam_input
 
+from API import transfer_style
 
 def generate_styled_image(content_image, style_image, model_path : str):
     hub_module = hub.load(model_path)
@@ -34,7 +35,7 @@ def open_styled_image(content_image, style_image, hub_module):
     
     return styled_image              
 
-def display_styled_image(generated_image, is_processing: bool):
+def display_styled_image(generated_image, is_processing: bool = False):
     if generated_image is not None:
         # some baloons
         st.balloons()
@@ -67,13 +68,7 @@ def download_generated_image(generated_image):
         file_name="output.png",
         mime="image/png")
 
-def process_webcam(style_image):
-    if style_image is None:
-        st.error("Please upload a style image.")
-        return
-    st.markdown('<h3 style="text-align:center;">Webcam Style Transfer</h3>', unsafe_allow_html=True)
-    model_path: str = "https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2"
-    webcam_input(model_path,style_image)      
+
     
 def generate_image_btn(content_image,style_image):
     if content_image is not None and style_image is not None:
@@ -90,4 +85,19 @@ def generate_image_btn(content_image,style_image):
                 display_styled_image(generated_image, is_processing)
                 download_generated_image(generated_image)
                 return generated_image
+            
+def display_instructions():
+    st.markdown("</br>", unsafe_allow_html=True)
+    st.warning('NOTE : You need atleast Intel i3 with 8GB memory for proper functioning of this application. ' + ' Images greater then (2000x2000) are resized to (1000x1000).')
+    st.markdown(
+        """
+        <div style="background-color: black; padding: 10px; border-radius: 5px;">
+            <h3>Instructions</h3>
+            <p>1. Upload a content image and a style image.</p>
+            <p>2. Click on "Generate Styled Image" to apply the style transfer.</p>
+            <p>3. The styled image will be displayed below, and you can download it.</p>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
                 

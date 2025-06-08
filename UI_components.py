@@ -1,5 +1,5 @@
 import streamlit as st
-  
+from streamlit_image_comparison import image_comparison
 def render_ui_sliders(): 
     # Resolution slider
     # width

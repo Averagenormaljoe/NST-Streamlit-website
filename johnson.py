@@ -2,7 +2,9 @@ import imutils
 import cv2
 import numpy as np
 import streamlit as st
+from PIL import Image
 from data import style_models_dict
+from helper import display_styled_image
 def johnson_header():
     st.sidebar.title('Fast neural style transfer (Johnson)')
     st.sidebar.header('Options')
@@ -37,19 +39,19 @@ def johnson_image_input(content_image, select_model_name: str | None) :
     if content_image is None:
         st.error("Please upload the content image.")
         return None
+    if st.button("Generate Styled Video"):
+        with st.spinner("Stylizing video... This may take a few minutes."):
+            open_content_image = Image.open(content_image)
+            pli_content_image = np.array(open_content_image)
+            if select_model_name is None:
+                st.error("Please provide a style model.")
+                return None
+            style_model_path = style_models_dict[select_model_name]
+            model = get_model_from_path(style_model_path)
 
-
-    pli_content_image = np.array(content_image)
-    if select_model_name is None:
-        st.error("Please provide a style model.")
-        return None
-    style_model_path = style_models_dict[select_model_name]
-    model = get_model_from_path(style_model_path)
-
-    # Transfer style
-    generated_image = style_transfer(pli_content_image, model)
-    
-    return generated_image
+            # Transfer style
+            generated_image = style_transfer(pli_content_image, model)
+            display_styled_image(generated_image)
 
 def johnson_webcam_input(select_model_name: str | None ):
     return select_model_name

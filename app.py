@@ -9,7 +9,8 @@ from johnson import johnson_header,johnson_image_input, johnson_webcam_input
 from components import file_uploader_for_images
 from video_transfer import video_transfer_style
 from gatys import render_gatys_ui_sliders
-from helper import generate_image_btn, generate_styled_image, process_webcam
+from helper import display_instructions, generate_image_btn, generate_styled_image
+from webcam_methods import process_webcam
 from data import style_models_name
 st.set_page_config(page_title="Style motion - Style Transfer",
                    page_icon="./assets/favicon.png", layout="centered")
@@ -56,14 +57,12 @@ with tab1:
     with col1:
         if method == 'Image':
             content_image = st.file_uploader(
-                "Upload Content Image (PNG & JPG images only)", type=['png', 'jpg'])
+                "Upload Content Image (PNG & JPG images only)", type=['png', 'jpg', "jpeg"], key="content_image_uploader")
     with col2:
         style_image = st.file_uploader(
-            "Upload Style Image (PNG & JPG images only)", type=['png', 'jpg'])
+            "Upload Style Image (PNG & JPG images only)", type=['png', 'jpg', "jpeg"])
 
-    st.markdown("</br>", unsafe_allow_html=True)
-    st.warning('NOTE : You need atleast Intel i3 with 8GB memory for proper functioning of this application. ' +
-    ' Images greater then (2000x2000) are resized to (1000x1000).')
+    display_instructions()
     st.sidebar.header('Options')
     
     if st.button("Clear"):
@@ -98,7 +97,7 @@ with tab2:
     )
 
     style_images = st.file_uploader(
-        "Upload Style Images (PNG & JPG, select multiple)", type=['png', 'jpg'], accept_multiple_files=True, key="style_images_uploader"
+        "Upload Style Images (PNG & JPG, select multiple)", type=['png', 'jpg', "jpeg"], accept_multiple_files=True, key="style_images_uploader"
     )
     # resolution slider
     width_resolution, height_resolution, fps = render_ui_sliders()
@@ -133,7 +132,7 @@ with tab3:
     match method:
         case 'Image':
             content_image = st.file_uploader(
-                    "Upload Content Image (PNG & JPG images only)", type=['png', 'jpg'])
+                    "Upload Content Image (PNG & JPG images only)", type=['png', 'jpg', "jpeg"])
             johnson_image_input(content_image, select_model_name)
         case 'Webcam':
             johnson_webcam_input(select_model_name)
@@ -145,6 +144,15 @@ with tab3:
 # -------------Gatys Model Section------------------------------------------------        
 with tab4:
     render_gatys_ui_sliders()
+    method = method_slider(key="gatys_method")
+    match method:
+        case 'Image':
+            content_image = st.file_uploader(
+                    "Upload Content Image (PNG & JPG images only)", type=['png', 'jpg', "jpeg"])
+            johnson_image_input(content_image, select_model_name)
+        case'Camera':
+            picture = camera_component()
+            johnson_image_input(picture, select_model_name)
 
     
     

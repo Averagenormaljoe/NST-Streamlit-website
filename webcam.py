@@ -1,12 +1,12 @@
 from PIL import Image
 import streamlit as st
-from streamlit_webrtc import webrtc_streamer
+from streamlit_webrtc import  WebRtcMode, webrtc_streamer
 import cv2
 import numpy as np
 import tensorflow_hub as hub
 import av
+from helper import open_styled_image
 from turn import get_ice_servers
-from API import transfer_style
 from streamlit_session_memo import st_session_memo
 def get_model_from_path(style_model_path):
     model = cv2.dnn.readNetFromTorch(style_model_path)
@@ -25,10 +25,15 @@ def webcam_input(style_model_name,style_image, type: str = "main"):
 
     model_path: str = "https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2"
     model = load_model(model_path, width)
-
+    
+    open_style_image = Image.open(style_image) if style_image is not None else None
     def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
+        if style_image is None:
+            return frame
+
         image = frame.to_ndarray(format="bgr24")
 
+       
         if model is None:
             return image
 
@@ -39,7 +44,7 @@ def webcam_input(style_model_name,style_image, type: str = "main"):
 
         #transferred = style_transfer(input, model)
         
-        transferred = transfer_style(input,style_image,model)
+        transferred = open_styled_image(input,open_style_image,model)
         result = Image.fromarray((transferred * 255).astype(np.uint8))
         image = np.asarray(result.resize((orig_w, orig_h)))
         return av.VideoFrame.from_ndarray(image, format="bgr24")

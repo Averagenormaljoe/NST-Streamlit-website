@@ -1,4 +1,5 @@
 from encodings.punycode import T
+from io import BufferedReader
 import os
 import tempfile
 import cv2
@@ -42,9 +43,17 @@ def video_setup(temp_path: str, temp_dir: str, width: int, height: int, fps: int
     
     return cap, out, output_video_path
 
+def read_temp_video(input_video, temp_path : str):
+    with open(temp_path, "wb") as f:
+        if input_video is None:
+            st.error("No video file uploaded.")
+            return
+        f.write(input_video.read())
+ 
+
 def video_transfer_style(input_video : UploadedFile | None,style_image , width : int =256,height : int =256,fps : int =30):
 
-    is_processing = True
+    is_processing : bool = True
     if not video_validation(input_video, style_image):
         return
     pil_style_image = image_read(style_image)
@@ -54,11 +63,10 @@ def video_transfer_style(input_video : UploadedFile | None,style_image , width :
     
     temp_dir, temp_path = generate_temp_paths()
 
-    with open(temp_path, "wb") as f:
-        if input_video is None:
-            st.error("No video file uploaded.")
-            return
-        f.write(input_video.read())
+    read_temp_video(input_video, temp_path)
+    if not os.path.exists(temp_path):
+        st.error(f"Could not save video file to {temp_path}.")
+        return
     print(f"Video file saved to {temp_path}")
 
     
@@ -83,33 +91,40 @@ def display_styled_video(output_video_path : str, is_processing : bool = False):
             st.video(f.read(), format="video/mp4")
     with col2:
         is_processing = False
-        st.markdown("</br>", unsafe_allow_html=True)
-        st.markdown(
-            "<b> Your Stylized Video is Ready! Click below to download it. </b>", unsafe_allow_html=True)
-        st.download_button("Download your video", f, file_name="output_video.mp4", mime="video/mp4") 
-    return is_processing       
+        video_ready_st(f)
+    return is_processing     
+
+def video_ready_st(f : BufferedReader):
+    st.markdown("</br>", unsafe_allow_html=True)
+    st.markdown("<b> Your Stylized Video is Ready! Click below to download it. </b>", unsafe_allow_html=True)
+    st.download_button("Download your video", f, file_name="output_video.mp4", mime="video/mp4")   
         
         
 def process_frame(width : int, height : int, cap : cv2.VideoCapture, style_image, model_path : str,out : cv2.VideoWriter):
     hub_model = hub.load(model_path)
-    start_time = time.time()
+    start_time : float = time.time()
     while True:
-        frame_start_time = time.time()
+        frame_start_time : float = time.time()
         ret, frame = cap.read()
         if not ret:
             break
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        frame = image_read(frame)
-        stylized_frame = hub_model(tf.constant(frame), tf.constant(style_image))[0]
-        stylized_image = tensor_toimage(stylized_frame)
+        stylized_image = get_stylized_image(frame, style_image, hub_model)
         out.write(stylized_image)
-        frame_end_time = time.time()
+        frame_end_time : float = time.time()
         print(f"Processed frame in {frame_end_time - frame_start_time:.2f} seconds")
     cap.release()
     out.release()
-    end_time = time.time()
+    end_time : float = time.time()
     print(f"Video style transfer processing time: {end_time - start_time:.2f} seconds")
     return cap, out
+
+
+def get_stylized_image(frame, style_image, hub_model):
+    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    frame = image_read(frame)
+    stylized_frame = hub_model(tf.constant(frame), tf.constant(style_image))[0]
+    stylized_image = tensor_toimage(stylized_frame)
+    return stylized_image
 
 
 def get_transformed_frame(width : int, height : int,frame, style_image, hub_module):

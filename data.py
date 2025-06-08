@@ -11,4 +11,4 @@ style_models_name : list[str] = ['Candy', 'Composition_vii', 'Feathers', 'La_mus
 
 model_path : str = 'style_models'
 
-style_models_dict : dict[str, Any] = {name: os.path.join(model_path, filee) for name, filee in zip(style_models_name, style_models_file)}
+style_models_dict  = {name: os.path.join(model_path, filee) for name, filee in zip(style_models_name, style_models_file)}

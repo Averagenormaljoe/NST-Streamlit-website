@@ -4,13 +4,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 import cv2
 import PIL
-
+from cv2.typing import MatLike
+# from cv2 import MatLike
 #read image, convert to tensor, normalize and resize 
-def image_read(image):
-  max_dim=512
-  image= tf.convert_to_tensor(image, dtype = tf.float32)
-  image= image/255.0
-  shape = tf.cast(tf.shape(image)[:-1], tf.float32)
+def image_read(image : MatLike):
+  max_dim : int =512
+  image_tensor : tf.Tensor = tf.convert_to_tensor(image, dtype = tf.float32)
+  image_tensor_reduced = image_tensor /255.0
+  shape = tf.cast(tf.shape(image_tensor_reduced)[:-1], tf.float32)
   long_dim = max(shape)
   scale = max_dim/long_dim
   new_shape = tf.cast(shape*scale, tf.int32)
@@ -36,17 +37,15 @@ def tensor_toimage(tensor):
 
 def open_style_image(style_image):
  
-    style_im = cv2.imread(style_image)
-    style_im = cv2.cvtColor(style_im, cv2.COLOR_BGR2RGB)
-    style_im = image_read(style_im)
+    open_style_im : MatLike = cv2.imread(style_image)
+    colored_style_im : MatLike = cv2.cvtColor(open_style_im, cv2.COLOR_BGR2RGB)
+    processed_style_im = image_read(colored_style_im)
     
-    return style_im
+    return processed_style_im
 def process_video(image):
   
     hub_model = hub.load('https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2')
-    style_im = cv2.imread("assets/content1.jpg")
-    style_im = cv2.cvtColor(style_im, cv2.COLOR_BGR2RGB)
-    style_im = image_read(style_im)
+    style_im = open_style_image(image)
 
     cap = cv2.VideoCapture("assets/man_at_sea_sliced.mp4")
     #in order to get the size of width and shape of video, we used first frame of video
