@@ -1,4 +1,5 @@
 from tracemalloc import start
+from typing import Literal
 from PIL import Image
 import streamlit as st
 from streamlit_webrtc import webrtc_streamer
@@ -14,8 +15,8 @@ from streamlit_session_memo import st_session_memo
 
 
 def resize_image(input_image,name="Content Image"):
-    size_threshold = (2000,2000)
-    resizing_shape = (1000,1000)
+    size_threshold : tuple[int, int] = (2000,2000)
+    resizing_shape : tuple[int, int]  = (1000,1000)
 
     input_image_shape = input_image.shape
     
@@ -38,25 +39,25 @@ def transfer_style(content_image, style_image, hub_module):
         return content_image
     print("Starting style transfer: ", style_image)
 
-    content_image = resize_image(content_image, "Content Image")
-    style_image = resize_image(style_image, "Style Image")
+    content_resized_image = resize_image(content_image, "Content Image")
+    style_resized_image = resize_image(style_image, "Style Image")
 
     # Convert to float32 numpy array, add batch dimension, and normalize to range [0, 1]. Example using numpy:
-    content_image = convert_to_numpy_image(content_image)
-    style_image = convert_to_numpy_image(style_image)
+    content_numpy_image = convert_to_numpy_image(content_resized_image)
+    style_numpy_image = convert_to_numpy_image(style_resized_image)
 
     # Optionally resize the images. It is recommended that the style image is about
     # 256 pixels (this size was used when training the style transfer network).
     # The content image can be any size.
     resize_style_shape = (256,256)
-    style_image = tf.image.resize(style_image, resize_style_shape)
+    style_tf_image = tf.image.resize(style_numpy_image, resize_style_shape)
 
     print("Loading pre-trained model...")
     # The hub.load() loads any TF Hub model
     
     print("Generating stylized image now...wait a minute")
     # Stylize image.
-    outputs = process_image(content_image, style_image, hub_module)
+    outputs = process_image(content_numpy_image, style_tf_image, hub_module)
     
     stylized_image = get_stylized_image(outputs)
     return stylized_image
