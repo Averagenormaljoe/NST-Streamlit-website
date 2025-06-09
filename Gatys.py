@@ -21,7 +21,14 @@ def render_gatys_ui_sliders():
     return epoch_slider, style_intensity
 
 def process_gatys(content_image, style_image, epoch_slider : int, style_intensity : int):
-    pass
+    return None
 
 def generate_gatys_image(content_image, style_image, model_path, epoch_slider : int, style_intensity : int):
-    pass
+    return None
+
+def video_transfer_style(video_file, style_image, width_resolution, height_resolution, fps=30):
+
+    return None
+def webcam_transfer_style(style_image, width_resolution, height_resolution, fps=30):
+
+    return None
