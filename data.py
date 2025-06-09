@@ -1,8 +1,4 @@
 import os
-from typing import Any
-
-
-
 # Style Models Data
 
 style_models_file : list[str] = ['candy.t7', 'composition_vii.t7', 'feathers.t7', 'la_muse.t7', 'mosaic.t7', 'starry_night.t7', 'the_scream.t7', 'the_wave.t7', 'udnie.t7']

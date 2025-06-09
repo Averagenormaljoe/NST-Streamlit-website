@@ -1,9 +1,7 @@
 import tensorflow as tf
 import tensorflow_hub as hub
-import matplotlib.pyplot as plt
 import numpy as np
 import cv2
-import PIL
 from cv2.typing import MatLike
 # from cv2 import MatLike
 #read image, convert to tensor, normalize and resize 

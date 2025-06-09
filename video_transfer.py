@@ -8,7 +8,6 @@ import tensorflow_hub as hub
 import streamlit as st
 from streamlit.runtime.uploaded_file_manager import UploadedFile
 import tensorflow as tf
-from PIL import Image
 from components import processing_btn
 from helper import open_styled_image
 from video_helper import tensor_toimage, image_read

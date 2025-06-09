@@ -2,12 +2,8 @@ import streamlit as st
 import numpy as np
 import tensorflow_hub as hub
 from io import BytesIO
-
-
 from PIL import Image
-
 from components import processing_btn
-
 from API import transfer_style
 
 def generate_styled_image(content_image, style_image, model_path : str):

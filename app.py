@@ -1,15 +1,11 @@
 
 import streamlit as st
 from PIL import Image
-import numpy as np
-from typing import Any
-import tensorflow_hub as hub
 from UI_components import example_images, render_ui_sliders, method_slider, camera_component
 from johnson import johnson_header,johnson_image_input, johnson_webcam_input
-from components import file_uploader_for_images
 from video_transfer import video_transfer_style
 from gatys import render_gatys_ui_sliders
-from helper import display_instructions, generate_image_btn, generate_styled_image
+from helper import display_instructions, generate_image_btn
 from webcam_methods import process_webcam
 from data import style_models_name
 st.set_page_config(page_title="Style motion - Style Transfer",
