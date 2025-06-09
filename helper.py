@@ -1,10 +1,13 @@
 import streamlit as st
 import numpy as np
+import tensorflow as tf
+import keras
 import tensorflow_hub as hub
 from io import BytesIO
 from PIL import Image
 from components import processing_btn
 from API import transfer_style
+import os
 
 def generate_styled_image(content_image, style_image, model_path : str):
     hub_module = hub.load(model_path)
@@ -97,3 +100,25 @@ def display_instructions():
         unsafe_allow_html=True
     )
                 
+                
+def load_image_by_url(url):
+    try:
+        image = Image.open(BytesIO(requests.get(url).content))
+        return image
+    except Exception as e:
+        st.error(f"Error loading image from URL: {e}")
+        return None
+    
+
+def get_url_image():
+    url = st.sidebar.text_input('URL for the content image.')
+    if st.sidebar.button('Load Image'):
+        try:
+    
+            content_path = keras.utils.get_file(os.path.join(os.getcwd(), 'content.jpg'), url)
+            content_image_file = Image.open(content_path)
+            return content_image_file
+        except:
+            st.error("Invalid URL. Please enter a valid image URL.")
+            return None
+      
