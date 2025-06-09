@@ -20,6 +20,8 @@ def resize_image(input_image,name="Content Image"):
     print(f"{name} Shape: ", input_image_shape)
     return input_image
 
+
+
 def convert_to_numpy_image(image):
     return image.astype(np.float32)[np.newaxis, ...] / 255.
     

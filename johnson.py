@@ -5,6 +5,7 @@ import streamlit as st
 from PIL import Image
 from data import style_models_dict
 from helper import display_styled_image
+from cv2.typing import MatLike
 def johnson_header():
     st.sidebar.title('Fast neural style transfer (Johnson)')
     st.sidebar.header('Options')
@@ -18,21 +19,23 @@ def style_transfer(image, model):
     if model is None:
         st.error("Model not loaded. Please select a valid model.")
         return None
-    (h, w) = image.shape[:2]
+    (h, w)  = image.shape[:2]
     # image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR) #PIL Jpeg to Opencv image
 
-    blob = cv2.dnn.blobFromImage(image, 1.0, (w, h), (103.939, 116.779, 123.680), swapRB=False, crop=False)
+    mean : tuple[float,float,float] = (103.939, 116.779, 123.680)
+    blob : MatLike = cv2.dnn.blobFromImage(image, 1.0, (w, h), mean, swapRB=False, crop=False)
     model.setInput(blob)
     output = model.forward()
 
     output = output.reshape((3, output.shape[2], output.shape[3]))
-    output[0] += 103.939
-    output[1] += 116.779
-    output[2] += 123.680
+    output[0] += mean[0]
+    output[1] += mean[1]
+    output[2] += mean[2]
     output /= 255.0
     output = output.transpose(1, 2, 0)
     output = np.clip(output, 0.0, 1.0)
-    output = imutils.resize(output, width=500)
+    width : int = 500
+    output = imutils.resize(output, width=width)
     return output
 
 def johnson_image_input(content_image, select_model_name: str | None) :

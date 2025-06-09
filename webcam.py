@@ -1,6 +1,6 @@
 from PIL import Image
 import streamlit as st
-from streamlit_webrtc import  WebRtcMode, webrtc_streamer
+from streamlit_webrtc import webrtc_streamer
 import cv2
 import numpy as np
 import tensorflow_hub as hub

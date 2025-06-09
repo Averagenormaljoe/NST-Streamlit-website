@@ -3,7 +3,6 @@ import tensorflow_hub as hub
 import numpy as np
 import cv2
 from cv2.typing import MatLike
-# from cv2 import MatLike
 #read image, convert to tensor, normalize and resize 
 def image_read(image : MatLike):
   max_dim : int =512

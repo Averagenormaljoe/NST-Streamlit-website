@@ -1,3 +1,4 @@
+import requests
 import streamlit as st
 import numpy as np
 import tensorflow as tf
@@ -14,9 +15,6 @@ def generate_styled_image(content_image, style_image, model_path : str):
     print("model_path: ", model_path)
     generated_image = open_styled_image(content_image, style_image, hub_module)
     return generated_image
-    
-    
-    
     
 def open_styled_image(content_image, style_image, hub_module):
   
@@ -67,8 +65,6 @@ def download_generated_image(generated_image):
         file_name="output.png",
         mime="image/png")
 
-
-    
 def generate_image_btn(content_image,style_image):
     if content_image is not None and style_image is not None:
         if st.button("Generate Styled Image"):
