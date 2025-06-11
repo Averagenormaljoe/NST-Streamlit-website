@@ -33,7 +33,7 @@ def render_ui_sliders() -> tuple[int, int, int, float, float]:
     ) 
     return width_resolution, height_resolution, fps, content_weight, style_weight
 def method_slider(key="method_selector"):
-    method = st.sidebar.radio('Go To ->', options=['Webcam', 'Image', 'Camera'], key=key)
+    method = st.sidebar.radio('Go To ->', options=['Image','Webcam', 'Camera'], key=key)
     return method
 def camera_component():
     enable = st.checkbox("Enable camera")
@@ -61,3 +61,18 @@ def example_images():
     col1,col2 = st.columns(2)
     with col1:
         st.video("./assets/man_at_sea_sliced.mp4")
+def header():
+    st.markdown(
+        '<h1 style="text-align:center;">Style Transfer App</h1>', unsafe_allow_html=True)
+    st.markdown(
+        '<p style="text-align:center;font-size: 20px;font-weight: 550;">Choose a method from the sidebar to get started!</p>', unsafe_allow_html=True)
+    
+    title = '<p style="text-align: center;font-size: 50px;font-weight: 350;font-family:Cursive "> Style Motion </p>'
+    st.markdown(title, unsafe_allow_html=True)
+
+
+
+    # Example Image
+    st.image(image="./assets/nst.png")
+    st.markdown("</br>", unsafe_allow_html=True)
+    

@@ -12,8 +12,7 @@ def get_model_from_path(style_model_path):
     model = cv2.dnn.readNetFromTorch(style_model_path)
     return model
 
-def webcam_input(style_model_name,style_image, type: str = "main"):
-    st.header("Webcam Live Feed")
+def webcam_input(style_model_name,style_image,webcam_stylization : bool = True, type: str = "main"):
     WIDTH = st.sidebar.select_slider('QUALITY (May reduce the speed)', list(range(150, 501, 50)))
     width = WIDTH
 
@@ -28,7 +27,7 @@ def webcam_input(style_model_name,style_image, type: str = "main"):
     
     open_style_image = Image.open(style_image) if style_image is not None else None
     def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
-        if style_image is None:
+        if style_image is None or webcam_stylization is False:
             return frame
 
         image = frame.to_ndarray(format="bgr24")
@@ -55,3 +54,5 @@ def webcam_input(style_model_name,style_image, type: str = "main"):
         rtc_configuration={"iceServers": get_ice_servers()},
         media_stream_constraints={"video": True, "audio": False},
     )
+    if style_image is None:
+        st.error("Please upload a style image.")

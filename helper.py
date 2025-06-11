@@ -83,18 +83,23 @@ def generate_image_btn(content_image,style_image):
             
 def display_instructions():
     st.markdown("</br>", unsafe_allow_html=True)
-    st.warning('NOTE : You need atleast Intel i3 with 8GB memory for proper functioning of this application. ' + ' Images greater then (2000x2000) are resized to (1000x1000).')
+
     st.markdown(
         """
-        <div style="background-color: black; padding: 10px; border-radius: 5px;">
+        <section style="background-color: black; padding: 10px; border-radius: 5px;">
             <h3>Instructions</h3>
             <p>1. Upload a content image and a style image.</p>
             <p>2. Click on "Generate Styled Image" to apply the style transfer.</p>
             <p>3. The styled image will be displayed below, and you can download it.</p>
-        </div>
+            <p>4. You can also use the webcam feature for real-time style transfer.</p>
+            <p>5. For video style transfer, upload a video file and a style image.</p>
+            <p>6. Used the sidebar to navigate through these modes.</p>
+        </section>
         """,
         unsafe_allow_html=True
     )
+    st.warning('NOTE : You need at least Intel i3 with 8GB memory for proper functioning of this application. ' \
+                + ' Images greater then (2000x2000) are resized to (1000x1000).')
                 
                 
 def load_image_by_url(url):

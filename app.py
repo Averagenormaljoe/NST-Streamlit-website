@@ -1,7 +1,7 @@
 
 import streamlit as st
 from PIL import Image
-from UI_components import example_images, render_ui_sliders, method_slider, camera_component
+from UI_components import example_images, render_ui_sliders, method_slider, camera_component,header
 from johnson import johnson_header,johnson_image_input, johnson_webcam_input
 from video_transfer import video_transfer_style
 from gatys import render_gatys_ui_sliders
@@ -18,14 +18,16 @@ tab1, tab2, tab3,tab4,tab5 = st.tabs(["Image", "Video", "Johnson model","Gatys m
 
 # -------------Header Section------------------------------------------------
 
-title = '<p style="text-align: center;font-size: 50px;font-weight: 350;font-family:Cursive "> Style Motion </p>'
-st.markdown(title, unsafe_allow_html=True)
-
-
-
-# Example Image
-st.image(image="./assets/nst.png")
-st.markdown("</br>", unsafe_allow_html=True)
+with tab1:
+    header()
+with tab2:
+    header()
+with tab3:
+    header()
+with tab4:
+    header()
+with tab5:
+    header()
 
 
 # -------------Sidebar Section------------------------------------------------
@@ -48,17 +50,25 @@ with tab1:
 
     content_image = None
     style_image = None
+    picture = None
+    webcam_stylization_enabled = False
     method = method_slider(key="main_method")
     col1, col2 = st.columns(2)
     with col1:
-        if method == 'Image':
-            content_image = st.file_uploader(
-                "Upload Content Image (PNG & JPG images only)", type=['png', 'jpg', "jpeg"], key="content_image_uploader")
+       match method:
+        case 'Image':
+                content_image = st.file_uploader(
+                    "Upload Content Image (PNG & JPG images only)", type=['png', 'jpg', "jpeg"], key="content_image_uploader")
+        case 'Webcam':
+            process_webcam(style_image)
+        case 'Camera':
+            picture = camera_component()
+            
     with col2:
         style_image = st.file_uploader(
             "Upload Style Image (PNG & JPG images only)", type=['png', 'jpg', "jpeg"])
 
-    display_instructions()
+    
     st.sidebar.header('Options')
     
     if st.button("Clear"):
@@ -70,15 +80,22 @@ with tab1:
             print("Content Image: ", content_image)
             print("Style Image: ", style_image)
             generate_image_btn(content_image, style_image)
-        case 'Webcam':
-            process_webcam(style_image)
-        case 'Camera':
-            picture = camera_component()
-            generate_image_btn(picture, style_image)
         case 'Video':
             pass
+        case 'Camera':
+            if picture is not None:
+                generate_image_btn(picture, style_image)
+        case 'Webcam':
+            if st.button("Toggle Webcam Stylization" + " (currently " + ("On" if webcam_stylization_enabled else "Off") + ")"):
+                webcam_stylization_enabled = not webcam_stylization_enabled
+                if webcam_stylization_enabled:
+                    st.success("Webcam stylization enabled.")
+                else:
+                    st.success("Webcam stylization disabled.")
+            
         case _:
             st.error("Please select a valid method from the sidebar.")
+    display_instructions()
 
 
 
@@ -118,6 +135,7 @@ with tab2:
                 video_transfer_style(
                     video_file,  style_imgs[0], width_resolution,height_resolution,fps=fps
                 )
+    display_instructions()
               
   # -------------Johnson Model Section------------------------------------------------             
 with tab3:
@@ -137,6 +155,7 @@ with tab3:
             johnson_image_input(picture, select_model_name)
         case "video":
             pass
+    display_instructions()
 # -------------Gatys Model Section------------------------------------------------        
 with tab4:
     render_gatys_ui_sliders()
@@ -149,6 +168,7 @@ with tab4:
         case'Camera':
             picture = camera_component()
             johnson_image_input(picture, select_model_name)
+    display_instructions()
 
     
     
@@ -159,3 +179,4 @@ with tab4:
 
 with tab5:
       st.markdown('<h3 style="text-align:center;">Huang Style Transfer</h3>', unsafe_allow_html=True)
+      display_instructions()
