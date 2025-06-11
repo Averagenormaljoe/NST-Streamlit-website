@@ -54,7 +54,7 @@ def transfer_style(content_image, style_image, hub_module):
     stylized_image = get_stylized_image(outputs)
     return stylized_image
 
-def process_image(content_image,style_image,hub_module):
+def process_image(content_image,style_image,hub_module): 
     start_time = tf.timestamp()
     outputs = hub_module(tf.constant(content_image), tf.constant(style_image))
     end_time = tf.timestamp()

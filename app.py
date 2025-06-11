@@ -96,7 +96,7 @@ with tab2:
         "Upload Style Images (PNG & JPG, select multiple)", type=['png', 'jpg', "jpeg"], accept_multiple_files=True, key="style_images_uploader"
     )
     # resolution slider
-    width_resolution, height_resolution, fps = render_ui_sliders()
+    width_resolution, height_resolution,fps,content_weight, style_weight = render_ui_sliders()
     # style intensity slider
     st.markdown("</br>", unsafe_allow_html=True)
     st.markdown(

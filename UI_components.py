@@ -1,6 +1,6 @@
 import streamlit as st
 from streamlit_image_comparison import image_comparison
-def render_ui_sliders(): 
+def render_ui_sliders() -> tuple[int, int, int, float, float]: 
     # Resolution slider
     # width
     width_resolution = st.slider(

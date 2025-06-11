@@ -11,7 +11,7 @@ import tensorflow as tf
 from components import processing_btn
 from helper import open_styled_image
 from video_helper import tensor_toimage, image_read
-
+from cv2.typing import MatLike
 
 def video_validation(input_video: UploadedFile | None,style_image) -> bool:
     if style_image is None:
@@ -107,7 +107,8 @@ def process_frame(width : int, height : int, cap : cv2.VideoCapture, style_image
         ret, frame = cap.read()
         if not ret:
             break
-        stylized_image = get_stylized_image(frame, style_image, hub_model)
+        resized_frame : MatLike = cv2.resize(frame, (width, height))
+        stylized_image = get_stylized_image(resized_frame, style_image, hub_model)
         out.write(stylized_image)
         frame_end_time : float = time.time()
         print(f"Processed frame in {frame_end_time - frame_start_time:.2f} seconds")
