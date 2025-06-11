@@ -139,6 +139,10 @@ def gatys_interface():
                 process_gatys(picture, style_image,epoch_slider, style_intensity)
             case 'Webcam':
                 pass
+                
+            case 'Video':
+        
+                pass
             case _:
                 st.error("Please select a valid method from the sidebar.")
     with col2:
