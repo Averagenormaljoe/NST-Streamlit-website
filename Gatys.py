@@ -8,9 +8,9 @@ def render_gatys_ui_sliders():
         min_value=0.1, max_value=1.0, value=0.5, step=0.1, 
         help="Adjust the intensity of the style transfer effect."
     )
-    
+    hardware_options : list[str] = ["CPU", "GPU"]
     st.markdown('<h3 style="text-align:center;">Gatys model</h3>', unsafe_allow_html=True)
-    st.radio("CPU or GPU?", options=["CPU", "GPU"], index=0, key="gatys_device_choice",
+    st.radio("CPU or GPU?", options=hardware_options, index=0, key="gatys_device_choice",
              help="Select the device to run the Gatys model. GPU is recommended for faster processing.")
     st.markdown('<h4 style="text-align:center;">Provides the highest style quality at the cost of speed (will take around 5 minutes or hour on cpu devices)</h4>', unsafe_allow_html=True)
     epoch_slider = st.slider(

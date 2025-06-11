@@ -1,7 +1,6 @@
 import requests
 import streamlit as st
 import numpy as np
-import tensorflow as tf
 import keras
 import tensorflow_hub as hub
 from io import BytesIO
@@ -57,7 +56,7 @@ def download_generated_image(generated_image):
         return
     # convert to pillow image
     img = Image.fromarray(generated_image)
-    buffered = BytesIO()
+    buffered : BytesIO = BytesIO()
     img.save(buffered, format="JPEG")
     st.download_button(
         label="Download image",
@@ -102,7 +101,7 @@ def display_instructions():
                 + ' Images greater then (2000x2000) are resized to (1000x1000).')
                 
                 
-def load_image_by_url(url):
+def load_image_by_url(url : str):
     try:
         image = Image.open(BytesIO(requests.get(url).content))
         return image
@@ -112,11 +111,12 @@ def load_image_by_url(url):
     
 
 def get_url_image():
-    url = st.sidebar.text_input('URL for the content image.')
+    url : str = st.sidebar.text_input('URL for the content image.')
+    assigned_name : str = 'content.jpg'
     if st.sidebar.button('Load Image'):
         try:
     
-            content_path = keras.utils.get_file(os.path.join(os.getcwd(), 'content.jpg'), url)
+            content_path = keras.utils.get_file(os.path.join(os.getcwd(), assigned_name), url)
             content_image_file = Image.open(content_path)
             return content_image_file
         except:

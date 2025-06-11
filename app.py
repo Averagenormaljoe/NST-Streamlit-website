@@ -14,7 +14,10 @@ st.set_page_config(page_title="Style motion - Style Transfer",
 # title 
 
 st.markdown("<hr>", unsafe_allow_html=True)
-tab1, tab2, tab3,tab4,tab5 = st.tabs(["Image", "Video", "Johnson model","Gatys model", "Huang model"])
+content_types : list[str] = ["png", "jpg", "jpeg"]
+video_types : list[str] = ["mp4", "gif"]
+tab_list : list[str] = ["Image", "Video", "Johnson model", "Gatys model", "Huang model"]
+tab1, tab2, tab3,tab4,tab5 = st.tabs(tab_list)
 
 # -------------Header Section------------------------------------------------
 
@@ -51,14 +54,14 @@ with tab1:
     content_image = None
     style_image = None
     picture = None
-    webcam_stylization_enabled = False
-    method = method_slider(key="main_method")
+    webcam_stylization_enabled : bool = False
+    method : str = method_slider(key="main_method")
     col1, col2 = st.columns(2)
     with col1:
        match method:
         case 'Image':
                 content_image = st.file_uploader(
-                    "Upload Content Image (PNG & JPG images only)", type=['png', 'jpg', "jpeg"], key="content_image_uploader")
+                    "Upload Content Image (PNG & JPG images only)", type=content_types, key="content_image_uploader")
         case 'Webcam':
             process_webcam(style_image)
         case 'Camera':
@@ -66,7 +69,7 @@ with tab1:
             
     with col2:
         style_image = st.file_uploader(
-            "Upload Style Image (PNG & JPG images only)", type=['png', 'jpg', "jpeg"])
+            "Upload Style Image (PNG & JPG images only)", type=content_types)
 
     
     st.sidebar.header('Options')
@@ -106,11 +109,11 @@ with tab2:
     st.markdown('<h3 style="text-align:center;">Video Style Transfer</h3>', unsafe_allow_html=True)
 
     video_file = st.file_uploader(
-        "Upload Video (MP4 & gif only)", type=['mp4','gif'], key="video_uploader"
+        "Upload Video (MP4 & gif only)", type=video_types, key="video_uploader"
     )
 
     style_images = st.file_uploader(
-        "Upload Style Images (PNG & JPG, select multiple)", type=['png', 'jpg', "jpeg"], accept_multiple_files=True, key="style_images_uploader"
+        "Upload Style Images (PNG & JPG, select multiple)", type=content_types, accept_multiple_files=True, key="style_images_uploader"
     )
     # resolution slider
     width_resolution, height_resolution,fps,content_weight, style_weight = render_ui_sliders()
@@ -142,11 +145,10 @@ with tab3:
     johnson_header()
     select_model_name = st.sidebar.selectbox("Choose the style model: ", style_models_name)
     method = method_slider(key="johnson_method")
-
     match method:
         case 'Image':
             content_image = st.file_uploader(
-                    "Upload Content Image (PNG & JPG images only)", type=['png', 'jpg', "jpeg"])
+                    "Upload Content Image (PNG & JPG images only)", type=content_types, key="johnson_content_image_uploader")
             johnson_image_input(content_image, select_model_name)
         case 'Webcam':
             johnson_webcam_input(select_model_name)
@@ -163,7 +165,7 @@ with tab4:
     match method:
         case 'Image':
             content_image = st.file_uploader(
-                    "Upload Content Image (PNG & JPG images only)", type=['png', 'jpg', "jpeg"])
+                    "Upload Content Image (PNG & JPG images only)", type=content_types, key="gatys_content_image_uploader")
             johnson_image_input(content_image, select_model_name)
         case'Camera':
             picture = camera_component()
