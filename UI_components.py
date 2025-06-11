@@ -32,8 +32,10 @@ def render_ui_sliders() -> tuple[int, int, int, float, float]:
     help="Adjust how much the style is applied to the content."
     ) 
     return width_resolution, height_resolution, fps, content_weight, style_weight
-def method_slider(key="method_selector"):
+def method_slider(key="method_selector") -> str:
     method = st.sidebar.radio('Go To ->', options=['Image','Webcam', 'Camera'], key=key)
+    if method is None:
+        return ""
     return method
 def camera_component():
     enable = st.checkbox("Enable camera")

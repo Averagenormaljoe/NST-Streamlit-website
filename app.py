@@ -143,7 +143,7 @@ with tab2:
   # -------------Johnson Model Section------------------------------------------------             
 with tab3:
     johnson_header()
-    select_model_name = st.sidebar.selectbox("Choose the style model: ", style_models_name)
+    select_model_name : str | None = st.sidebar.selectbox("Choose the style model: ", style_models_name)
     method = method_slider(key="johnson_method")
     match method:
         case 'Image':
