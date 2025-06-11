@@ -1,14 +1,41 @@
 import streamlit as st
+from PIL import Image
+from typing import Optional
 from UI_components import camera_component, method_slider, render_ui_sliders
 from gatys import render_gatys_ui_sliders
 from helper import display_instructions, generate_image_btn
 from johnson import johnson_header, johnson_image_input, johnson_webcam_input
 from video_transfer import video_transfer_style
 from webcam_methods import process_webcam
-from PIL import Image
 from data import style_models_name
 content_types : list[str] = ["png", "jpg", "jpeg"]
 video_types : list[str] = ["mp4", "gif"]
+
+def default_interface(method: str = "Image", content_image: Optional[Image.Image] = None, style_image: Optional[Image.Image] = None, picture: Optional[Image.Image] = None, webcam_stylization_enabled: bool = False):
+    if st.button("Clear"):
+        st.success("Cleared the images successfully!")
+    print("Chosen method:",method)
+    match method:
+        case 'Image':
+            st.markdown('<h3 style="text-align:center;">Image Style Transfer</h3>', unsafe_allow_html=True)
+            print("Content Image: ", content_image)
+            print("Style Image: ", style_image)
+            generate_image_btn(content_image, style_image)
+        case 'Video':
+            pass
+        case 'Camera':
+            if picture is not None:
+                generate_image_btn(picture, style_image)
+        case 'Webcam':
+            if st.button("Toggle Webcam Stylization" + " (currently " + ("On" if webcam_stylization_enabled else "Off") + ")"):
+                webcam_stylization_enabled = not webcam_stylization_enabled
+                if webcam_stylization_enabled:
+                    st.success("Webcam stylization enabled.")
+                else:
+                    st.success("Webcam stylization disabled.")
+            
+        case _:
+            st.error("Please select a valid method from the sidebar.")
 def default_tab():
         # Upload Images
 
@@ -35,30 +62,7 @@ def default_tab():
     
     st.sidebar.header('Options')
     
-    if st.button("Clear"):
-        st.success("Cleared the images successfully!")
-    print("Chosen method:",method)
-    match method:
-        case 'Image':
-            st.markdown('<h3 style="text-align:center;">Image Style Transfer</h3>', unsafe_allow_html=True)
-            print("Content Image: ", content_image)
-            print("Style Image: ", style_image)
-            generate_image_btn(content_image, style_image)
-        case 'Video':
-            pass
-        case 'Camera':
-            if picture is not None:
-                generate_image_btn(picture, style_image)
-        case 'Webcam':
-            if st.button("Toggle Webcam Stylization" + " (currently " + ("On" if webcam_stylization_enabled else "Off") + ")"):
-                webcam_stylization_enabled = not webcam_stylization_enabled
-                if webcam_stylization_enabled:
-                    st.success("Webcam stylization enabled.")
-                else:
-                    st.success("Webcam stylization disabled.")
-            
-        case _:
-            st.error("Please select a valid method from the sidebar.")
+    default_interface(method=method, content_image=content_image, style_image=style_image, picture=picture, webcam_stylization_enabled=webcam_stylization_enabled)
     display_instructions()
 
 def video_tab():
@@ -96,8 +100,7 @@ def video_tab():
                 )
     display_instructions()
 
-def johnson_tab():
-    johnson_header()
+def johnson_interface():
     select_model_name : str | None = st.sidebar.selectbox("Choose the style model: ", style_models_name, key="johnson_model_selector")
     method = method_slider(key="johnson_method")
     match method:
@@ -112,10 +115,13 @@ def johnson_tab():
             johnson_image_input(picture, select_model_name)
         case "video":
             pass
+
+def johnson_tab():
+    johnson_header()
+    johnson_interface()
     display_instructions()
 
-def gatys_tab():
-    render_gatys_ui_sliders()
+def gatys_interface():
     select_model_name : str | None = st.sidebar.selectbox("Choose the style model: ", style_models_name, key="gatys_model_selector")
     method = method_slider(key="gatys_method")
     match method:
@@ -126,6 +132,10 @@ def gatys_tab():
         case'Camera':
             picture = camera_component()
             johnson_image_input(picture, select_model_name)
+
+def gatys_tab():
+    render_gatys_ui_sliders()
+    gatys_interface()
     display_instructions()
 def huang_tab():
     st.markdown('<h3 style="text-align:center;">Huang Model</h3>', unsafe_allow_html=True)
