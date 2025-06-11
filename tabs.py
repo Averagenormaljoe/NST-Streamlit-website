@@ -2,16 +2,17 @@ import streamlit as st
 from PIL import Image
 from typing import Optional
 from UI_components import camera_component, method_slider, render_ui_sliders
-from gatys import render_gatys_ui_sliders
+from gatys import process_gatys, render_gatys_ui_sliders
 from helper import display_instructions, generate_image_btn
 from johnson import johnson_header, johnson_image_input, johnson_webcam_input
 from video_transfer import video_transfer_style
 from webcam_methods import process_webcam
 from data import style_models_name
+from streamlit.runtime.uploaded_file_manager import UploadedFile
 content_types : list[str] = ["png", "jpg", "jpeg"]
 video_types : list[str] = ["mp4", "gif"]
 
-def default_interface(method: str = "Image", content_image: Optional[Image.Image] = None, style_image: Optional[Image.Image] = None, picture: Optional[Image.Image] = None, webcam_stylization_enabled: bool = False):
+def default_interface(method: str = "Image", content_image: Optional[UploadedFile] | None = None, style_image: Optional[UploadedFile] = None, picture: Optional[UploadedFile] = None, webcam_stylization_enabled: bool = False):
     if st.button("Clear"):
         st.success("Cleared the images successfully!")
     print("Chosen method:",method)
@@ -122,19 +123,32 @@ def johnson_tab():
     display_instructions()
 
 def gatys_interface():
-    select_model_name : str | None = st.sidebar.selectbox("Choose the style model: ", style_models_name, key="gatys_model_selector")
-    method = method_slider(key="gatys_method")
-    match method:
-        case 'Image':
-            content_image = st.file_uploader(
-                    "Upload Content Image (PNG & JPG images only)", type=content_types, key="gatys_content_image_uploader")
-            johnson_image_input(content_image, select_model_name)
-        case'Camera':
-            picture = camera_component()
-            johnson_image_input(picture, select_model_name)
+    style_image = None
+    col1, col2 = st.columns(2)
+    with col1:
+        epoch_slider, style_intensity = render_gatys_ui_sliders()
+        select_model_name : str | None = st.sidebar.selectbox("Choose the style model: ", style_models_name, key="gatys_model_selector")
+        method = method_slider(key="gatys_method")
+        match method:
+            case 'Image':
+                content_image = st.file_uploader(
+                        "Upload Content Image (PNG & JPG images only)", type=content_types, key="gatys_content_image_uploader")
+                process_gatys(content_image, style_image,epoch_slider, style_intensity)
+            case'Camera':
+                picture : UploadedFile | None = camera_component()
+                process_gatys(picture, style_image,epoch_slider, style_intensity)
+            case 'Webcam':
+                pass
+            case _:
+                st.error("Please select a valid method from the sidebar.")
+    with col2:
+        style_image = st.file_uploader(
+            "Upload Style Image (PNG & JPG images only)", type=content_types, key="gatys_style_image_uploader")
+
+            
 
 def gatys_tab():
-    render_gatys_ui_sliders()
+    
     gatys_interface()
     display_instructions()
 def huang_tab():
