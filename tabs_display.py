@@ -1,7 +1,11 @@
 import streamlit as st
 
 from UI_components import example_images, header
-from tabs import default_tab, gatys_tab, huang_tab, johnson_tab, video_tab
+from tabs.gatys_tab import gatys_tab
+from tabs.johnson_tab import johnson_tab
+from tabs.video_tab import video_tab
+from tabs.huang_tab import huang_tab
+from tabs.default_tab import default_tab
 def tabs_display():
     tab_list : list[str] = ["Image", "Video", "Johnson model", "Gatys model", "Huang model"]
     tab1, tab2, tab3,tab4,tab5 = st.tabs(tab_list)
