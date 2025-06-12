@@ -67,6 +67,13 @@ def example_images():
         display_image(image_path="./assets/content3.jpg")
     with col2:
         display_image(image_path="./assets/art3.png")
+        
+        
+    col1, col2 = st.columns(2)
+    with col1:
+        display_image(image_path="./assets/content5.jpg")
+    with col2:
+        display_image(image_path="./assets/art5.png")
     
     col1,col2 = st.columns(2)
     with col1:

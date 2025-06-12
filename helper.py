@@ -10,8 +10,8 @@ from API import transfer_style
 import os
 
 def generate_styled_image(content_image, style_image, model_path : str):
-    hub_module = hub.load(model_path)
     print("model_path: ", model_path)
+    hub_module = hub.load(model_path)
     generated_image = open_styled_image(content_image, style_image, hub_module)
     return generated_image
     
