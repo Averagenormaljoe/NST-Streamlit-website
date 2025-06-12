@@ -1,5 +1,6 @@
 import streamlit as st
 from streamlit_image_comparison import image_comparison
+from PIL import Image
 def render_ui_sliders() -> tuple[int, int, int, float, float]: 
     # Resolution slider
     # width
@@ -41,24 +42,31 @@ def camera_component():
     enable = st.checkbox("Enable camera")
     picture = st.camera_input("Take a picture", disabled=not enable)
     return picture
+
+def display_image(image_path: str):
+
+    img = Image.open(image_path)
+    resized_img = img.resize((190, 250))
+    st.image(resized_img)
+
 def example_images():
     col1, col2 = st.columns(2)
     with col1:
-        st.image(image="./assets/content1.jpg")
+        display_image(image_path="./assets/content1.jpg")
     with col2:
-        st.image(image="./assets/art1.png")
+        display_image(image_path="./assets/art1.png")
 
     col1, col2 = st.columns(2)
     with col1:
-        st.image(image="./assets/content2.jpg")
+        display_image(image_path="./assets/content2.jpg")
     with col2:
-        st.image(image="./assets/art2.png")
+        display_image(image_path="./assets/art2.png")
 
     col1, col2 = st.columns(2)
     with col1:
-        st.image(image="./assets/content3.jpg")
+        display_image(image_path="./assets/content3.jpg")
     with col2:
-        st.image(image="./assets/art3.png")
+        display_image(image_path="./assets/art3.png")
     
     col1,col2 = st.columns(2)
     with col1:

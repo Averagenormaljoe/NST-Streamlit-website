@@ -1,20 +1,17 @@
 from UI_components import method_slider
 from gatys import process_gatys, render_gatys_ui_sliders
 from helper import display_instructions
-from upload_types import content_types
 import streamlit as st
 from UI_components import camera_component
-from data import style_models_name
 from streamlit.runtime.uploaded_file_manager import UploadedFile
-
+from upload_types import content_types
 
 def gatys_interface():
     style_image = None
     col1, col2 = st.columns(2)
     with col1:
         epoch_slider, style_intensity = render_gatys_ui_sliders()
-        select_model_name : str | None = st.sidebar.selectbox("Choose the style model: ", style_models_name, key="gatys_model_selector")
-        method = method_slider(key="gatys_method")
+        method : str = method_slider(key="gatys_method")
         match method:
             case 'Image':
                 content_image = st.file_uploader(

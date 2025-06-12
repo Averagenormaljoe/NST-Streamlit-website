@@ -12,11 +12,11 @@ def file_uploader_for_images(method =  "", image_types : list[str] = ['png', 'jp
     col1, col2 = st.columns(2)
 
     with col2:
-        style_image = st.file_uploader(
+        style_image : UploadedFile | None = st.file_uploader(
             "Upload Style Image (PNG & JPG images only)", type=image_types, key=style_key)
     with col1:
         if method == 'Image':
-            content_image = st.file_uploader(
+            content_image : UploadedFile | None = st.file_uploader(
                 "Upload Content Image (PNG & JPG images only)", type=image_types, key=content_key)
             return content_image, style_image
     return None, style_image

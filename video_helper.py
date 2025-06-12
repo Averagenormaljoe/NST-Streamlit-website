@@ -1,3 +1,4 @@
+from os import read
 import tensorflow as tf
 import tensorflow_hub as hub
 import numpy as np
@@ -25,9 +26,6 @@ def tensor_toimage(tensor):
   if np.ndim(tensor)>3:
     assert tensor.shape[0]==1
     tensor=tensor[0]
-
-
-
   return tensor
 
 
@@ -39,6 +37,8 @@ def open_style_image(style_image):
     processed_style_im = image_read(colored_style_im)
     
     return processed_style_im
+def read_frame(frame,x : int):
+    return image_read(frame)[0].shape[x]
 def process_video(image):
   
     hub_model = hub.load('https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2')
@@ -47,8 +47,8 @@ def process_video(image):
     cap = cv2.VideoCapture("assets/man_at_sea_sliced.mp4")
     #in order to get the size of width and shape of video, we used first frame of video
     ret, frame = cap.read()
-    frame_width = image_read(frame)[0].shape[1]
-    frame_height= image_read(frame)[0].shape[0]
+    frame_width = read_frame(frame, 1)
+    frame_height= read_frame(frame, 0)
 
     out = cv2.VideoWriter('output.mp4', cv2.VideoWriter_fourcc(*'XVID'), 10, 
                         (frame_width,frame_height))

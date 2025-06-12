@@ -46,7 +46,7 @@ def default_tab():
     with col1:
        match method:
         case 'Image':
-                content_image = st.file_uploader(
+                content_image : UploadedFile | None = st.file_uploader(
                     "Upload Content Image (PNG & JPG images only)", type=content_types, key="content_image_uploader")
         case 'Webcam':
             process_webcam(style_image)
