@@ -11,7 +11,9 @@ import os
 
 def generate_styled_image(content_image, style_image, model_path : str):
     print("model_path: ", model_path)
-    hub_module = hub.load(model_path)
+    
+    model_link : str = "https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2"
+    hub_module = hub.load(model_link)
     generated_image = open_styled_image(content_image, style_image, hub_module)
     return generated_image
     
@@ -58,6 +60,7 @@ def download_generated_image(generated_image):
     img = Image.fromarray(generated_image)
     buffered : BytesIO = BytesIO()
     img.save(buffered, format="JPEG")
+
     st.download_button(
         label="Download image",
         data=buffered.getvalue(),
@@ -72,8 +75,11 @@ def generate_image_btn(content_image,style_image):
                 # Convert the uploaded image to a PIL Image
                 open_content_image = Image.open(content_image)
                 open_style_image = Image.open(style_image)
+                main_model_path : str = "main_model/model.keras"
+                magenta_model_path : str = "https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2"
+                use_main : bool = False
                 # Path of the pre-trained TF model
-                model_path: str = "https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2"
+                model_path: str = magenta_model_path if use_main else main_model_path
                 generated_image = generate_styled_image(open_content_image, open_style_image, model_path)
                 is_processing = processing_btn(is_processing)
                 display_styled_image(generated_image, is_processing)
@@ -115,8 +121,7 @@ def get_url_image():
     assigned_name : str = 'content.jpg'
     if st.sidebar.button('Load Image'):
         try:
-    
-            content_path = keras.utils.get_file(os.path.join(os.getcwd(), assigned_name), url)
+            content_path : str = keras.utils.get_file(os.path.join(os.getcwd(), assigned_name), url)
             content_image_file = Image.open(content_path)
             return content_image_file
         except:

@@ -39,7 +39,7 @@ def method_slider(key="method_selector") -> str:
         return ""
     return method
 def camera_component():
-    enable = st.checkbox("Enable camera")
+    enable : bool = st.checkbox("Enable camera")
     picture = st.camera_input("Take a picture", disabled=not enable)
     return picture
 

@@ -1,10 +1,10 @@
 import cv2
 import numpy as np
 import tensorflow as tf
+from cv2.typing import MatLike
 
 
-
-def resize_image(input_image,name="Content Image"):
+def resize_image(input_image,name : str="Content Image"):
     size_threshold : tuple[int, int] = (2000,2000)
     resizing_shape : tuple[int, int]  = (1000,1000)
 
@@ -20,7 +20,7 @@ def resize_image(input_image,name="Content Image"):
     return input_image
 
 def get_resize_image(image,resizing_shape):
-    input_image = cv2.resize(image,(resizing_shape[0],resizing_shape[1]))
+    input_image : MatLike = cv2.resize(image,(resizing_shape[0],resizing_shape[1]))
     numpy_input_image = np.array(input_image)
     return numpy_input_image
 
