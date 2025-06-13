@@ -14,16 +14,24 @@ def resize_image(input_image,name="Content Image"):
   
     if resize_content is True:
         print(f"{name} bigger than {size_threshold}, resizing to {resizing_shape}")
-        input_image = cv2.resize(input_image,(resizing_shape[0],resizing_shape[1]))
-        input_image = np.array(input_image)
+        get_resize_image(input_image,resizing_shape)
 
     print(f"{name} Shape: ", input_image_shape)
     return input_image
 
-
+def get_resize_image(image,resizing_shape):
+    input_image = cv2.resize(image,(resizing_shape[0],resizing_shape[1]))
+    numpy_input_image = np.array(input_image)
+    return numpy_input_image
 
 def convert_to_numpy_image(image):
     return image.astype(np.float32)[np.newaxis, ...] / 255.
+    
+
+def resize_then_covert(image,name : str):
+    resized_image = resize_image(image, name)
+    numpy_image = convert_to_numpy_image(resized_image)
+    return numpy_image
     
 
 def transfer_style(content_image, style_image, hub_module):

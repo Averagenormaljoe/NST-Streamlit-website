@@ -29,7 +29,7 @@ def open_styled_image(content_image, style_image, hub_module):
     # Transfer style
     styled_image = transfer_style(pli_content_image, pli_style_image, hub_module)
     
-    return styled_image              
+    return styled_image               
 
 def display_styled_image(generated_image, is_processing: bool = False):
     if generated_image is not None:
