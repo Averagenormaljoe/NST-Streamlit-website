@@ -1,10 +1,10 @@
 import cv2
 import numpy as np
 import tensorflow as tf
+from cv2.typing import MatLike
 
 
-
-def resize_image(input_image,name="Content Image"):
+def resize_image(input_image,name : str="Content Image"):
     size_threshold : tuple[int, int] = (2000,2000)
     resizing_shape : tuple[int, int]  = (1000,1000)
 
@@ -20,7 +20,7 @@ def resize_image(input_image,name="Content Image"):
     return input_image
 
 def get_resize_image(image,resizing_shape):
-    input_image = cv2.resize(image,(resizing_shape[0],resizing_shape[1]))
+    input_image : MatLike = cv2.resize(image,(resizing_shape[0],resizing_shape[1]))
     numpy_input_image = np.array(input_image)
     return numpy_input_image
 
@@ -30,27 +30,28 @@ def convert_to_numpy_image(image):
 
 def resize_then_covert(image,name : str):
     resized_image = resize_image(image, name)
+    # Convert to float32 numpy array, add batch dimension, and normalize to range [0, 1]. Example using numpy:
     numpy_image = convert_to_numpy_image(resized_image)
     return numpy_image
-    
+
+
+def resize_tf_style(style_image): 
+    # Optionally resize the images. It is recommended that the style image is about
+    # 256 pixels (this size was used when training the style transfer network).
+    # The content image can be any size.
+    resize_style_shape = (256,256)
+    style_tf_image = tf.image.resize(style_image, resize_style_shape)
+    return style_tf_image
 
 def transfer_style(content_image, style_image, hub_module):
     if style_image is None:
         return content_image
     print("Starting style transfer: ", style_image)
 
-    content_resized_image = resize_image(content_image, "Content Image")
-    style_resized_image = resize_image(style_image, "Style Image")
+    content_numpy_image = resize_then_covert(content_image, "Content Image")
+    style_numpy_image = resize_then_covert(style_image, "Style Image")
 
-    # Convert to float32 numpy array, add batch dimension, and normalize to range [0, 1]. Example using numpy:
-    content_numpy_image = convert_to_numpy_image(content_resized_image)
-    style_numpy_image = convert_to_numpy_image(style_resized_image)
-
-    # Optionally resize the images. It is recommended that the style image is about
-    # 256 pixels (this size was used when training the style transfer network).
-    # The content image can be any size.
-    resize_style_shape = (256,256)
-    style_tf_image = tf.image.resize(style_numpy_image, resize_style_shape)
+    style_tf_image = resize_tf_style(style_numpy_image)
 
     print("Loading pre-trained model...")
     # The hub.load() loads any TF Hub model

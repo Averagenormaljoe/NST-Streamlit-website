@@ -8,7 +8,7 @@ def processing_btn(is_processing : bool) -> bool:
     return is_processing
 
 
-def file_uploader_for_images(method =  "", image_types : list[str] = ['png', 'jpg'],content_key : str = "",style_key : str = "") -> tuple[UploadedFile | None, UploadedFile | None]:
+def file_uploader_for_images(method : str =  "", image_types : list[str] = ['png', 'jpg'],content_key : str = "",style_key : str = "") -> tuple[UploadedFile | None, UploadedFile | None]:
     col1, col2 = st.columns(2)
 
     with col2:
