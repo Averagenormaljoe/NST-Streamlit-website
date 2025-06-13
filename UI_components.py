@@ -52,32 +52,32 @@ def display_image(image_path: str):
 def example_images():
     col1, col2 = st.columns(2)
     with col1:
-        display_image(image_path="./assets/content1.jpg")
+        display_image(image_path="./assets/content/content1.jpg")
     with col2:
-        display_image(image_path="./assets/art1.png")
+        display_image(image_path="./assets/style/art1.png")
 
     col1, col2 = st.columns(2)
     with col1:
-        display_image(image_path="./assets/content2.jpg")
+        display_image(image_path="./assets/content/content2.jpg")
     with col2:
-        display_image(image_path="./assets/art2.png")
+        display_image(image_path="./assets/style/art2.png")
 
     col1, col2 = st.columns(2)
     with col1:
-        display_image(image_path="./assets/content3.jpg")
+        display_image(image_path="./assets/content/content3.jpg")
     with col2:
-        display_image(image_path="./assets/art3.png")
+        display_image(image_path="./assets/style/art3.png")
         
         
     col1, col2 = st.columns(2)
     with col1:
-        display_image(image_path="./assets/content5.jpg")
+        display_image(image_path="./assets/content/content5.jpg")
     with col2:
-        display_image(image_path="./assets/art5.png")
+        display_image(image_path="./assets/style/art5.png")
     
     col1,col2 = st.columns(2)
     with col1:
-        st.video("./assets/man_at_sea_sliced.mp4")
+        st.video("./assets/video/man_at_sea_sliced.mp4")
 def header():
     st.markdown(
         '<h1 style="text-align:center;">Style Transfer App</h1>', unsafe_allow_html=True)
