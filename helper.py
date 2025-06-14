@@ -44,9 +44,10 @@ def open_styled_image(content_image, style_image, hub_module):
     
     return styled_image               
 
-def display_styled_image(generated_image, is_processing: bool = False):
-    if generated_image is not None:
-        # some baloons
+def display_styled_image(generated_image, is_processing: bool = False, show_balloons : bool = False):
+    
+    if generated_image is not None and show_balloons:
+        # some balloons
         st.balloons()
 
     col1, col2 = st.columns(2)
