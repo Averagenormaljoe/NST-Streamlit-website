@@ -123,9 +123,11 @@ def display_instructions():
         """,
         unsafe_allow_html=True
     )
+
+def instruction_warning():
     st.warning('NOTE : You need at least Intel i3 with 8GB memory for proper functioning of this application. ' \
                 + ' Images greater then (2000x2000) are resized to (1000x1000).')
-                
+                 
                 
 def load_image_by_url(url : str):
     try:
