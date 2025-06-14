@@ -69,7 +69,7 @@ def video_transfer_style(input_video : UploadedFile | None,style_image , width :
     print(f"Video file saved to {temp_path}")
 
     
-    model_path : str = get_model_path()
+    model_path : str = get_model_path(True)
     cap, out, output_video_path = video_setup(temp_path,temp_dir,width,height,fps)
     if cap is None or out is None or output_video_path is None:
         st.error(f"Could not open video file {temp_path}.")
@@ -100,7 +100,8 @@ def video_ready_st(f : BufferedReader):
         
         
 def process_frame(width : int, height : int, cap : cv2.VideoCapture, style_image, model_path : str,out : cv2.VideoWriter):
-    hub_model = hub.load(model_path)
+    new_model_path : str = get_model_path(True)
+    hub_model = hub.load(new_model_path)
     start_time : float = time.time()
     while True:
         frame_start_time : float = time.time()
