@@ -7,13 +7,11 @@ from tabs.video_tab import video_tab
 from tabs.huang_tab import huang_tab
 from tabs.default_tab import default_tab
 def tabs_display():
-    tab_list : list[str] = ["Image"]
-    tab1 = st.tabs(tab_list)
-
+ 
     # -------------Header Section------------------------------------------------
 
-    with tab1:
-        header()
+    
+    header()
     # with tab2:
     #     header()
     # with tab3:
@@ -36,8 +34,7 @@ def tabs_display():
     # ----------------------------------------------------------------------
 
     # -------------Body Section------------------------------------------------
-    with tab1:
-        default_tab()
+    default_tab()
 
     # # -------------Video Style Transfer Section------------------------------------------------
 
