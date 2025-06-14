@@ -59,8 +59,8 @@ def display_styled_image(generated_image, is_processing: bool = False):
         st.markdown(
             "<b> Your Image is Ready ! Click below to download it. </b>", unsafe_allow_html=True)
         # de-normalize the image
-        generated_image = (generated_image * 255).astype(np.uint8)
-        download_generated_image(generated_image)
+        denormalize_generated_image = (generated_image * 255).astype(np.uint8)
+        download_generated_image(denormalize_generated_image)
         
 
 def download_generated_image(generated_image):
@@ -104,7 +104,6 @@ def generate_image_btn(content_image,style_image):
                 generated_image = generate_styled_image(open_content_image, open_style_image, model_path)
                 is_processing = processing_btn(is_processing)
                 display_styled_image(generated_image, is_processing)
-                download_generated_image(generated_image)
                 return generated_image
             
 def display_instructions():
