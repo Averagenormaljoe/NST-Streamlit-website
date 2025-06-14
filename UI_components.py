@@ -32,9 +32,11 @@ def render_ui_sliders() -> tuple[int, int, int, float, float]:
     min_value=0.1, max_value=10.0, value=1.0, step=0.1,
     help="Adjust how much the style is applied to the content."
     ) 
+    
+    
     return width_resolution, height_resolution, fps, content_weight, style_weight
 def method_slider(key="method_selector") -> str:
-    method = st.sidebar.radio('Go To ->', options=['Image','Webcam', 'Camera'], key=key)
+    method = st.sidebar.radio('Go To ->', options=['Image','Webcam', 'Camera','Video'], key=key)
     if method is None:
         return ""
     return method
