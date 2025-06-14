@@ -14,14 +14,14 @@ def tabs_display():
 
     with tab1:
         header()
-    # with tab2:
-    #     header()
-    # # with tab3:
-    # #     header()
-    # # with tab4:
-    # #     header()
-    # # with tab5:
-    # #     header()
+    with tab2:
+        header()
+    with tab3:
+        header()
+    with tab4:
+        header()
+    with tab5:
+        header()
 
 
     # -------------Sidebar Section------------------------------------------------
@@ -41,16 +41,16 @@ def tabs_display():
 
     # -------------Video Style Transfer Section------------------------------------------------
 
-    # with tab2:
-    #     video_tab()
+    with tab2:
+        video_tab()
                 
-    # # -------------Johnson Model Section------------------------------------------------             
-    # with tab3:
-    #     johnson_tab()
-    # # -------------Gatys Model Section------------------------------------------------        
-    # with tab4:
-    #     gatys_tab()
-    # # -------------Huang Model Section------------------------------------------------    
+    # -------------Johnson Model Section------------------------------------------------             
+    with tab3:
+        johnson_tab()
+    # -------------Gatys Model Section------------------------------------------------        
+    with tab4:
+        gatys_tab()
+    # -------------Huang Model Section------------------------------------------------    
 
-    # with tab5:
-    #     huang_tab()
+    with tab5:
+        huang_tab()
