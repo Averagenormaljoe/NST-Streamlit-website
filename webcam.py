@@ -5,7 +5,7 @@ import cv2
 import numpy as np
 import tensorflow_hub as hub
 import av
-from helper import open_styled_image
+from helper import get_model_path, open_styled_image
 from turn import get_ice_servers
 from streamlit_session_memo import st_session_memo
 def get_model_from_path(style_model_path):
@@ -22,7 +22,7 @@ def webcam_input(style_model_name,style_image,webcam_stylization : bool = True, 
             hub_module = hub.load(model_name)
             return hub_module
 
-    model_path: str = "https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2"
+    model_path: str = get_model_path(True)
     model = load_model(model_path, width)
     
     open_style_image = Image.open(style_image) if style_image is not None else None

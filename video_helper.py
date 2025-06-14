@@ -1,5 +1,6 @@
 from os import read
 import tensorflow as tf
+from helper import get_model_path
 import tensorflow_hub as hub
 import numpy as np
 import cv2
@@ -40,8 +41,8 @@ def open_style_image(style_image):
 def read_frame(frame,x : int):
     return image_read(frame)[0].shape[x]
 def process_video(image):
-  
-    hub_model = hub.load('https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2')
+    model_path : str = get_model_path()
+    hub_model = hub.load(model_path)
     style_im = open_style_image(image)
 
     cap = cv2.VideoCapture("assets/man_at_sea_sliced.mp4")

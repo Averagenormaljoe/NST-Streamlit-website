@@ -92,4 +92,19 @@ def header():
     # Example Image
     st.image(image="./assets/nst.png")
     st.markdown("</br>", unsafe_allow_html=True)
+
+def output_size() -> tuple[int,int]:
+    width_slider : int = st.slider(
+          "Select Epochs",
+          min_value=1, max_value=1000, value=10, step=1,
+          help="Set the number of epochs for the style transfer. More epochs may yield better results but will take longer."
+    )
+    height_slider : int = st.slider(
+          "Select Epochs",
+          min_value=1, max_value=1000, value=10, step=1,
+          help="Set the number of epochs for the style transfer. More epochs may yield better results but will take longer."
+    )
+    return width_slider,height_slider
+    
+    
     

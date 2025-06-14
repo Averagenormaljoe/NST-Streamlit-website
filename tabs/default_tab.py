@@ -9,7 +9,11 @@ from data import style_models_name
 from streamlit.runtime.uploaded_file_manager import UploadedFile
 from upload_types import content_types, video_types
 
-def default_interface(method: str = "Image", content_image: Optional[UploadedFile] | None = None, style_image: Optional[UploadedFile] = None, picture: Optional[UploadedFile] = None, webcam_stylization_enabled: bool = False):
+
+if "webcam_stylization_enabled" not in st.session_state:
+    st.session_state.webcam_stylization_enabled = False
+
+def default_interface(method: str = "Image", content_image: Optional[UploadedFile] | None = None, style_image: Optional[UploadedFile] = None, picture: Optional[UploadedFile] = None):
     if st.button("Clear"):
         st.success("Cleared the images successfully!")
     print("Chosen method:",method)
@@ -25,9 +29,9 @@ def default_interface(method: str = "Image", content_image: Optional[UploadedFil
             if picture is not None:
                 generate_image_btn(picture, style_image)
         case 'Webcam':
-            if st.button("Toggle Webcam Stylization" + " (currently " + ("On" if webcam_stylization_enabled else "Off") + ")"):
-                webcam_stylization_enabled = not webcam_stylization_enabled
-                if webcam_stylization_enabled:
+            if st.button(f"Toggle Webcam Stylization (currently {'On' if st.session_state.webcam_stylization_enabled else 'Off'})"):
+                st.session_state.webcam_stylization_enabled = not st.session_state.webcam_stylization_enabled
+                if st.session_state.webcam_stylization_enabled:
                     st.success("Webcam stylization enabled.")
                 else:
                     st.success("Webcam stylization disabled.")
@@ -40,7 +44,6 @@ def default_tab():
     content_image = None
     style_image = None
     picture = None
-    webcam_stylization_enabled : bool = False
     method : str = method_slider(key="main_method")
     col1, col2 = st.columns(2)
     with col1:
@@ -49,16 +52,19 @@ def default_tab():
                 content_image : UploadedFile | None = st.file_uploader(
                     "Upload Content Image (PNG & JPG images only)", type=content_types, key="content_image_uploader")
         case 'Webcam':
-            process_webcam(style_image)
+            pass
         case 'Camera':
             picture = camera_component()
             
     with col2:
         style_image = st.file_uploader(
             "Upload Style Image (PNG & JPG images only)", type=content_types)
-
+    
+    with col1:
+        if method == "Webcam":
+              process_webcam(style_image,st.session_state.webcam_stylization_enabled)
     
     st.sidebar.header('Options')
     
-    default_interface(method=method, content_image=content_image, style_image=style_image, picture=picture, webcam_stylization_enabled=webcam_stylization_enabled)
+    default_interface(method=method, content_image=content_image, style_image=style_image, picture=picture)
     display_instructions()

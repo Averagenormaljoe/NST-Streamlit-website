@@ -9,7 +9,7 @@ import streamlit as st
 from streamlit.runtime.uploaded_file_manager import UploadedFile
 import tensorflow as tf
 from components import processing_btn
-from helper import open_styled_image
+from helper import get_model_path, open_styled_image
 from video_helper import tensor_toimage, image_read
 from cv2.typing import MatLike
 
@@ -69,7 +69,7 @@ def video_transfer_style(input_video : UploadedFile | None,style_image , width :
     print(f"Video file saved to {temp_path}")
 
     
-    model_path : str = "https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2"
+    model_path : str = get_model_path()
     cap, out, output_video_path = video_setup(temp_path,temp_dir,width,height,fps)
     if cap is None or out is None or output_video_path is None:
         st.error(f"Could not open video file {temp_path}.")
