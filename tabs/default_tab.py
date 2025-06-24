@@ -29,9 +29,8 @@ def default_interface(method: str = "Image", content_image: Optional[UploadedFil
             if picture is not None:
                 generate_image_btn(picture, style_image)
         case 'Webcam':
-            if st.button(f"Toggle Webcam Stylization (currently {'On' if st.session_state.webcam_stylization_enabled else 'Off'})"):
-                st.session_state.webcam_stylization_enabled = not st.session_state.webcam_stylization_enabled
-                if st.session_state.webcam_stylization_enabled:
+            if st.button(f"Toggle Webcam Stylization (currently {'On' if True else 'Off'})"):
+                if True:
                     st.success("Webcam stylization enabled.")
                 else:
                     st.success("Webcam stylization disabled.")
@@ -62,7 +61,7 @@ def default_tab():
     
     with col1:
         if method == "Webcam":
-              process_webcam(style_image,st.session_state.webcam_stylization_enabled)
+              process_webcam(style_image,True)
     
     st.sidebar.header('Options')
     

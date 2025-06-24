@@ -8,14 +8,13 @@ from tabs.huang_tab import huang_tab
 from tabs.default_tab import default_tab
 def tabs_display():
     tab_list : list[str] = ["Image", "Video", "Johnson model", "Gatys model", "Huang model"]
-    tab1, tab2 = st.tabs(tab_list[0:2])
+    tab1, tab2 = st.tabs(tab_list[0:1])
 
     # -------------Header Section------------------------------------------------
 
     with tab1:
         header()
-    with tab2:
-        header()
+  
     # with tab3:
     #     header()
     # with tab4:
@@ -40,9 +39,6 @@ def tabs_display():
         default_tab()
 
     # # -------------Video Style Transfer Section------------------------------------------------
-
-    with tab2:
-        video_tab()
                 
     # # -------------Johnson Model Section------------------------------------------------             
     # with tab3:
