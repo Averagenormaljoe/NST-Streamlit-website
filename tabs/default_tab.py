@@ -63,7 +63,7 @@ def default_tab():
         if method == "Webcam":
               process_webcam(style_image,True)
     
-    st.sidebar.header('Options')
+    
     
     default_interface(method=method, content_image=content_image, style_image=style_image, picture=picture)
     display_instructions()
