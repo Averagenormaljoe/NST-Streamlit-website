@@ -8,15 +8,16 @@ from tabs.huang_tab import huang_tab
 from tabs.default_tab import default_tab
 def tabs_display():
     tab_list : list[str] = ["Image", "Video", "Johnson model", "Gatys model", "Huang model"]
-    tab1 = st.tabs(tab_list[0])
+    tab1, tab2,tab3 = st.tabs(tab_list[0:3])
 
     # -------------Header Section------------------------------------------------
 
-    
-    header()
-  
-    # with tab3:
-    #     header()
+    with tab1:
+        header()
+    with tab2:
+        header()
+    with tab3:
+        header()
     # with tab4:
     #     header()
     # with tab5:
@@ -35,14 +36,17 @@ def tabs_display():
     # ----------------------------------------------------------------------
 
     # -------------Body Section------------------------------------------------
-    
-    default_tab()
+    with tab1:
+        default_tab()
 
     # # -------------Video Style Transfer Section------------------------------------------------
+
+    with tab2:
+        video_tab()
                 
     # # -------------Johnson Model Section------------------------------------------------             
-    # with tab3:
-    #     johnson_tab()
+    with tab3:
+        johnson_tab()
     # # -------------Gatys Model Section------------------------------------------------        
     # with tab4:
     #     gatys_tab()
