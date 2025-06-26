@@ -51,7 +51,11 @@ It supports multi neural style transfer, video, real-time. This is based on the 
 
 ### Gatys et al. Model
 
+This model trades speed for sylizatoin quality. Note that WebCam mode is not available with this model.
+
 ### Johnson et al. Model
+
+This is the forward pass model. The user is presented with a select of models (such as 'candy.t7', 'la_muse.t7' and 'the_wave.t7')
 
 ## Huang et al. Model
 
@@ -59,12 +63,19 @@ It supports multi neural style transfer, video, real-time. This is based on the 
 
 ### Image
 
+Accepts a content or style image (.PNG, .JPEG, .JPG) and outputs a stylized video.
+
 ### Video
+
+Accepts a video (.MP4 or .GIF) and a style image (.PNG, .JPEG, .JPG) and outputs a stylized video. Takes noticeably longer than image mode.  
+Note that when using the Gatys model, this process will take a long time (around 2 hours).
 
 ### Camera
 
-Takes a photo from the user's camera to use as the content image.
+Takes a photo from the user's camera to use as the content image. Requires access from the user camera.
 
 ### Webcam
 
-Stylizes content from the user webcam. Note this may cause delays in processing.
+Stylizes content from the user webcam. Note this may cause delays in processing. Requires access from the user camera.
+
+# References
