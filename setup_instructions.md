@@ -1,14 +1,8 @@
-# StyleMotion Streamlit interface
-
-## Setup instructions
-
 1. Setup a virtual environment using: python -m venv venv
 
 2. activate the environment with:
 
 venv\Scripts\activate (Windows) or source venv\Scripts\activate (MacOS and Linux).
-
-source venv\Scripts\activate (Win&Bash)
 
 3. Install the libraries using:
 
@@ -27,7 +21,3 @@ streamlit run app.py
 7. To deactivate the environment run:
 
 deactivate
-
-## Introuction
-
-You can visit the website, which is running from this
