@@ -36,7 +36,7 @@ def render_ui_sliders() -> tuple[int, int, int, float, float]:
     
     return width_resolution, height_resolution, fps, content_weight, style_weight
 def method_slider(key="method_selector") -> str:
-    method =  st.radio('Select your chosen mode', options=['Image','Webcam', 'Camera'], key=key)
+    method =  st.selectbox('Select your chosen mode', options=['Image','Webcam', 'Camera'], key=key)
     if method is None:
         return ""
     return method
