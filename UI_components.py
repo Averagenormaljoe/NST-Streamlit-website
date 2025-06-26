@@ -36,8 +36,7 @@ def render_ui_sliders() -> tuple[int, int, int, float, float]:
     
     return width_resolution, height_resolution, fps, content_weight, style_weight
 def method_slider(key="method_selector") -> str:
-    st.sidebar.header('Options')
-    method = st.sidebar.radio('Go To ->', options=['Image','Webcam', 'Camera'], key=key)
+    method =  st.radio('Select your chosen mode', options=['Image','Webcam', 'Camera'], key=key)
     if method is None:
         return ""
     return method
@@ -54,6 +53,7 @@ def display_image(image_path: str):
 
 def example_images():
     
+    st.title("Example Images")
     col1, col2 = st.columns(2)
     with col1:
         display_image(image_path="./assets/content/content1.jpg")
