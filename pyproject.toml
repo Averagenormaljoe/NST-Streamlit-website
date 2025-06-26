@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "GatysStyleMotion"
+version = "0.1.0"
+description = "Gatys project for Style Motion"
+authors = [
+  { name="Average Joe" }
+]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+ 
+  
+]
+
+[project.scripts]
+# Uncomment and define if you want to expose CLI commands
+# your-command = "your_module:main"
