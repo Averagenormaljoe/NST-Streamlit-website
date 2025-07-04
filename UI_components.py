@@ -51,7 +51,7 @@ def display_image(image_path: str):
     st.image(resized_img)
 
 def example_images():
-    
+    st.title("Example Images")
     col1, col2 = st.columns(2)
     with col1:
         display_image(image_path="./assets/content/content1.jpg")
