@@ -82,11 +82,12 @@ streamlit-webrtc==0.62.4
 tenacity==8.5.0
 tensorboard==2.16.2
 tensorboard-data-server==0.7.2
+tensorflow-probability==0.25.0
 tensorflow==2.16.1
 tensorflow-hub==0.16.1
 tensorflow-io-gcs-filesystem==0.31.0
 termcolor==3.1.0
-tf_keras==2.16.0"
+tf_keras==2.19.0
 toml==0.10.2
 tornado==6.5.1
 twilio==8.1.0

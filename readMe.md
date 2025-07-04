@@ -8,7 +8,7 @@
 
 venv\Scripts\activate (Windows) or source venv\Scripts\activate (MacOS and Linux).
 
-source venv\Scripts\activate (Win&Bash)
+source venv/Scripts/activate (Win&Bash)
 
 3. Install the libraries using:
 
