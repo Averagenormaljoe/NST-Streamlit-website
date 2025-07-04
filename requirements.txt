@@ -86,7 +86,7 @@ tensorflow==2.16.1
 tensorflow-hub==0.16.1
 tensorflow-io-gcs-filesystem==0.31.0
 termcolor==3.1.0
-tf_keras==2.16.0"
+tf_keras==2.16.0
 toml==0.10.2
 tornado==6.5.1
 twilio==8.1.0
