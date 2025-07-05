@@ -32,6 +32,12 @@ deactivate
 
 This is the Github repository for the front-end code of the StyleMotion application. This aims to use the models from the training directory and load them into Streamlit to be used.
 
+Models for the johnson model are stored in the 'style_models' directory.
+
+The main StyleMotion model (AdaIN) is stored in the 'main_model' directory.
+
+The Ruber model is stored in the 'Ruber' directory.
+
 You can visit the website, which is running from this link:
 
 [https://stylemotion-app.streamlit.app/](https://stylemotion-app.streamlit.app/).
