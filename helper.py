@@ -79,8 +79,7 @@ def download_generated_image(generated_image):
         file_name="output.png",
         mime="image/png"
         )
-    if st.button("Clear Image"):
-        pass
+
 
     
     

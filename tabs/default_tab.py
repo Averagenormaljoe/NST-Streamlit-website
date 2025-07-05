@@ -14,8 +14,7 @@ if "webcam_stylization_enabled" not in st.session_state:
     st.session_state.webcam_stylization_enabled = False
 
 def default_interface(method: str = "Image", content_image: Optional[UploadedFile] | None = None, style_image: Optional[UploadedFile] = None, picture: Optional[UploadedFile] = None):
-    if st.button("Clear"):
-        st.success("Cleared the images successfully!")
+ 
     print("Chosen method:",method)
     match method:
         case 'Image':
