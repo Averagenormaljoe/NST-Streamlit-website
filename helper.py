@@ -114,12 +114,17 @@ def display_instructions():
         """
         <section style="background-color: black; padding: 10px; border-radius: 5px;">
             <h3>Instructions</h3>
-            <p>1. Upload a content image and a style image.</p>
-            <p>2. Click on "Generate Styled Image" to apply the style transfer.</p>
-            <p>3. The styled image will be displayed below, and you can download it.</p>
-            <p>4. You can also use the webcam feature for real-time style transfer.</p>
-            <p>5. For video style transfer, upload a video file and a style image.</p>
-            <p>6. Used the sidebar to navigate through these modes.</p>
+            
+      
+           Welcome to StyleMotion!  
+            Steps for using the application:  
+           1. Upload a content image and a style image.  
+           2. Click on "Generate Styled Image" to apply the style transfer.  
+           3. The styled image will be displayed below, and you can download it.  
+           4. You can also use the webcam feature for real-time style transfer.  
+           5. For video style transfer, upload a video file and a style image.  
+           6. Use the sidebar to navigate through these modes.  
+           7. Enjoy creating art with StyleMotion!  
         </section>
         """,
         unsafe_allow_html=True

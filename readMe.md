@@ -8,7 +8,7 @@
 
 venv\Scripts\activate (Windows) or source venv\Scripts\activate (MacOS and Linux).
 
-source venv\Scripts\activate (Win&Bash)
+source venv/Scripts/activate (Win&Bash).
 
 3. Install the libraries using:
 
@@ -29,6 +29,8 @@ streamlit run app.py
 deactivate
 
 ## Introduction
+
+This is the Github repository for the front-end code of the StyleMotion application. This aims to use the models from the training directory and load them into Streamlit to be used.
 
 You can visit the website, which is running from this link:
 
