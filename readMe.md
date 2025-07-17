@@ -5,6 +5,8 @@
 - [StyleMotion Streamlit interface](#stylemotion-streamlit-interface)
   - [Table of contents](#table-of-contents)
   - [Prerequisites](#prerequisites)
+    - [Installations](#installations)
+    - [Cloning the repository](#cloning-the-repository)
   - [Setup instructions](#setup-instructions)
   - [Introduction](#introduction)
   - [Tabs](#tabs)
@@ -26,9 +28,16 @@
 
 Note this application was primarily tested in Windows, meaning that MacOS and Linux operations may work differently.
 
+### Installations
+
 1. Python 3.11 Download and install from python.org. This can be verify with 'python --version'. [Python Official Website](https://www.python.org/)
 2. pip (Python package manager), which comes with Python 3.11. This can be verify with 'pip --version'.
 3. run 'pip install virtualenv' in a terminal to install the 'virtualenv' library to able to create a virtual environment.
+
+### Cloning the repository
+
+1. `git clone https://github.com/Averagenormaljoe/Neural-Style-Transfer`
+2. `cd Neural-Style-Transfer`
 
 ## Setup instructions
 
