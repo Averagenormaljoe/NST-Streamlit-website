@@ -22,6 +22,8 @@
     - [Video](#video)
     - [Camera](#camera)
     - [Webcam](#webcam)
+  - [To do](#to-do)
+  - [Issues](#issues)
 - [References](#references)
 
 ## Prerequisites
@@ -31,7 +33,8 @@ Note this application was primarily tested in Windows, meaning that MacOS and Li
 ### Installations
 
 1. Python 3.11 Download and install from python.org. This can be verify with 'python --version'. [Python Official Website](https://www.python.org/)
-2. pip (Python package manager), which comes with Python 3.11. This can be verify with 'pip --version'.
+2. pip (Python package manager), which comes with Python 3.11. This can be verify with 'pip --version'.  
+   'pip' can also be upgrade with the 'pip install --upgrade pip' command.
 3. run 'pip install virtualenv' in a terminal to install the 'virtualenv' library to able to create a virtual environment.
 
 ### Cloning the repository
@@ -139,5 +142,9 @@ Takes a photo from the user's camera to use as the content image. The user click
 ### Webcam
 
 Stylizes content from the user webcam. Note this may cause delays due to style processing. Requires access from the user camera.
+
+## To do
+
+## Issues
 
 # References
