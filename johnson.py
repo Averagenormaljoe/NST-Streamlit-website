@@ -6,10 +6,9 @@ from PIL import Image
 from data import style_models_dict
 from helper import display_styled_image
 from cv2.typing import MatLike
+import webcam
 def johnson_header():
-    st.sidebar.title('Fast neural style transfer (Johnson)')
-    st.sidebar.header('Options')
-    
+    st.title('Fast neural style transfer (Johnson)')
 
 def get_model_from_path(style_model_path):
     model = cv2.dnn.readNetFromTorch(style_model_path)
@@ -42,7 +41,7 @@ def johnson_image_input(content_image, select_model_name: str | None) :
     if content_image is None:
         st.error("Please upload the content image.")
         return None
-    if st.button("Generate Styled Video"):
+    if st.button("Generate Style Image"):
         with st.spinner("Stylizing video... This may take a few minutes."):
             open_content_image = Image.open(content_image)
             pli_content_image = np.array(open_content_image)
@@ -57,6 +56,9 @@ def johnson_image_input(content_image, select_model_name: str | None) :
             display_styled_image(generated_image)
 
 def johnson_webcam_input(select_model_name: str | None ):
+    if select_model_name is None:
+        st.error("Please select a style model.")
+        return None
     return select_model_name
 
 def johnson_video_input(select_model_name: str | None, style_image, width=500):

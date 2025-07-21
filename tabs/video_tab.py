@@ -16,16 +16,13 @@ def video_tab():
     )
     # resolution slider
     width_resolution, height_resolution,fps,content_weight, style_weight = render_ui_sliders()
-    # style intensity slider
-    st.markdown("</br>", unsafe_allow_html=True)
-    st.markdown(
-        '<p style="text-align:center;font-size: 20px;font-weight: 550;">Select Style Intensity</p>', unsafe_allow_html=True)
-    style_intensity = st.slider(
-        "Style Intensity",
-        min_value=0.1, max_value=1.0, value=0.5, step=0.1,
-        help="Adjust the intensity of the style transfer effect."
-    )
+  
 
+    video_process(video_file,style_images,width_resolution,height_resolution,fps)
+    display_instructions()
+
+
+def video_process(video_file,style_images,width_resolution : int,height_resolution : int,fps : int):
     if video_file is not None and style_images and len(style_images) > 0:
         st.info(f"{len(style_images)} style image(s) selected.")
         if st.button("Generate Styled Video"):
@@ -36,5 +33,4 @@ def video_tab():
                 # Stylize video (implement this function in your API)
                 video_transfer_style(
                     video_file,  style_imgs[0], width_resolution,height_resolution,fps=fps
-                )
-    display_instructions()
+                    )

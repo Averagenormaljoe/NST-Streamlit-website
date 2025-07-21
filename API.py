@@ -39,7 +39,7 @@ def resize_tf_style(style_image):
     # Optionally resize the images. It is recommended that the style image is about
     # 256 pixels (this size was used when training the style transfer network).
     # The content image can be any size.
-    resize_style_shape = (256,256)
+    resize_style_shape: tuple[int, int] = (256, 256)
     style_tf_image = tf.image.resize(style_image, resize_style_shape)
     return style_tf_image
 
@@ -65,7 +65,13 @@ def transfer_style(content_image, style_image, hub_module):
 
 def process_image(content_image,style_image,hub_module): 
     start_time = tf.timestamp()
-    outputs = hub_module(tf.constant(content_image), tf.constant(style_image))
+    content_image = tf.image.resize(content_image, [224, 224])
+    style_image = tf.image.resize(style_image, [224, 224])
+    outputs = hub_module(
+        tf.constant(content_image),
+        tf.constant(style_image)
+    )
+  
     end_time = tf.timestamp()
     processing_time : float = float(end_time - start_time)
     print(f"Stylizing completed in {processing_time:.2f} seconds...")
