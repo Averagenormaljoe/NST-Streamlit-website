@@ -22,6 +22,7 @@
     - [Video](#video)
     - [Camera](#camera)
     - [Webcam](#webcam)
+  - [Youtube Link](#youtube-link)
   - [To do](#to-do)
   - [Issues](#issues)
 - [References](#references)
@@ -39,8 +40,9 @@ Note this application was primarily tested in Windows, meaning that MacOS and Li
 
 ### Cloning the repository
 
+1. Verify that git is installed with `git --version`. If not, then install it from [https://git-scm.com/](https://git-scm.com/) website.
 1. `git clone https://github.com/Averagenormaljoe/Neural-Style-Transfer`
-2. `cd Neural-Style-Transfer`
+1. `cd Neural-Style-Transfer`
 
 ## Setup instructions
 
@@ -112,7 +114,7 @@ It supports multi neural style transfer, video, real-time. This is based on the 
 
 ### Gatys et al. Model
 
-This model trades speed for sylizatoin quality. Note that WebCam mode is not available with this model.
+This model trades speed for sylization quality. Note that WebCam mode is not available with this model.
 
 ### Johnson et al. Model
 
@@ -143,7 +145,11 @@ Takes a photo from the user's camera to use as the content image. The user click
 
 Stylizes content from the user webcam. Note this may cause delays due to style processing. Requires access from the user camera.
 
+## Youtube Link
+
 ## To do
+
+Add multi neural style transfer to the models.
 
 ## Issues
 
