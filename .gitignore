@@ -124,7 +124,7 @@ dmypy.json
 *pb
 
 .pyre/
-
+.pyre_configuration
 
 .pytype/
 *keras
@@ -137,7 +137,7 @@ cython_debug/
 *keras
 *data-00000-of-00001
 *index
-
+*variables/
 .ruff_cache/
 
 
