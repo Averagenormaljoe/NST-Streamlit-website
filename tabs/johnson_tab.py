@@ -7,8 +7,8 @@ from johnson import johnson_header, johnson_image_input, johnson_webcam_input
 from data import style_models_name
 
 def johnson_interface():
-    select_model_name : str | None = st.sidebar.selectbox("Choose the style model: ", style_models_name, key="johnson_model_selector")
-    method = method_slider(key="johnson_method")
+    select_model_name : str | None = st.selectbox("Choose the style model: ", style_models_name, key="johnson_model_selector")
+    method = method_slider("johnson_method")
     match method:
         case 'Image':
             content_image = st.file_uploader(

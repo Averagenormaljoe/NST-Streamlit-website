@@ -1,3 +1,4 @@
+from turtle import mode
 import requests
 import streamlit as st
 import numpy as np
@@ -9,14 +10,31 @@ import tensorflow as tf
 from components import processing_btn
 from API import transfer_style
 import os
+from keras.layers import TFSMLayer
+def is_pb_model(file_name : str) -> bool:
+    return file_name.lower().endswith(".pb")
 
-def is_keras_model(file_name : str):
+def is_keras_model(file_name : str) -> bool:
     return file_name.lower().endswith(".keras")
+
+
+def contains_pb_model(dir_path: str) -> bool:
+    if not os.path.isdir(dir_path):
+        return False
+    return any(file.lower().endswith(".pb") for file in os.listdir(dir_path))
+
 
 def load_model(model_path : str):
     if is_keras_model(model_path):
         model = tf.keras.models.load_model(model_path)
         return model
+    elif contains_pb_model(model_path):
+        print(model_path)
+        loaded = tf.saved_model.load(model_path)
+        print("Signature:",loaded.signatures["serving_default"].structured_input_signature)
+        model = TFSMLayer(model_path, call_endpoint="serving_default")
+        return model
+
     hub_module = hub.load(model_path)
     return hub_module
 
@@ -85,10 +103,10 @@ def download_generated_image(generated_image):
     
     
 def get_model_path(use_main : bool = False) -> str:
-    main_model_path : str = "main_model/model.keras"
+    main_model_path : str = "exported_model"
     magenta_model_path : str = "https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2"
     # Path of the pre-trained TF model
-    model_path: str = magenta_model_path if use_main else main_model_path    
+    model_path: str =  magenta_model_path   
     return model_path
 def generate_image_btn(content_image,style_image):
     if content_image is not None and style_image is not None:

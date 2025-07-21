@@ -1,3 +1,4 @@
+from torch import mul
 import streamlit as st
 from streamlit.runtime.uploaded_file_manager import UploadedFile
 def processing_btn(is_processing : bool) -> bool:
@@ -13,7 +14,7 @@ def file_uploader_for_images(method : str =  "", image_types : list[str] = ['png
 
     with col2:
         style_image : UploadedFile | None = st.file_uploader(
-            "Upload Style Image (PNG & JPG images only)", type=image_types, key=style_key)
+            "Upload Style Image (PNG & JPG images only)", type=image_types, key=style_key, multiple_files=True)
     with col1:
         if method == 'Image':
             content_image : UploadedFile | None = st.file_uploader(
