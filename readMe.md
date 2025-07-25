@@ -52,11 +52,7 @@ Note this application was primarily tested in Windows, meaning that MacOS and Li
 
 'venv\Scripts\activate' (Windows) or 'source venv\Scripts\activate' (MacOS and Linux).
 
-<<<<<<< HEAD
-'source venv/Scripts/activate' (Win&Bash).
-=======
-source venv/Scripts/activate (Win&Bash)
->>>>>>> video_transfer
+source venv/Scripts/activate (Win&Bash).
 
 3. Install the libraries using:
 

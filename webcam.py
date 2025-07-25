@@ -1,4 +1,5 @@
 from PIL import Image
+from matplotlib import style
 import streamlit as st
 from streamlit_webrtc import webrtc_streamer
 import cv2
@@ -24,8 +25,8 @@ def webcam_input(style_model_name,style_image,webcam_stylization : bool = True, 
 
     model_path: str = get_model_path(True)
     model = load_model(model_path, width)
-    
-    open_style_image = Image.open(style_image) if style_image is not None else None
+    style_image_list = [style_image] if isinstance(style_image, str) else style_image  
+    open_style_image = Image.open(style_image_list[0]) if style_image_list else None
     def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
         if style_image is None or webcam_stylization is False:
             return frame
