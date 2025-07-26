@@ -64,7 +64,7 @@ source venv/Scripts/activate (Win&Bash).
 
 5. To start streamlit project, run in the terminal:
 
-'streamlit run app.py'
+'streamlit run app.py' or 'python -m streamlit run app.py'
 
 6. Use the application
 

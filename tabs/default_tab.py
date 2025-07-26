@@ -1,8 +1,11 @@
+from requests import get
 import streamlit as st
 from PIL import Image
 from typing import Optional
-from UI_components import camera_component, method_slider, render_ui_sliders
+from UI_components import camera_component, method_slider
 from gatys import process_gatys, render_gatys_ui_sliders
+
+from ui_video import get_video_uploader
 from helper import display_instructions, generate_image_btn
 from webcam_methods import process_webcam
 from data import style_models_name
@@ -51,6 +54,9 @@ def default_tab():
             picture = camera_component()
         case 'Video':
             video_uploader = get_video_uploader(video_types=video_types, key="video_uploader")
+            if video_uploader is not None:
+                st.info("Video uploaded successfully.")
+                return
     with col2:
         style_image = st.file_uploader(
             "Upload Style Image (PNG & JPG images only)", type=content_types)

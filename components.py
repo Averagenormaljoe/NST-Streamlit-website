@@ -1,4 +1,3 @@
-from torch import mul
 import streamlit as st
 from streamlit.runtime.uploaded_file_manager import UploadedFile
 def processing_btn(is_processing : bool) -> bool:

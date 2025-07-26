@@ -1,6 +1,6 @@
 import streamlit as st
 from PIL import Image
-from video_UI import get_video_ui_sliders
+from ui_video import get_video_ui_sliders
 from helper import display_instructions
 from upload_types import content_types, video_types
 from video_transfer import video_transfer_style
