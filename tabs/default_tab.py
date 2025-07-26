@@ -1,3 +1,4 @@
+from pyexpat import model
 import streamlit as st
 from PIL import Image
 from typing import Optional
@@ -20,8 +21,9 @@ def video_process(video_file,style_images,width_resolution : int,height_resoluti
                 # read style images as numpy arrays
                 style_imgs = [Image.open(img) for img in style_images]
                 #sStylize video (implement this function in your API)
+                model_path = "https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2"
                 video_transfer_style(
-                    video_file,  style_imgs[0], width_resolution,height_resolution,fps=fps
+                    video_file,  style_imgs[0], width_resolution,height_resolution,fps=fps,model_path=model_path
                     )
 
 if "webcam_stylization_enabled" not in st.session_state:

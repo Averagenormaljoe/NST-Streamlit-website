@@ -44,7 +44,6 @@ def webcam_input(style_model_name,style_image,webcam_stylization : bool = True, 
         # cv2.resize used in a forked thread may cause memory leaks
         input = np.asarray(Image.fromarray(image).resize((width, int(width * orig_h / orig_w))))
 
-        #transferred = style_transfer(input, model)
         if type == "main":
             transferred = open_styled_image(input,open_style_image,model)
         elif type == "johnson":

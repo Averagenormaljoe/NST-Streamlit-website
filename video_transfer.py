@@ -1,7 +1,6 @@
 from io import BufferedReader
 import os
 from pyexpat import model
-import re
 import tempfile
 import cv2
 import numpy as np
@@ -15,11 +14,11 @@ from helper import get_model_path, open_styled_image
 from video_helper import tensor_toimage, image_read
 from cv2.typing import MatLike
 
-def video_validation(input_video: UploadedFile | None,style_image) -> bool:
-    if style_image is None:
+def video_validation(input_video: UploadedFile | None,style_image,model_path) -> bool:
+    if style_image is None and not model_path.endswith(".t7"):
         st.error(f"Could not read style image from {style_image}")
         return False
-    if input_video is None:
+    if input_video is None :
         st.error(f"Could not read video file {input_video}")
         return False
 
@@ -38,7 +37,7 @@ def video_setup(temp_path: str, temp_dir: str, width: int, height: int, fps: int
     if not cap.isOpened():
         st.error(f"Could not open video file {temp_path}.")
         return None, None, None
-    fourcc = cv2.VideoWriter_fourcc(*'m', 'p', '4', 'v')
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     output_video_path = os.path.join(temp_dir, "NST_video.mp4")
     out = cv2.VideoWriter(output_video_path, fourcc, fps, (width, height))
     
@@ -80,8 +79,9 @@ def end_video(output_video_path: str, is_processing: bool = False):
 
 def video_transfer_style(input_video : UploadedFile | None,style_image , width : int =256,height : int =256,fps : int =30, model_path : str = ""):
     is_processing : bool = True
-    if not video_validation(input_video, style_image):
+    if not video_validation(input_video, style_image,model_path):
         return
+    print("Model path: ", model_path)
     if model_path.endswith(".t7"):
         pil_style_image = None
     else:
