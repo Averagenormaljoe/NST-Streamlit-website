@@ -6,7 +6,13 @@ from cv2.typing import MatLike
 
 
 def get_model_from_path(style_model_path):
-    model = cv2.dnn.readNetFromTorch(style_model_path)
+    if style_model_path.endswith('.t7'):
+        model = cv2.dnn.readNetFromTorch(style_model_path)
+    elif style_model_path.endswith('.pth'):
+        model = cv2.dnn.readNetFromTensorflow(style_model_path)
+    else:
+        st.error(f"The model path is invalid: {style_model_path}")
+        return None
     return model
 
 def style_transfer(image, model):
