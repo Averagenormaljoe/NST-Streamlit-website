@@ -20,9 +20,9 @@ def video_process(video_file,style_images,width_resolution : int,height_resoluti
         st.info(f"{len(style_images)} style image(s) selected.")
         if st.button("Generate Styled Video"):
             with st.spinner("Stylizing video... This may take a few minutes."):
-                # Read style images as numpy arrays
+                # read style images as numpy arrays
                 style_imgs = [Image.open(img) for img in style_images]
-                # Stylize video (implement this function in your API)
+                #sStylize video (implement this function in your API)
                 video_transfer_style(
                     video_file,  style_imgs[0], width_resolution,height_resolution,fps=fps
                     )
@@ -46,8 +46,7 @@ def default_interface(method: str = "Image", content_image: Optional[UploadedFil
             if picture is not None:
                 generate_image_btn(picture, style_image)
         case 'Webcam':
-            pass
-            
+            process_webcam(style_image)
         case _:
             st.error("Please select a valid method from the sidebar.")
 def default_tab():
