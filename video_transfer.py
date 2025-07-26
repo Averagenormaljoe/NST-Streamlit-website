@@ -131,7 +131,7 @@ def process_frame(width : int, height : int, cap : cv2.VideoCapture, style_image
         if not ret:
             break
         resized_frame : MatLike = cv2.resize(frame, (width, height))
-        stylized_image = get_stylized_image(resized_frame, style_image, hub_model)
+        stylized_image = get_stylized_image(resized_frame, style_image, hub_model,model_path)
         out.write(stylized_image)
         frame_end_time : float = time.time()
         print(f"Processed frame in {frame_end_time - frame_start_time:.2f} seconds")
@@ -141,7 +141,7 @@ def process_frame(width : int, height : int, cap : cv2.VideoCapture, style_image
     return cap, out
 
 
-def get_stylized_image(frame, style_image, hub_model,model_path : str = ""):
+def get_stylized_image(frame, style_image, hub_model,model_path):
     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     frame = image_read(frame)
     if model_path.endswith(".t7"):
