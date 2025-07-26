@@ -15,10 +15,10 @@ from cv2.typing import MatLike
 
 def video_validation(input_video: UploadedFile | None,style_image) -> bool:
     if style_image is None:
-        st.error("Could not read style image from {style_image_path}")
+        st.error(f"Could not read style image from {style_image}")
         return False
     if input_video is None:
-        st.error("Could not read video file {input_video_path}")
+        st.error(f"Could not read video file {input_video}")
         return False
 
     return True

@@ -10,6 +10,10 @@ def method_slider(key="method_selector") -> str:
 def camera_component():
     enable : bool = st.checkbox("Enable camera")
     picture = st.camera_input("Take a picture", disabled=not enable)
+    if picture is None:
+        st.warning("Please take a picture using the camera.")
+        return None
+    
     return picture
 
 def display_image(image_path: str):
@@ -51,7 +55,7 @@ def example_images():
         st.video("./assets/video/man_at_sea_sliced.mp4")
 def header():
     st.markdown(
-        '<h1 style="text-align:center;">Style Transfer App</h1>', unsafe_allow_html=True)
+        '<h1 style="text-align:center;">Neural Style Transfer App</h1>', unsafe_allow_html=True)
     st.markdown(
         '<p style="text-align:center;font-size: 20px;font-weight: 550;">Choose a method from the sidebar to get started!</p>', unsafe_allow_html=True)
     

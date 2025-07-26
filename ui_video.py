@@ -3,9 +3,12 @@ def get_video_uploader(video_types=["mp4", "gif"], key: str = "video_uploader"):
     video_file = st.file_uploader(
         "Upload Video (MP4 & gif only)", type=["mp4", "gif"], key=key
     )
+    if video_file is not None:
+        st.info("Video uploaded successfully.")
+
     return video_file
 
-def get_video_ui_sliders() -> tuple[int, int, int, float, float]: 
+def get_ui_video_sliders() -> tuple[int, int, int, float, float]: 
     # Resolution slider
     # width
     width_resolution = st.slider(

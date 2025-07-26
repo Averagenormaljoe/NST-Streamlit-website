@@ -8,7 +8,7 @@ from tabs.huang_tab import huang_tab
 from tabs.default_tab import default_tab
 def tabs_display():
     tab_list : list[str] = ["Main (StyleMotion)", "Johnson model", "Gatys model", "Huang model"]
-    tab1, tab2,tab3,tab4 = st.tabs(tab_list[0:3])  # Exclude the last tab for now
+    tab1, tab2,tab3,tab4 = st.tabs(tab_list[0:4])  # Exclude the last tab for now
 
     # -------------Header Section------------------------------------------------
 

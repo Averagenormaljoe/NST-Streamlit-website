@@ -11,7 +11,7 @@ from webcam_methods import process_webcam
 from data import style_models_name
 from streamlit.runtime.uploaded_file_manager import UploadedFile
 from upload_types import content_types, video_types
-from video_UI import get_video_uploader
+from ui_video import get_video_uploader
 
 if "webcam_stylization_enabled" not in st.session_state:
     st.session_state.webcam_stylization_enabled = False
@@ -26,6 +26,7 @@ def default_interface(method: str = "Image", content_image: Optional[UploadedFil
             print("Style Image: ", style_image)
             generate_image_btn(content_image, style_image)
         case 'Video':
+            
             pass
         case 'Camera':
             if picture is not None:
@@ -54,9 +55,7 @@ def default_tab():
             picture = camera_component()
         case 'Video':
             video_uploader = get_video_uploader(video_types=video_types, key="video_uploader")
-            if video_uploader is not None:
-                st.info("Video uploaded successfully.")
-                return
+          
     with col2:
         style_image = st.file_uploader(
             "Upload Style Image (PNG & JPG images only)", type=content_types)

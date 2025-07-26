@@ -31,7 +31,7 @@ def render_gatys_ui_sliders() -> tuple[int, float]:
     )
     lr = st.slider(
         "Select Learning Rate",
-        min_value=0, max_value=1.0, value=0.1, step=0.01,
+        min_value=0.0, max_value=1.0, value=0.1, step=0.01,
         help="Set the learning rate for the optimizer."
     )
     return epoch_slider, style_intensity

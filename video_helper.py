@@ -46,7 +46,7 @@ def process_video(image):
     style_im = open_style_image(image)
 
     cap = cv2.VideoCapture("assets/man_at_sea_sliced.mp4")
-    #in order to get the size of width and shape of video, we used first frame of video
+
     ret, frame = cap.read()
     frame_width = read_frame(frame, 1)
     frame_height= read_frame(frame, 0)
