@@ -1,6 +1,8 @@
 from encodings.punycode import T
 from io import BufferedReader
+from math import pi
 import os
+import re
 import tempfile
 import cv2
 import numpy as np
@@ -34,7 +36,7 @@ import time
 def video_setup(temp_path: str, temp_dir: str, width: int, height: int, fps: int = 30) -> tuple[Optional[cv2.VideoCapture], Optional[cv2.VideoWriter], Optional[str]]:
     cap = cv2.VideoCapture(temp_path)
     if not cap.isOpened():
-        st.error("Could not open video file {input_video_path}")
+        st.error(f"Could not open video file {temp_path}.")
         return None, None, None
     fourcc = cv2.VideoWriter_fourcc(*'m', 'p', '4', 'v')
     output_video_path = os.path.join(temp_dir, "NST_video.mp4")
@@ -48,37 +50,81 @@ def read_temp_video(input_video, temp_path : str):
             st.error("No video file uploaded.")
             return
         f.write(input_video.read())
- 
 
-def video_transfer_style(input_video : UploadedFile | None,style_image , width : int =256,height : int =256,fps : int =30):
-
-    is_processing : bool = True
-    if not video_validation(input_video, style_image):
-        return
-    pil_style_image = image_read(style_image)
-    
-    
-    is_processing = processing_btn(is_processing)
-    
-    temp_dir, temp_path = generate_temp_paths()
+def prepare_directory(input_video):
+    temp_dir, temp_path = generate_temp_paths(input_video.name)
 
     read_temp_video(input_video, temp_path)
     if not os.path.exists(temp_path):
         st.error(f"Could not save video file to {temp_path}.")
-        return
+        return False, temp_dir, temp_path
     print(f"Video file saved to {temp_path}")
+    return True,temp_dir, temp_path
 
-    
-    model_path : str = get_model_path(True)
-    cap, out, output_video_path = video_setup(temp_path,temp_dir,width,height,fps)
+def valid_video_setup(cap,out, output_video_path):
     if cap is None or out is None or output_video_path is None:
-        st.error(f"Could not open video file {temp_path}.")
-        return
-    cap, out = process_frame(width, height, cap, pil_style_image, model_path, out)
-  
-  
+        st.error("Could not open video file.")
+        return False
+    return True
+
+def finish_video(cap: cv2.VideoCapture, out: cv2.VideoWriter):
+    cap.release()
+    out.release()
+    cv2.destroyAllWindows()
+   
+def end_video(output_video_path: str, is_processing: bool = False):
     print(f"Styled video saved to {output_video_path}")
     is_processing = display_styled_video(output_video_path,is_processing)
+    return is_processing
+    
+
+def video_transfer_style(input_video : UploadedFile | None,style_image , width : int =256,height : int =256,fps : int =30, model_path : str = ""):
+    is_processing : bool = True
+    if not video_validation(input_video, style_image):
+        return
+    if model_path.endswith(".t7"):
+        pil_style_image = None
+    else:
+        pil_style_image = image_read(style_image)
+
+    is_processing = processing_btn(is_processing)
+    state,temp_dir, temp_path = prepare_directory(input_video)
+
+    read_temp_video(input_video, temp_path)
+    if not state:
+        return
+    cap, out, output_video_path = video_setup(temp_path,temp_dir,width,height,fps)
+    if not valid_video_setup(cap, out, output_video_path):
+        return
+    cap, out = process_frame(width, height, cap, pil_style_image, model_path, out)
+    is_processing = end_video(output_video_path, is_processing)
+  
+
+    
+
+def video_johnson_transfer_style(input_video : UploadedFile | None, width : int =256, height : int =256, fps : int =30, model_path : str  = ""):
+    is_processing : bool = True
+    if not video_validation(input_video, True):
+        return
+
+    
+    is_processing = processing_btn(is_processing)
+    
+    state,temp_dir, temp_path = prepare_directory(input_video)
+
+    read_temp_video(input_video, temp_path)
+    if not state:
+        return
+  
+
+    
+    cap, out, output_video_path = video_setup(temp_path,temp_dir,width,height,fps)
+    if not valid_video_setup(cap, out, output_video_path):
+        return
+    cap, out = process_frame(width, height, cap,None ,model_path, out)
+    is_processing = end_video(output_video_path, is_processing)
+  
+ 
     
 def display_styled_video(output_video_path : str, is_processing : bool = False):
     if output_video_path is None:
@@ -113,8 +159,7 @@ def process_frame(width : int, height : int, cap : cv2.VideoCapture, style_image
         out.write(stylized_image)
         frame_end_time : float = time.time()
         print(f"Processed frame in {frame_end_time - frame_start_time:.2f} seconds")
-    cap.release()
-    out.release()
+    finish_video(cap, out)
     end_time : float = time.time()
     print(f"Video style transfer processing time: {end_time - start_time:.2f} seconds")
     return cap, out

@@ -1,3 +1,4 @@
+from operator import contains
 import imutils
 import cv2
 import numpy as np
@@ -10,8 +11,9 @@ def get_model_from_path(style_model_path):
         model = cv2.dnn.readNetFromTorch(style_model_path)
     elif style_model_path.endswith('.pth'):
         model = cv2.dnn.readNetFromTensorflow(style_model_path)
+   elif style_model_path.contains('.pb'):
     else:
-        st.error(f"The model path is invalid: {style_model_path}")
+        st.error(f"This model path is invalid: {style_model_path}")
         return None
     return model
 

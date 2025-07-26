@@ -10,9 +10,7 @@ from helper import get_model_path, open_styled_image
 from turn import get_ice_servers
 from streamlit_session_memo import st_session_memo
 from johnson_helper import get_model_from_path, style_transfer
-def get_model_from_path(style_model_path):
-    model = cv2.dnn.readNetFromTorch(style_model_path)
-    return model
+
 
 def webcam_input(style_model_name,style_image,webcam_stylization : bool = True, type: str = "main"):
     WIDTH = st.sidebar.select_slider('QUALITY (May reduce the speed)', list(range(150, 501, 50)))
