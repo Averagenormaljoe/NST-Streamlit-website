@@ -4,14 +4,15 @@ import cv2
 import numpy as np
 import streamlit as st
 from cv2.typing import MatLike
-
+import tensorflow_hub as hub
 
 def get_model_from_path(style_model_path):
     if style_model_path.endswith('.t7'):
         model = cv2.dnn.readNetFromTorch(style_model_path)
     elif style_model_path.endswith('.pth'):
         model = cv2.dnn.readNetFromTensorflow(style_model_path)
-   elif style_model_path.contains('.pb'):
+    elif style_model_path.contains('tfhub'):
+        model = hub.load(style_model_path)
     else:
         st.error(f"This model path is invalid: {style_model_path}")
         return None

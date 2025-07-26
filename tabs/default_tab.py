@@ -1,14 +1,11 @@
-from requests import get
 import streamlit as st
 from PIL import Image
 from typing import Optional
 from UI_components import camera_component, method_slider
-from gatys import process_gatys, render_gatys_ui_sliders
 from ui_video import get_ui_video_sliders
 from ui_video import get_video_uploader
 from helper import display_instructions, generate_image_btn
 from webcam_methods import process_webcam
-from data import style_models_name
 from streamlit.runtime.uploaded_file_manager import UploadedFile
 from upload_types import content_types, video_types
 from ui_video import get_video_uploader

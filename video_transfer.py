@@ -1,11 +1,11 @@
-from encodings.punycode import T
 from io import BufferedReader
-from math import pi
 import os
+from pyexpat import model
 import re
 import tempfile
 import cv2
 import numpy as np
+from johnson_helper import style_transfer,get_model_from_path
 import tensorflow_hub as hub
 import streamlit as st
 from streamlit.runtime.uploaded_file_manager import UploadedFile
@@ -100,30 +100,7 @@ def video_transfer_style(input_video : UploadedFile | None,style_image , width :
     is_processing = end_video(output_video_path, is_processing)
   
 
-    
 
-def video_johnson_transfer_style(input_video : UploadedFile | None, width : int =256, height : int =256, fps : int =30, model_path : str  = ""):
-    is_processing : bool = True
-    if not video_validation(input_video, True):
-        return
-
-    
-    is_processing = processing_btn(is_processing)
-    
-    state,temp_dir, temp_path = prepare_directory(input_video)
-
-    read_temp_video(input_video, temp_path)
-    if not state:
-        return
-  
-
-    
-    cap, out, output_video_path = video_setup(temp_path,temp_dir,width,height,fps)
-    if not valid_video_setup(cap, out, output_video_path):
-        return
-    cap, out = process_frame(width, height, cap,None ,model_path, out)
-    is_processing = end_video(output_video_path, is_processing)
-  
  
     
 def display_styled_video(output_video_path : str, is_processing : bool = False):
@@ -146,8 +123,7 @@ def video_ready_st(f : BufferedReader):
         
         
 def process_frame(width : int, height : int, cap : cv2.VideoCapture, style_image, model_path : str,out : cv2.VideoWriter):
-    new_model_path : str = get_model_path(True)
-    hub_model = hub.load(new_model_path)
+    hub_model = get_model_from_path(model_path)
     start_time : float = time.time()
     while True:
         frame_start_time : float = time.time()
@@ -165,10 +141,13 @@ def process_frame(width : int, height : int, cap : cv2.VideoCapture, style_image
     return cap, out
 
 
-def get_stylized_image(frame, style_image, hub_model):
+def get_stylized_image(frame, style_image, hub_model,model_path : str = ""):
     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     frame = image_read(frame)
-    stylized_frame = hub_model(tf.constant(frame), tf.constant(style_image))[0]
+    if model_path.endswith(".t7"):
+        stylized_frame = style_transfer(hub_model,frame)
+    else:
+        stylized_frame = hub_model(tf.constant(frame), tf.constant(style_image))[0]
     stylized_image = tensor_toimage(stylized_frame)
     return stylized_image
 
