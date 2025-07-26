@@ -1,16 +1,16 @@
 from io import BufferedReader
 import os
-from pyexpat import model
 import tempfile
 import cv2
+from matplotlib.pylab import f
 import numpy as np
 from johnson_helper import style_transfer,get_model_from_path
-import tensorflow_hub as hub
 import streamlit as st
+import subprocess
 from streamlit.runtime.uploaded_file_manager import UploadedFile
 import tensorflow as tf
 from components import processing_btn
-from helper import get_model_path, open_styled_image
+from helper import  open_styled_image
 from video_helper import tensor_toimage, image_read
 from cv2.typing import MatLike
 
@@ -18,7 +18,7 @@ def video_validation(input_video: UploadedFile | None,style_image,model_path) ->
     if style_image is None and not model_path.endswith(".t7"):
         st.error(f"Could not read style image from {style_image}")
         return False
-    if input_video is None :
+    if input_video is None:
         st.error(f"Could not read video file {input_video}")
         return False
 
@@ -32,13 +32,13 @@ def generate_temp_paths(video_name : str = "input_video.mp4") -> tuple[str, str]
 from typing import Optional
 import time
 
-def video_setup(temp_path: str, temp_dir: str, width: int, height: int, fps: int = 30) -> tuple[Optional[cv2.VideoCapture], Optional[cv2.VideoWriter], Optional[str]]:
+def video_setup(temp_path: str, temp_dir: str,name : str, width: int, height: int, fps: int = 30) -> tuple[Optional[cv2.VideoCapture], Optional[cv2.VideoWriter], Optional[str]]:
     cap = cv2.VideoCapture(temp_path)
     if not cap.isOpened():
-        st.error(f"Could not open video file {temp_path}.")
+        st.error(f"Could not open video file {temp_path} for cap.")
         return None, None, None
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    output_video_path = os.path.join(temp_dir, "NST_video.mp4")
+    output_video_path = os.path.join(temp_dir, name)
     out = cv2.VideoWriter(output_video_path, fourcc, fps, (width, height))
     
     return cap, out, output_video_path
@@ -48,10 +48,11 @@ def read_temp_video(input_video, temp_path : str):
         if input_video is None:
             st.error("No video file uploaded.")
             return
-        f.write(input_video.read())
+        f.write(input_video.getbuffer())
 
-def prepare_directory(input_video):
-    temp_dir, temp_path = generate_temp_paths(input_video.name)
+def prepare_directory(input_video,name):
+
+    temp_dir, temp_path = generate_temp_paths(name)
 
     read_temp_video(input_video, temp_path)
     if not os.path.exists(temp_path):
@@ -69,7 +70,6 @@ def valid_video_setup(cap,out, output_video_path):
 def finish_video(cap: cv2.VideoCapture, out: cv2.VideoWriter):
     cap.release()
     out.release()
-    cv2.destroyAllWindows()
    
 def end_video(output_video_path: str, is_processing: bool = False):
     print(f"Styled video saved to {output_video_path}")
@@ -88,15 +88,24 @@ def video_transfer_style(input_video : UploadedFile | None,style_image , width :
         pil_style_image = image_read(style_image)
 
     is_processing = processing_btn(is_processing)
-    state,temp_dir, temp_path = prepare_directory(input_video)
+    print("input_video: ", input_video)
+    name = input_video.name if input_video else ""
+    print(f"Input video name: {name}")
+    state,temp_dir, temp_path = prepare_directory(input_video,name)
 
     read_temp_video(input_video, temp_path)
     if not state:
         return
-    cap, out, output_video_path = video_setup(temp_path,temp_dir,width,height,fps)
+    cap, out, output_video_path = video_setup(temp_path,temp_dir, name,width,height,fps)
     if not valid_video_setup(cap, out, output_video_path):
         return
     cap, out = process_frame(width, height, cap, pil_style_image, model_path, out)
+    print("cap: ", cap, "out: ", out)
+    finish_video(cap, out)
+    converted_video = "./testh264.mp4"
+    command = f"ffmpeg -y -i {output_video_path} -c:v libx264 {converted_video}"
+    subprocess.call(args=command.split(" "))
+    
     is_processing = end_video(output_video_path, is_processing)
   
 
@@ -108,15 +117,16 @@ def display_styled_video(output_video_path : str, is_processing : bool = False):
         st.error("No video generated.")
         return
     col1, col2 = st.columns(2)
-    with open(output_video_path, "rb") as f:
-        with col1:
-            st.video(f.read(), format="video/mp4")
+    with col1:
+        video_format = "video/mp4"
+        with open(output_video_path, "rb") as f:
+            st.video(f, format= video_format)
     with col2:
         is_processing = False
-        video_ready_st(f)
+        video_ready_st(output_video_path)
     return is_processing     
 
-def video_ready_st(f : BufferedReader):
+def video_ready_st(f : str):
     st.markdown("</br>", unsafe_allow_html=True)
     st.markdown("<b> Your Stylized Video is Ready! Click below to download it. </b>", unsafe_allow_html=True)
     st.download_button("Download your video", f, file_name="output_video.mp4", mime="video/mp4")   
@@ -135,7 +145,7 @@ def process_frame(width : int, height : int, cap : cv2.VideoCapture, style_image
         out.write(stylized_image)
         frame_end_time : float = time.time()
         print(f"Processed frame in {frame_end_time - frame_start_time:.2f} seconds")
-    finish_video(cap, out)
+
     end_time : float = time.time()
     print(f"Video style transfer processing time: {end_time - start_time:.2f} seconds")
     return cap, out

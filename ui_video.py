@@ -1,7 +1,7 @@
 import streamlit as st
-def get_video_uploader(video_types=["mp4", "gif"], key: str = "video_uploader"):
+def get_video_uploader(video_types=["mp4", "gif","mov"], key: str = "video_uploader"):
     video_file = st.file_uploader(
-        "Upload Video (MP4 & gif only)", type=["mp4", "gif"], key=key
+        "Upload Video (MP4 & gif only)", type=video_types, key=key
     )
     if video_file is not None:
         st.info("Video uploaded successfully.")
