@@ -46,7 +46,7 @@ def default_interface(method: str = "Image", content_image: Optional[UploadedFil
             if picture is not None:
                 generate_image_btn(picture, style_image)
         case 'Webcam':
-            process_webcam(style_image)
+            print("In webcam mode")
         case _:
             st.error("Please select a valid method from the sidebar.")
 def default_tab():
