@@ -1,5 +1,6 @@
 from io import BufferedReader
 import os
+import re
 import tempfile
 import cv2
 from matplotlib.pylab import f
@@ -46,8 +47,8 @@ def video_setup(name : str, width: int, height: int, fps: int = 30) -> tuple[Opt
         return None, None, None
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     temp_dir = tempfile.mkdtemp()
-    
-    output_video_path = os.path.join(temp_dir, name)
+    temp_video  = 'temp_file_2.mp4'
+    output_video_path = os.path.join(temp_dir, temp_video)
     out = cv2.VideoWriter(output_video_path, fourcc, video_fps, (width, height))
     
     return cap, out, output_video_path
@@ -106,20 +107,24 @@ def video_transfer_style(input_video : UploadedFile | None,style_image , width :
     cap, out = process_frame(width, height, cap, pil_style_image, model_path, out)
     print("cap: ", cap, "out: ", out)
     finish_video(cap, out)
+    converted_video = save_ffmpg(output_video_path)
 
    
-    if output_video_path and os.path.exists(output_video_path):
-        st.video(output_video_path, format="video/mp4")
+    if converted_video  and os.path.exists(converted_video ):
+        st.video(converted_video , format="video/mp4")
     else:
         st.error("Video file not found after processing.")
     
-    #is_processing = end_video(output_video_path, is_processing)
+    is_processing = end_video(converted_video , is_processing)
    
   
 def save_ffmpg(output_video_path : str):
-    converted_video = "./testh264.mp4"
-    command = f"ffmpeg -y -i {output_video_path} -c:v libx264 {converted_video}"
+    temp_dir = tempfile.mkdtemp()
+    converted_video = "temp_video.mp4"
+    path = os.path.join(temp_dir, converted_video)
+    command = f"ffmpeg -y -i {output_video_path} -c:v libx264 {path}"
     subprocess.call(args=command.split(" "))
+    return path
 
  
     
