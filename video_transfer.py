@@ -99,21 +99,24 @@ def video_transfer_style(input_video : UploadedFile | None,style_image , width :
     state,name = prepare_directory(input_video,name)
     if not state:
         return
-    cap, out, output_video_path = video_setup(name, name,width,height,fps)
+    cap, out, output_video_path = video_setup(name,width,height,fps)
     if not valid_video_setup(cap, out, output_video_path):
         return
     cap, out, frames = process_frame(width, height, cap, pil_style_image, model_path, out)
     print("cap: ", cap, "out: ", out)
     finish_video(cap, out)
+
+   
+    if frames:
+        st.video(frames, format="video/mp4")
+    
+    #is_processing = end_video(output_video_path, is_processing)
+   
+  
+def save_ffmpg(output_video_path : str):
     converted_video = "./testh264.mp4"
     command = f"ffmpeg -y -i {output_video_path} -c:v libx264 {converted_video}"
     subprocess.call(args=command.split(" "))
-    
-    is_processing = end_video(output_video_path, is_processing)
-    if frames:
-        st.video(frames, format="video/mp4")
-  
-
 
  
     
@@ -139,6 +142,7 @@ def video_ready_st(f : str):
         
 def process_frame(width : int, height : int, cap : cv2.VideoCapture, style_image, model_path : str,out : cv2.VideoWriter):
     hub_model = get_model_from_path(model_path)
+    print("Hub model: ", hub_model)
     start_time : float = time.time()
     frames : list = []
     print("Video Duration: ", cap.get(cv2.CAP_PROP_FRAME_COUNT) / cap.get(cv2.CAP_PROP_FPS))
@@ -174,7 +178,7 @@ def get_stylized_image(frame, style_image, hub_model,model_path):
     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     frame = image_read(frame)
     if model_path.endswith(".t7"):
-        stylized_frame = style_transfer(hub_model,frame)
+        stylized_frame = style_transfer(frame,hub_model)
     else:
         stylized_frame = hub_model(tf.constant(frame), tf.constant(style_image))[0]
     stylized_image = tensor_toimage(stylized_frame)

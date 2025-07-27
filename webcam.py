@@ -1,11 +1,12 @@
 from PIL import Image
 from matplotlib import style
+from requests import get
 import streamlit as st
 from streamlit_webrtc import webrtc_streamer
-import cv2
 import numpy as np
-import tensorflow_hub as hub
 import av
+import tensorflow_hub as hub
+from image_transfer import frame_to_image, get_result_image, resize_image
 from helper import get_model_path, open_styled_image
 from turn import get_ice_servers
 from streamlit_session_memo import st_session_memo
@@ -33,7 +34,7 @@ def webcam_input(style_model_name,style_image,webcam_stylization : bool = True, 
         if (style_image is None and type != "johnson" ) or webcam_stylization is False:
             return frame
 
-        image = frame.to_ndarray(format="bgr24")
+        image = frame_to_image(frame)
 
        
         if model is None:
@@ -42,16 +43,15 @@ def webcam_input(style_model_name,style_image,webcam_stylization : bool = True, 
         orig_h, orig_w = image.shape[0:2]
 
         # cv2.resize used in a forked thread may cause memory leaks
-        input = np.asarray(Image.fromarray(image).resize((width, int(width * orig_h / orig_w))))
-
+        input = resize_image(image, width, orig_h, orig_w)
         if type == "main":
             transferred = open_styled_image(input,open_style_image,model)
         elif type == "johnson":
             transferred = style_transfer(input, model)
 
-        result = Image.fromarray((transferred * 255).astype(np.uint8))
-        image = np.asarray(result.resize((orig_w, orig_h)))
-        return av.VideoFrame.from_ndarray(image, format="bgr24")
+    
+        image = get_result_image(transferred, orig_w, orig_h)
+        return image
 
     ctx = webrtc_streamer(
         key="neural-style-transfer",
