@@ -1,3 +1,4 @@
+from calendar import c
 from io import BufferedReader
 import io
 import os
@@ -48,14 +49,9 @@ def video_setup(name : str, width: int, height: int, fps: int = 30) -> tuple[Opt
     if not cap.isOpened():
         st.error(f"Could not open video file {name} for cap.")
         return None, None, None
-    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    temp_dir = tempfile.mkdtemp()
-    temp_video  = 'temp_file_2.mp4'
-    output_video_path = os.path.join(temp_dir, temp_video)
-    out = cv2.VideoWriter(output_video_path, fourcc, video_fps, (width, height))
-    
-    return cap, out, output_video_path
 
+    
+    return cap
 def get_temp_video(input_video):
     tfile = tempfile.NamedTemporaryFile(delete=False)
     tfile.write(input_video.read())
@@ -71,16 +67,15 @@ def prepare_directory(input_video,name):
     print(f"Video file saved to {name}")
     return True,name
 
-def valid_video_setup(cap,out, output_video_path):
-    if cap is None or out is None or output_video_path is None:
+def valid_video_setup(cap):
+    if cap is None:
         st.error("Could not open video file.")
         return False
     return True
 
-def finish_video(cap: cv2.VideoCapture, out: cv2.VideoWriter):
+def finish_video(cap: cv2.VideoCapture):
     cap.release()
-    out.release()
-   
+
 def end_video(output_video_path: str, is_processing: bool = False):
     print(f"Styled video saved to {output_video_path}")
     is_processing = display_styled_video(output_video_path,is_processing)
@@ -104,19 +99,14 @@ def video_transfer_style(input_video : UploadedFile | None,style_image , width :
     state,name = prepare_directory(input_video,name)
     if not state:
         return
-    cap, out, output_video_path = video_setup(name,width,height,fps)
-    if not valid_video_setup(cap, out, output_video_path):
+    cap = video_setup(name,width,height,fps)
+    if not valid_video_setup(cap):
         return
-    cap, out, converted_video = process_frame(width, height, cap, pil_style_image, model_path, out)
-    print("cap: ", cap, "out: ", out)
-    finish_video(cap, out)
-
-   
-    if converted_video  and converted_video:
-        st.video(converted_video , format="video/mp4")
-    else:
-        st.error("Video file not found after processing.")
-    
+    cap,converted_video = process_frame(width, height, cap, pil_style_image, model_path)
+    print("cap: ", cap)
+    if cap is None:
+        st.error("Could not process video frames.")
+        return
     is_processing = end_video(converted_video , is_processing)
    
   
@@ -137,8 +127,7 @@ def display_styled_video(output_video : str, is_processing : bool = False):
     col1, col2 = st.columns(2)
     with col1:
         video_format = "video/mp4"
-
-            st.video(output_video, format= video_format)
+        st.video(output_video, format= video_format)
     with col2:
         is_processing = False
         video_ready_st(output_video)
@@ -149,20 +138,36 @@ def video_ready_st(f : str):
     st.markdown("<b> Your Stylized Video is Ready! Click below to download it. </b>", unsafe_allow_html=True)
     st.download_button("Download your video", f, file_name="output_video.mp4", mime="video/mp4")   
         
+def prepare_steam( width: int, height: int):
+    output_memory_file = io.BytesIO()
+    output = av.open(output_memory_file, mode='w', format='mp4')
+    stream = output.add_stream('h264', rate=30)
+    stream.width = width
+    stream.height = height
+    stream.pix_fmt = 'yuv420p'
+    return output, stream, output_memory_file
 
-def process_frame(width : int, height : int, cap : cv2.VideoCapture, style_image, model_path : str,out : cv2.VideoWriter):
+def save_packet(stream, output, frame: av.VideoFrame):
+    packet = stream.encode(frame)
+    output.mux(packet)
+def close_stream(stream,output, output_memory_file: io.BytesIO):
+    # flush the stream
+    save_packet(stream, output, None)
+    output.close()
+
+    output_memory_file.seek(0)
+
+    return output_memory_file
+
+
+    
+def process_frame(width : int, height : int, cap : cv2.VideoCapture, style_image, model_path : str):
     hub_model = get_model_from_path(model_path)
     print("Hub model: ", hub_model)
     start_time : float = time.time()
     fps = cap.get(cv2.CAP_PROP_FPS)
     print("Video Duration: ", cap.get(cv2.CAP_PROP_FRAME_COUNT) / fps)
-    output_memory_file = io.BytesIO()
-    output = av.open(output_memory_file, 'w', format="mp4") 
-    stream = output.add_stream('h264',Fraction(fps))
-    stream.width = width  
-    stream.height = height  
-    stream.pix_fmt = 'yuv420p' 
-    stream.options
+    output, stream, output_memory_file = prepare_steam(width, height)
     try:
         while True:
             frame_start_time : float = time.time()
@@ -176,10 +181,8 @@ def process_frame(width : int, height : int, cap : cv2.VideoCapture, style_image
             if stylized_image is None:
                 print("Stylized frame is empty. Skipping frame...")
                 continue
-            out.write(stylized_image)
             stream_frame = av.VideoFrame.from_ndarray(stylized_image, format='bgr24')  
-            packet = stream.encode(stream_frame )
-            output.mux(packet)
+            save_packet(stream, output, stream_frame)
             frame_end_time : float = time.time()
             print(f"Processed frame in {frame_end_time - frame_start_time:.2f} seconds")
     except cv2.error as e:
@@ -187,15 +190,12 @@ def process_frame(width : int, height : int, cap : cv2.VideoCapture, style_image
     except Exception as e:
         print(f"Error during video stylization: {e}")
     finally:
-        finish_video(cap, out)
+        finish_video(cap)
         end_time : float = time.time()
         print(f"Video style transfer processing time: {end_time - start_time:.2f} seconds")
-    packet = stream.encode(None)
-    output.mux(packet)
-    output.close()
-
-    output_memory_file.seek(0)
-    return cap, out, output_memory_file
+        
+    close_stream(stream, output, output_memory_file)
+    return cap, output_memory_file
 
 
 def get_stylized_image(frame, style_image, hub_model,model_path,width):
