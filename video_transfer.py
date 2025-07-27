@@ -9,6 +9,8 @@ import numpy as np
 from johnson_helper import style_transfer,get_model_from_path
 import streamlit as st
 import subprocess
+import av
+from fractions import Fraction
 from streamlit.runtime.uploaded_file_manager import UploadedFile
 import tensorflow as tf
 from image_transfer import frame_to_image, get_result_image, resize_image
@@ -110,7 +112,7 @@ def video_transfer_style(input_video : UploadedFile | None,style_image , width :
     finish_video(cap, out)
 
    
-    if converted_video  and os.path.exists(converted_video):
+    if converted_video  and converted_video:
         st.video(converted_video , format="video/mp4")
     else:
         st.error("Video file not found after processing.")
@@ -128,18 +130,18 @@ def save_ffmpg(output_video_path : str):
 
  
     
-def display_styled_video(output_video_path : str, is_processing : bool = False):
-    if output_video_path is None:
+def display_styled_video(output_video : str, is_processing : bool = False):
+    if output_video is None:
         st.error("No video generated.")
         return
     col1, col2 = st.columns(2)
     with col1:
         video_format = "video/mp4"
-        with open(output_video_path, "rb") as f:
-            st.video(f, format= video_format)
+
+            st.video(output_video, format= video_format)
     with col2:
         is_processing = False
-        video_ready_st(output_video_path)
+        video_ready_st(output_video)
     return is_processing     
 
 def video_ready_st(f : str):
@@ -147,7 +149,7 @@ def video_ready_st(f : str):
     st.markdown("<b> Your Stylized Video is Ready! Click below to download it. </b>", unsafe_allow_html=True)
     st.download_button("Download your video", f, file_name="output_video.mp4", mime="video/mp4")   
         
-import av
+
 def process_frame(width : int, height : int, cap : cv2.VideoCapture, style_image, model_path : str,out : cv2.VideoWriter):
     hub_model = get_model_from_path(model_path)
     print("Hub model: ", hub_model)
@@ -156,7 +158,7 @@ def process_frame(width : int, height : int, cap : cv2.VideoCapture, style_image
     print("Video Duration: ", cap.get(cv2.CAP_PROP_FRAME_COUNT) / fps)
     output_memory_file = io.BytesIO()
     output = av.open(output_memory_file, 'w', format="mp4") 
-    stream = output.add_stream('h264',fps)
+    stream = output.add_stream('h264',Fraction(fps))
     stream.width = width  
     stream.height = height  
     stream.pix_fmt = 'yuv420p' 
