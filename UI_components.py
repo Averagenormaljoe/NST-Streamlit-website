@@ -1,6 +1,9 @@
+from requests import get
 import streamlit as st
 from streamlit_image_comparison import image_comparison
 from PIL import Image
+
+from styles import get_header_style, get_title_style
 
 def method_slider(key="method_selector") -> str:
     method =  st.selectbox('Select your chosen mode', options=['Image','Webcam', 'Camera', 'Video'], key=key)
@@ -54,12 +57,16 @@ def example_images():
     with col1:
         st.video("./assets/video/man_at_sea_sliced.mp4")
 def header():
+    header_style = get_header_style()
+    title_style = get_title_style()
     st.markdown(
         '<h1 style="text-align:center;">Neural Style Transfer App</h1>', unsafe_allow_html=True)
     st.markdown(
-        '<p style="text-align:center;font-size: 20px;font-weight: 550;">Choose a method from the sidebar to get started!</p>', unsafe_allow_html=True)
+        f'<p style={header_style} >Choose a image from the sidebar to get started!</p>', unsafe_allow_html=True)
+        st.markdown(
+        f'<p style={header_style}>Change methods using the dropdown menu</p>', unsafe_allow_html=True)
     
-    title = '<p style="text-align: center;font-size: 50px;font-weight: 350;font-family:Cursive "> Style Motion </p>'
+    title = f'<p style="{title_style}"> Style Motion </p>'
     st.markdown(title, unsafe_allow_html=True)
 
 

@@ -1,7 +1,5 @@
-from os import read
+
 import tensorflow as tf
-from helper import get_model_path
-import tensorflow_hub as hub
 import numpy as np
 import cv2
 from cv2.typing import MatLike

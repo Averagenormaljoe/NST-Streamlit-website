@@ -7,16 +7,9 @@ from twilio.rest import Client
 logger = logging.getLogger(__name__)
 
 
-@st.cache_data  # type: ignore
+@st.cache_data 
 def get_ice_servers():
-    """Use Twilio's TURN server because Streamlit Community Cloud has changed
-    its infrastructure and WebRTC connection cannot be established without TURN server now.  # noqa: E501
-    We considered Open Relay Project (https://www.metered.ca/tools/openrelay/) too,
-    but it is not stable and hardly works as some people reported like https://github.com/aiortc/aiortc/issues/832#issuecomment-1482420656  # noqa: E501
-    See https://github.com/whitphx/streamlit-webrtc/issues/1213
-    """
 
-    # Ref: https://www.twilio.com/docs/stun-turn/api
     try:
         account_sid : str = os.environ["TWILIO_ACCOUNT_SID"]
         auth_token : str = os.environ["TWILIO_AUTH_TOKEN"]
