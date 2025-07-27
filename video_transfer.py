@@ -9,6 +9,7 @@ import streamlit as st
 import subprocess
 from streamlit.runtime.uploaded_file_manager import UploadedFile
 import tensorflow as tf
+from image_transfer import frame_to_image, get_result_image, resize_image
 from components import processing_btn
 from helper import  open_styled_image
 from video_helper import tensor_toimage, image_read
@@ -102,13 +103,15 @@ def video_transfer_style(input_video : UploadedFile | None,style_image , width :
     cap, out, output_video_path = video_setup(name,width,height,fps)
     if not valid_video_setup(cap, out, output_video_path):
         return
-    cap, out, frames = process_frame(width, height, cap, pil_style_image, model_path, out)
+    cap, out = process_frame(width, height, cap, pil_style_image, model_path, out)
     print("cap: ", cap, "out: ", out)
     finish_video(cap, out)
 
    
-    if frames:
-        st.video(frames, format="video/mp4")
+    if output_video_path and os.path.exists(output_video_path):
+        st.video(output_video_path, format="video/mp4")
+    else:
+        st.error("Video file not found after processing.")
     
     #is_processing = end_video(output_video_path, is_processing)
    
@@ -144,7 +147,6 @@ def process_frame(width : int, height : int, cap : cv2.VideoCapture, style_image
     hub_model = get_model_from_path(model_path)
     print("Hub model: ", hub_model)
     start_time : float = time.time()
-    frames : list = []
     print("Video Duration: ", cap.get(cv2.CAP_PROP_FRAME_COUNT) / cap.get(cv2.CAP_PROP_FPS))
     try:
         while True:
@@ -154,9 +156,8 @@ def process_frame(width : int, height : int, cap : cv2.VideoCapture, style_image
             if not ret:
                 print("Video has finished due to 'ret'. Exiting ...")
                 break
-            resized_frame : MatLike = cv2.resize(frame, (width, height))
-            stylized_image = get_stylized_image(resized_frame, style_image, hub_model,model_path)
-            frames.append(stylized_image)
+   
+            stylized_image = get_stylized_image(frame, style_image, hub_model,model_path,width)
             if stylized_image is None:
                 print("Stylized frame is empty. Skipping frame...")
                 continue
@@ -171,17 +172,17 @@ def process_frame(width : int, height : int, cap : cv2.VideoCapture, style_image
         finish_video(cap, out)
         end_time : float = time.time()
         print(f"Video style transfer processing time: {end_time - start_time:.2f} seconds")
-    return cap, out,frames
+    return cap, out
 
 
-def get_stylized_image(frame, style_image, hub_model,model_path):
-    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    frame = image_read(frame)
+def get_stylized_image(frame, style_image, hub_model,model_path,width):
+    orig_h, orig_w = frame.shape[0:2]
+    input_frame = resize_image(frame, width, orig_h, orig_w)
     if model_path.endswith(".t7"):
-        stylized_frame = style_transfer(frame,hub_model)
+        stylized_frame = style_transfer(input_frame,hub_model)
     else:
-        stylized_frame = hub_model(tf.constant(frame), tf.constant(style_image))[0]
-    stylized_image = tensor_toimage(stylized_frame)
+        stylized_frame = hub_model(tf.constant(input_frame), tf.constant(style_image))[0]
+    stylized_image = get_result_image(stylized_frame, orig_w, orig_h)
     return stylized_image
 
 

@@ -51,7 +51,8 @@ def webcam_input(style_model_name,style_image,webcam_stylization : bool = True, 
 
     
         image = get_result_image(transferred, orig_w, orig_h)
-        return image
+        result = av.VideoFrame.from_ndarray(image, format="bgr24")
+        return result
 
     ctx = webrtc_streamer(
         key="neural-style-transfer",
