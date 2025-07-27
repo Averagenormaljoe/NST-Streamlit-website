@@ -1,17 +1,14 @@
 from calendar import c
 from io import BufferedReader
-import io
+from video_methods.video_stream import prepare_stream, save_packet, close_stream
 import os
-import re
 import tempfile
 import cv2
 from matplotlib.pylab import f
 import numpy as np
 from johnson_helper import style_transfer,get_model_from_path
 import streamlit as st
-import subprocess
 import av
-from fractions import Fraction
 from streamlit.runtime.uploaded_file_manager import UploadedFile
 import tensorflow as tf
 from image_transfer import frame_to_image, get_result_image, resize_image
@@ -110,54 +107,7 @@ def video_transfer_style(input_video : UploadedFile | None,style_image , width :
     is_processing = end_video(converted_video , is_processing)
    
   
-def save_ffmpg(output_video_path : str):
-    temp_dir = tempfile.mkdtemp()
-    converted_video = "temp_video.mp4"
-    path = os.path.join(temp_dir, converted_video)
-    command = f"ffmpeg -y -i {output_video_path} -c:v libx264 {path}"
-    subprocess.call(args=command.split(" "))
-    return path
-
  
-    
-def display_styled_video(output_video : str, is_processing : bool = False):
-    if output_video is None:
-        st.error("No video generated.")
-        return
-    col1, col2 = st.columns(2)
-    with col1:
-        video_format = "video/mp4"
-        st.video(output_video, format= video_format)
-    with col2:
-        is_processing = False
-        video_ready_st(output_video)
-    return is_processing     
-
-def video_ready_st(f : str):
-    st.markdown("</br>", unsafe_allow_html=True)
-    st.markdown("<b> Your Stylized Video is Ready! Click below to download it. </b>", unsafe_allow_html=True)
-    st.download_button("Download your video", f, file_name="output_video.mp4", mime="video/mp4")   
-        
-def prepare_steam( width: int, height: int):
-    output_memory_file = io.BytesIO()
-    output = av.open(output_memory_file, mode='w', format='mp4')
-    stream = output.add_stream('h264', rate=30)
-    stream.width = width
-    stream.height = height
-    stream.pix_fmt = 'yuv420p'
-    return output, stream, output_memory_file
-
-def save_packet(stream, output, frame: av.VideoFrame):
-    packet = stream.encode(frame)
-    output.mux(packet)
-def close_stream(stream,output, output_memory_file: io.BytesIO):
-    # flush the stream
-    save_packet(stream, output, None)
-    output.close()
-
-    output_memory_file.seek(0)
-
-    return output_memory_file
 
 
     
@@ -167,7 +117,7 @@ def process_frame(width : int, height : int, cap : cv2.VideoCapture, style_image
     start_time : float = time.time()
     fps = cap.get(cv2.CAP_PROP_FPS)
     print("Video Duration: ", cap.get(cv2.CAP_PROP_FRAME_COUNT) / fps)
-    output, stream, output_memory_file = prepare_steam(width, height)
+    output, stream, output_memory_file = prepare_steam(width, height,fps)
     try:
         while True:
             frame_start_time : float = time.time()
