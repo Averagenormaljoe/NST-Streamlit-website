@@ -33,13 +33,19 @@ from typing import Optional
 import time
 
 def video_setup(temp_path: str, temp_dir: str,name : str, width: int, height: int, fps: int = 30) -> tuple[Optional[cv2.VideoCapture], Optional[cv2.VideoWriter], Optional[str]]:
+    if not os.path.exists(temp_path):
+        st.error(f"Video file {temp_path} does not exist.")
+        return None, None, None
     cap = cv2.VideoCapture(temp_path)
+    video_fps = cap.get(cv2.CAP_PROP_FPS)
+    video_seconds = cap.get(cv2.CAP_PROP_FRAME_COUNT) / video_fps
+    print(f"Video_FPS: {video_fps}, Video_Seconds: {video_seconds:.2f}")
     if not cap.isOpened():
         st.error(f"Could not open video file {temp_path} for cap.")
         return None, None, None
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     output_video_path = os.path.join(temp_dir, name)
-    out = cv2.VideoWriter(output_video_path, fourcc, fps, (width, height))
+    out = cv2.VideoWriter(output_video_path, fourcc, video_fps, (width, height))
     
     return cap, out, output_video_path
 
@@ -99,7 +105,7 @@ def video_transfer_style(input_video : UploadedFile | None,style_image , width :
     cap, out, output_video_path = video_setup(temp_path,temp_dir, name,width,height,fps)
     if not valid_video_setup(cap, out, output_video_path):
         return
-    cap, out = process_frame(width, height, cap, pil_style_image, model_path, out)
+    cap, out, frames = process_frame(width, height, cap, pil_style_image, model_path, out)
     print("cap: ", cap, "out: ", out)
     finish_video(cap, out)
     converted_video = "./testh264.mp4"
@@ -107,6 +113,8 @@ def video_transfer_style(input_video : UploadedFile | None,style_image , width :
     subprocess.call(args=command.split(" "))
     
     is_processing = end_video(output_video_path, is_processing)
+    if frames:
+        st.video(frames, format="video/mp4")
   
 
 
@@ -135,20 +143,33 @@ def video_ready_st(f : str):
 def process_frame(width : int, height : int, cap : cv2.VideoCapture, style_image, model_path : str,out : cv2.VideoWriter):
     hub_model = get_model_from_path(model_path)
     start_time : float = time.time()
-    while True:
-        frame_start_time : float = time.time()
-        ret, frame = cap.read()
-        if not ret:
-            break
-        resized_frame : MatLike = cv2.resize(frame, (width, height))
-        stylized_image = get_stylized_image(resized_frame, style_image, hub_model,model_path)
-        out.write(stylized_image)
-        frame_end_time : float = time.time()
-        print(f"Processed frame in {frame_end_time - frame_start_time:.2f} seconds")
-
-    end_time : float = time.time()
-    print(f"Video style transfer processing time: {end_time - start_time:.2f} seconds")
-    return cap, out
+    frames : list = []
+    print("Video Duration: ", cap.get(cv2.CAP_PROP_FRAME_COUNT) / cap.get(cv2.CAP_PROP_FPS))
+    try:
+        while True:
+            frame_start_time : float = time.time()
+            ret, frame = cap.read()
+            print(f"ret: {ret}")
+            if not ret:
+                break
+            resized_frame : MatLike = cv2.resize(frame, (width, height))
+            stylized_image = get_stylized_image(resized_frame, style_image, hub_model,model_path)
+            frames.append(stylized_image)
+            if stylized_image is None:
+                print("Stylized frame is empty. Skipping frame...")
+                continue
+            out.write(stylized_image)
+            frame_end_time : float = time.time()
+            print(f"Processed frame in {frame_end_time - frame_start_time:.2f} seconds")
+    except cv2.error as e:
+        print(f"OpenCV error: {e}")
+    except Exception as e:
+        print(f"Error during video stylization: {e}")
+    finally:
+        finish_video(cap, out)
+        end_time : float = time.time()
+        print(f"Video style transfer processing time: {end_time - start_time:.2f} seconds")
+    return cap, out,frames
 
 
 def get_stylized_image(frame, style_image, hub_model,model_path):
