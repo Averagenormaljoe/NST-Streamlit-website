@@ -1,21 +1,18 @@
-from calendar import c
-from io import BufferedReader
 from video_methods.video_stream import prepare_stream, save_packet, close_stream
+from video_methods.video_interface import display_styled_video
 import os
 import tempfile
 import cv2
-from matplotlib.pylab import f
 import numpy as np
 from johnson_helper import style_transfer,get_model_from_path
 import streamlit as st
 import av
 from streamlit.runtime.uploaded_file_manager import UploadedFile
 import tensorflow as tf
-from image_transfer import frame_to_image, get_result_image, resize_image
+from image_transfer import get_result_image, resize_image
 from components import processing_btn
 from helper import  open_styled_image
-from video_helper import tensor_toimage, image_read
-from cv2.typing import MatLike
+from video_helper import image_read
 
 def video_validation(input_video: UploadedFile | None,style_image,model_path) -> bool:
     if style_image is None and not model_path.endswith(".t7"):
@@ -117,7 +114,7 @@ def process_frame(width : int, height : int, cap : cv2.VideoCapture, style_image
     start_time : float = time.time()
     fps = cap.get(cv2.CAP_PROP_FPS)
     print("Video Duration: ", cap.get(cv2.CAP_PROP_FRAME_COUNT) / fps)
-    output, stream, output_memory_file = prepare_steam(width, height,fps)
+    output, stream, output_memory_file = prepare_stream(width, height,fps)
     try:
         while True:
             frame_start_time : float = time.time()
