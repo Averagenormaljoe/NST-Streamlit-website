@@ -1,4 +1,5 @@
 from io import BufferedReader
+import io
 import os
 import re
 import tempfile
@@ -104,13 +105,12 @@ def video_transfer_style(input_video : UploadedFile | None,style_image , width :
     cap, out, output_video_path = video_setup(name,width,height,fps)
     if not valid_video_setup(cap, out, output_video_path):
         return
-    cap, out = process_frame(width, height, cap, pil_style_image, model_path, out)
+    cap, out, converted_video = process_frame(width, height, cap, pil_style_image, model_path, out)
     print("cap: ", cap, "out: ", out)
     finish_video(cap, out)
-    converted_video = save_ffmpg(output_video_path)
 
    
-    if converted_video  and os.path.exists(converted_video ):
+    if converted_video  and os.path.exists(converted_video):
         st.video(converted_video , format="video/mp4")
     else:
         st.error("Video file not found after processing.")
@@ -147,12 +147,20 @@ def video_ready_st(f : str):
     st.markdown("<b> Your Stylized Video is Ready! Click below to download it. </b>", unsafe_allow_html=True)
     st.download_button("Download your video", f, file_name="output_video.mp4", mime="video/mp4")   
         
-        
+import av
 def process_frame(width : int, height : int, cap : cv2.VideoCapture, style_image, model_path : str,out : cv2.VideoWriter):
     hub_model = get_model_from_path(model_path)
     print("Hub model: ", hub_model)
     start_time : float = time.time()
-    print("Video Duration: ", cap.get(cv2.CAP_PROP_FRAME_COUNT) / cap.get(cv2.CAP_PROP_FPS))
+    fps = cap.get(cv2.CAP_PROP_FPS)
+    print("Video Duration: ", cap.get(cv2.CAP_PROP_FRAME_COUNT) / fps)
+    output_memory_file = io.BytesIO()
+    output = av.open(output_memory_file, 'w', format="mp4") 
+    stream = output.add_stream('h264', str(fps))
+    stream.width = width  
+    stream.height = height  
+    stream.pix_fmt = 'yuv420p' 
+    stream.options
     try:
         while True:
             frame_start_time : float = time.time()
@@ -167,6 +175,9 @@ def process_frame(width : int, height : int, cap : cv2.VideoCapture, style_image
                 print("Stylized frame is empty. Skipping frame...")
                 continue
             out.write(stylized_image)
+            stream_frame = av.VideoFrame.from_ndarray(stylized_image, format='bgr24')  # Convert image from NumPy Array to frame.
+            packet = stream.encode(stream_frame )  # Encode video frame
+            output.mux(packet)
             frame_end_time : float = time.time()
             print(f"Processed frame in {frame_end_time - frame_start_time:.2f} seconds")
     except cv2.error as e:
@@ -177,7 +188,12 @@ def process_frame(width : int, height : int, cap : cv2.VideoCapture, style_image
         finish_video(cap, out)
         end_time : float = time.time()
         print(f"Video style transfer processing time: {end_time - start_time:.2f} seconds")
-    return cap, out
+    packet = stream.encode(None)
+    output.mux(packet)
+    output.close()
+
+    output_memory_file.seek(0)
+    return cap, out, output_memory_file
 
 
 def get_stylized_image(frame, style_image, hub_model,model_path,width):
