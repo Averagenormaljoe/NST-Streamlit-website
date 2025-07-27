@@ -156,7 +156,7 @@ def process_frame(width : int, height : int, cap : cv2.VideoCapture, style_image
     print("Video Duration: ", cap.get(cv2.CAP_PROP_FRAME_COUNT) / fps)
     output_memory_file = io.BytesIO()
     output = av.open(output_memory_file, 'w', format="mp4") 
-    stream = output.add_stream('h264', str(fps))
+    stream = output.add_stream('h264',fps)
     stream.width = width  
     stream.height = height  
     stream.pix_fmt = 'yuv420p' 
@@ -175,8 +175,8 @@ def process_frame(width : int, height : int, cap : cv2.VideoCapture, style_image
                 print("Stylized frame is empty. Skipping frame...")
                 continue
             out.write(stylized_image)
-            stream_frame = av.VideoFrame.from_ndarray(stylized_image, format='bgr24')  # Convert image from NumPy Array to frame.
-            packet = stream.encode(stream_frame )  # Encode video frame
+            stream_frame = av.VideoFrame.from_ndarray(stylized_image, format='bgr24')  
+            packet = stream.encode(stream_frame )
             output.mux(packet)
             frame_end_time : float = time.time()
             print(f"Processed frame in {frame_end_time - frame_start_time:.2f} seconds")
