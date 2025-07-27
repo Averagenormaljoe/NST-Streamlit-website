@@ -31,6 +31,10 @@
 
 Note this application was primarily tested in Windows, meaning that MacOS and Linux operations may work differently.
 
+- Python 3.11+
+- pip
+- git
+
 ### Installations
 
 1. Python 3.11 Download and install from python.org. This can be verify with 'python --version'. [Python Official Website](https://www.python.org/)
@@ -46,7 +50,7 @@ Note this application was primarily tested in Windows, meaning that MacOS and Li
 
 ## Setup instructions
 
-1. Setup a virtual environment using: python -m venv venv
+1. Setup a virtual environment using: 'python -m venv venv'
 
 2. activate the environment with:
 
