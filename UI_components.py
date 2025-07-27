@@ -63,7 +63,7 @@ def header():
         '<h1 style="text-align:center;">Neural Style Transfer App</h1>', unsafe_allow_html=True)
     st.markdown(
         f'<p style={header_style} >Choose a image from the sidebar to get started!</p>', unsafe_allow_html=True)
-        st.markdown(
+    st.markdown(
         f'<p style={header_style}>Change methods using the dropdown menu</p>', unsafe_allow_html=True)
     
     title = f'<p style="{title_style}"> Style Motion </p>'

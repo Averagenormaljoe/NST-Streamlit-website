@@ -31,13 +31,9 @@
 
 Note this application was primarily tested in Windows, meaning that MacOS and Linux operations may work differently.
 
-- Python 3.11+
-- pip
-- git
-
 ### Installations
 
-1. Python 3.11 Download and install from python.org. This can be verify with 'python --version'. [Python Official Website](https://www.python.org/)
+1. Python 3.11+. Download and install from python.org. This can be verify with 'python --version'. [Python Official Website](https://www.python.org/)
 2. pip (Python package manager), which comes with Python 3.11. This can be verify with 'pip --version'.  
    'pip' can also be upgrade with the 'pip install --upgrade pip' command.
 3. run 'pip install virtualenv' in a terminal to install the 'virtualenv' library to able to create a virtual environment.
