@@ -32,40 +32,39 @@ def generate_temp_paths(video_name : str = "input_video.mp4") -> tuple[str, str]
 from typing import Optional
 import time
 
-def video_setup(temp_path: str, temp_dir: str,name : str, width: int, height: int, fps: int = 30) -> tuple[Optional[cv2.VideoCapture], Optional[cv2.VideoWriter], Optional[str]]:
-    if not os.path.exists(temp_path):
-        st.error(f"Video file {temp_path} does not exist.")
+def video_setup(name : str, width: int, height: int, fps: int = 30) -> tuple[Optional[cv2.VideoCapture], Optional[cv2.VideoWriter], Optional[str]]:
+    if not os.path.exists(name):
+        st.error(f"Video file {name} does not exist.")
         return None, None, None
-    cap = cv2.VideoCapture(temp_path)
+    cap = cv2.VideoCapture(name)
     video_fps = cap.get(cv2.CAP_PROP_FPS)
     video_seconds = cap.get(cv2.CAP_PROP_FRAME_COUNT) / video_fps
     print(f"Video_FPS: {video_fps}, Video_Seconds: {video_seconds:.2f}")
     if not cap.isOpened():
-        st.error(f"Could not open video file {temp_path} for cap.")
+        st.error(f"Could not open video file {name} for cap.")
         return None, None, None
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    temp_dir = tempfile.mkdtemp()
+    
     output_video_path = os.path.join(temp_dir, name)
     out = cv2.VideoWriter(output_video_path, fourcc, video_fps, (width, height))
     
     return cap, out, output_video_path
 
-def read_temp_video(input_video, temp_path : str):
-    with open(temp_path, "wb") as f:
-        if input_video is None:
-            st.error("No video file uploaded.")
-            return
-        f.write(input_video.getbuffer())
+def get_temp_video(input_video):
+    tfile = tempfile.NamedTemporaryFile(delete=False)
+    tfile.write(input_video.read())
+    return tfile.name
 
 def prepare_directory(input_video,name):
 
-    temp_dir, temp_path = generate_temp_paths(name)
 
-    read_temp_video(input_video, temp_path)
-    if not os.path.exists(temp_path):
-        st.error(f"Could not save video file to {temp_path}.")
-        return False, temp_dir, temp_path
-    print(f"Video file saved to {temp_path}")
-    return True,temp_dir, temp_path
+    name = get_temp_video(input_video)
+    if not os.path.exists(name):
+        st.error(f"Could not save video file to {name}.")
+        return False, name
+    print(f"Video file saved to {name}")
+    return True,name
 
 def valid_video_setup(cap,out, output_video_path):
     if cap is None or out is None or output_video_path is None:
@@ -97,12 +96,10 @@ def video_transfer_style(input_video : UploadedFile | None,style_image , width :
     print("input_video: ", input_video)
     name = input_video.name if input_video else ""
     print(f"Input video name: {name}")
-    state,temp_dir, temp_path = prepare_directory(input_video,name)
-
-    read_temp_video(input_video, temp_path)
+    state,name = prepare_directory(input_video,name)
     if not state:
         return
-    cap, out, output_video_path = video_setup(temp_path,temp_dir, name,width,height,fps)
+    cap, out, output_video_path = video_setup(name, name,width,height,fps)
     if not valid_video_setup(cap, out, output_video_path):
         return
     cap, out, frames = process_frame(width, height, cap, pil_style_image, model_path, out)
@@ -151,6 +148,7 @@ def process_frame(width : int, height : int, cap : cv2.VideoCapture, style_image
             ret, frame = cap.read()
             print(f"ret: {ret}")
             if not ret:
+                print("Video has finished due to 'ret'. Exiting ...")
                 break
             resized_frame : MatLike = cv2.resize(frame, (width, height))
             stylized_image = get_stylized_image(resized_frame, style_image, hub_model,model_path)
