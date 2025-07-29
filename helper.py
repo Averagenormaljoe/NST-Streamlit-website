@@ -134,13 +134,16 @@ def display_instructions():
       
            Welcome to StyleMotion!  
             Steps for using the application:  
-           1. Upload a content image and a style image.  
-           2. Click on "Generate Styled Image" to apply the style transfer.  
-           3. The styled image will be displayed below, and you can download it.  
-           4. You can also use the webcam feature for real-time style transfer.  
-           5. For video style transfer, upload a video file and a style image.  
-           6. Use the sidebar to navigate through these modes.  
-           7. Enjoy creating art with StyleMotion!  
+           1. Select a mode from the dropdown: Image, Webcam, Camera, or Video.
+           2. Upload a content image (or video) and a style image. Multi style images are supported.  
+           3. Click on "Generate Styled Image" to apply the style transfer.  
+           4. Wait for the processing to complete.
+           5. The styled image will be displayed below, and you can download it.  
+           6. You can also use the webcam feature for real-time style transfer.  
+           7. For video style transfer, upload a video file and a style image.
+           8  For camera input, allow camera access and click "Start Webcam", press take picture, which uses the camera as the content image.
+           9. Use the sidebar to collect sample images and videos.  
+           10. Enjoy creating art with StyleMotion!  
         </section>
         """,
         unsafe_allow_html=True

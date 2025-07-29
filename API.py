@@ -36,9 +36,6 @@ def resize_then_covert(image,name : str):
 
 
 def resize_tf_style(style_image): 
-    # Optionally resize the images. It is recommended that the style image is about
-    # 256 pixels (this size was used when training the style transfer network).
-    # The content image can be any size.
     resize_style_shape: tuple[int, int] = (256, 256)
     style_tf_image = tf.image.resize(style_image, resize_style_shape)
     return style_tf_image
