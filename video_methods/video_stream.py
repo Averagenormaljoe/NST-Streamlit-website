@@ -6,7 +6,10 @@ import av
 def prepare_stream( width: int, height: int,fps):
     output_memory_file = io.BytesIO()
     output = av.open(output_memory_file, mode='w', format='mp4')
-    stream = output.add_stream('h264', rate=Fraction(fps))
+    try:
+        stream = output.add_stream('h264', rate=Fraction(fps))
+    except OverflowError:
+        stream = output.add_stream('h264', rate=Fraction(30))
     stream.width = width
     stream.height = height
     stream.pix_fmt = 'yuv420p'

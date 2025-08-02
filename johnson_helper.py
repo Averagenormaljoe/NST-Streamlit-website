@@ -7,9 +7,9 @@ from cv2.typing import MatLike
 import tensorflow_hub as hub
 
 def get_model_from_path(style_model_path):
-    if style_model_path.endswith('.t7'):
+    if style_model_path.endswith('.t7') or style_model_path.endswith('.pth'):
         model = cv2.dnn.readNetFromTorch(style_model_path)
-    elif style_model_path.endswith('.pth'):
+    elif style_model_path.endswith('.pb') or style_model_path.endswith('.pbtxt'):
         model = cv2.dnn.readNetFromTensorflow(style_model_path)
     elif style_model_path.contains('tfhub'):
         model = hub.load(style_model_path)
@@ -26,6 +26,7 @@ def style_transfer(image, model):
     # image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR) #PIL Jpeg to Opencv image
 
     mean : tuple[float,float,float] = (103.939, 116.779, 123.680)
+    
     blob : MatLike = cv2.dnn.blobFromImage(image, 1.0, (w, h), mean, swapRB=False, crop=False)
     model.setInput(blob)
     output = model.forward()
