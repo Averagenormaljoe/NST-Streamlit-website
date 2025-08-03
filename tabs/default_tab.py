@@ -13,17 +13,18 @@ from ui_video import get_video_uploader
 from video_transfer import video_transfer_style
 
 def video_process(video_file,style_images,width_resolution : int,height_resolution : int,fps : int):
-    style_images = [style_images] if isinstance(style_images, str) else style_images 
-    if video_file is not None and style_images and len(style_images) > 0:
-        st.info(f"{len(style_images)} style image(s) selected.")
+    style_images = [style_images] if type(style_images) is UploadedFile else style_images
+    if video_file is not None and style_images is not None:
+        print(style_images)
+        open_style_imgs = [Image.open(img) for img in style_images]
+        st.info(f"{len(open_style_imgs)} style image(s) selected.")
         if st.button("Generate Styled Video"):
             with st.spinner("Stylizing video... This may take a few minutes."):
                 # read style images as numpy arrays
-                style_imgs = [Image.open(img) for img in style_images]
                 #sStylize video (implement this function in your API)
                 model_path = "https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2"
                 video_transfer_style(
-                    video_file,  style_imgs[0], width_resolution,height_resolution,fps=fps,model_path=model_path
+                    video_file,  open_style_imgs[0], width_resolution,height_resolution,fps=fps,model_path=model_path
                     )
 
 if "webcam_stylization_enabled" not in st.session_state:

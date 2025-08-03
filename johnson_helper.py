@@ -11,7 +11,7 @@ def get_model_from_path(style_model_path):
         model = cv2.dnn.readNetFromTorch(style_model_path)
     elif style_model_path.endswith('.pb') or style_model_path.endswith('.pbtxt'):
         model = cv2.dnn.readNetFromTensorflow(style_model_path)
-    elif style_model_path.contains('tfhub'):
+    elif "tfhub" in style_model_path:
         model = hub.load(style_model_path)
     else:
         st.error(f"This model path is invalid: {style_model_path}")
