@@ -49,7 +49,7 @@ multidict==6.4.4
 namex==0.1.0
 narwhals==1.41.0
 numpy==1.26.4
-opencv-python-headless==4.9.0.80
+opencv-python-headless==4.8.0.76
 opt_einsum==3.4.0
 optree==0.15.0
 packaging==24.2

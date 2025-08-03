@@ -77,6 +77,5 @@ def get_stylized_image(outputs):
     output_image = outputs[0]
     # reshape the stylized image
     stylized_image = np.array(output_image)
-    generated_image = stylized_image.reshape(
-        stylized_image.shape[1], stylized_image.shape[2], stylized_image.shape[3])
-    return generated_image
+
+    return stylized_image   

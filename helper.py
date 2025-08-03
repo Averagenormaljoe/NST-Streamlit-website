@@ -10,7 +10,7 @@ from components import processing_btn
 from API import transfer_style
 import os
 from keras.layers import TFSMLayer
-from keras.saving import load_model
+from AdaIN_functions.NeuralStyleTransfer import NeuralStyleTransfer
 def is_pb_model(file_name : str) -> bool:
     return file_name.lower().endswith(".pb")
 
@@ -26,7 +26,7 @@ def contains_pb_model(dir_path: str) -> bool:
 
 def load_model(model_path : str):
     if is_keras_model(model_path):
-        model = load_model(model_path)
+        model = keras.saving.load_model(model_path)
         return model
     
     elif contains_pb_model(model_path):

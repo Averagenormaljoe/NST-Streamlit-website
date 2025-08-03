@@ -8,7 +8,7 @@ def prepare_stream( width: int, height: int,fps):
     output = av.open(output_memory_file, mode='w', format='mp4')
     try:
         stream = output.add_stream('h264', rate=Fraction(fps))
-    except OverflowError:
+    except Exception as e:
         stream = output.add_stream('h264', rate=Fraction(30))
     stream.width = width
     stream.height = height
