@@ -81,7 +81,7 @@ def video_transfer_style(input_video : UploadedFile | None,style_image , width :
     if not video_validation(input_video, style_image,model_path):
         return
     print("Model path: ", model_path)
-    if model_path.endswith(".t7"):
+    if model_path.endswith(".t7") or model_path.endswith('.pth'):
         pil_style_image = None
     else:
         pil_style_image = image_read(style_image)
