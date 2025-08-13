@@ -1,11 +1,16 @@
+from importlib import simple
 from operator import contains
+import os
+from pyexpat import model
 import imutils
 import cv2
 import numpy as np
-import streamlit as st
 from cv2.typing import MatLike
 import tensorflow_hub as hub
-
+import tensorflow as tf
+import streamlit as st
+import PIL
+from PIL import Image
 def get_model_from_path(style_model_path):
     if style_model_path.endswith('.t7') or style_model_path.endswith('.pth'):
         model = cv2.dnn.readNetFromTorch(style_model_path)
@@ -13,6 +18,8 @@ def get_model_from_path(style_model_path):
         model = cv2.dnn.readNetFromTensorflow(style_model_path)
     elif "tfhub" in style_model_path:
         model = hub.load(style_model_path)
+    elif style_model_path.endswith('.keras'):
+        model = tf.keras.models.load_model(style_model_path)
     else:
         st.error(f"This model path is invalid: {style_model_path}")
         return None
@@ -41,3 +48,12 @@ def style_transfer(image, model):
     width : int = 500
     output = imutils.resize(output, width=width)
     return output
+
+def simple_style_transfer(image_str, model):
+    if model is None:
+        return None
+    open_image = Image.open(image_str)
+    styled_image = style_transfer(open_image, model)
+    return styled_image
+
+

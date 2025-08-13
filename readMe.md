@@ -158,3 +158,13 @@ Add multi neural style transfer to the models.
 ## Issues
 
 # References
+
+Coded adapted from 'https://github.com/deepeshdm/PixelMix/tree/main'.
+
+Website Title: PixelMix
+
+Website: GitHub
+
+Author: Deepesh Mhatre
+
+Date: Mar 2, 2022
