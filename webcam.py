@@ -1,9 +1,6 @@
 from PIL import Image
-from matplotlib import style
-from requests import get
 import streamlit as st
 from streamlit_webrtc import webrtc_streamer
-import numpy as np
 import av
 import tensorflow_hub as hub
 from image_transfer import frame_to_image, get_result_image, resize_image
