@@ -157,6 +157,25 @@ Add multi neural style transfer to the models.
 
 ## Issues
 
+## Requirements
+
+It is recommended to run this application on a GPU instead of a CPU, as it is significantly faster.
+
+CUDA (GPU) -- Recommended
+CUDNN (GPU) -- Recommended
+
+## Mimimum Compute Setup
+
+Minimum GPU: NVIDIA GTX 1060 or equivalent (6GB VRAM).
+
+Minimum CPU: Intel i3 with 8GB memory or equivalent (8GB, 2 to 4 cores).
+
+## Recommended compute Setup
+
+Recommended GPU: NVIDIA RTX 3060/3070 or higher (12GB+ VRAM).
+
+Recommended CPU: Intel i3 with 8GB memory or equivalent (Efficient cores: 2.5 GHz, Performance cores: 3.4 GHz, 12 to 20 cores).
+
 # References
 
 Coded adapted from 'https://github.com/deepeshdm/PixelMix/tree/main'.
