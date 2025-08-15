@@ -16,7 +16,6 @@
     - [AdaIN Model (StyleMotion)](#adain-model-stylemotion)
     - [Gatys et al. Model](#gatys-et-al-model)
     - [Johnson et al. Model](#johnson-et-al-model)
-  - [Huang et al. Model](#huang-et-al-model)
   - [Modes](#modes)
     - [Image](#image)
     - [Video](#video)
@@ -123,8 +122,6 @@ This model trades speed for sylization quality. Note that WebCam mode is not ava
 ### Johnson et al. Model
 
 This is the forward pass model. The user is presented with a select of models (such as 'candy.t7', 'la_muse.t7' and 'the_wave.t7')
-
-## Huang et al. Model
 
 ## Modes
 

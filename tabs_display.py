@@ -4,7 +4,7 @@ from UI_components import example_images, header
 from tabs.johnson_tab import johnson_tab
 from tabs.default_tab import default_tab
 def tabs_display():
-    tab_list : list[str] = ["Main (StyleMotion)", "Johnson model", "Gatys model", "Huang model"]
+    tab_list : list[str] = ["Main (StyleMotion)", "Johnson model", "Gatys model"]
     tab1, tab2 = st.tabs(tab_list[0:2])
 
     # -------------Header Section------------------------------------------------
@@ -37,7 +37,3 @@ def tabs_display():
     with tab2:
          johnson_tab()
     # # -------------Gatys Model Section------------------------------------------------        
-    # # -------------Huang Model Section------------------------------------------------    
-
-    # with tab4:
-    #     huang_tab()
