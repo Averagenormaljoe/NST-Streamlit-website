@@ -164,6 +164,8 @@ It is recommended to run this application on a GPU instead of a CPU, as it is si
 CUDA (GPU) -- Recommended
 CUDNN (GPU) -- Recommended
 
+Size of the project: 4.97 GB.
+
 ## Mimimum Compute Setup
 
 Minimum GPU: NVIDIA GTX 1060 or equivalent (6GB VRAM).
@@ -175,6 +177,13 @@ Minimum CPU: Intel i3 with 8GB memory or equivalent (8GB, 2 to 4 cores).
 Recommended GPU: NVIDIA RTX 3060/3070 or higher (12GB+ VRAM).
 
 Recommended CPU: Intel i3 with 8GB memory or equivalent (Efficient cores: 2.5 GHz, Performance cores: 3.4 GHz, 12 to 20 cores).
+
+## Notes
+
+This project was setup on Windows 10 but other platforms (MacOS and Linux) should be fine to use.
+
+A IDE for the project may be required.
+Vs Code was used as the IDE of the project but other IDEs can be used. However, if you would like to use vs code: https://code.visualstudio.com.
 
 # References
 
