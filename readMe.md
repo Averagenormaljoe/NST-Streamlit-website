@@ -49,7 +49,7 @@ Note this application was primarily tested in Windows, meaning that MacOS and Li
 
 2. activate the environment with:
 
-'venv\Scripts\activate' (Windows) or 'source venv\Scripts\activate' (MacOS and Linux).
+'venv\Scripts\activate' (Windows) or 'source venv/bin/activate' (MacOS and Linux).
 
 source venv/Scripts/activate (Win&Bash).
 
