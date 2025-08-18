@@ -72,7 +72,7 @@ def default_tab():
           
     with col2:
         style_image = st.file_uploader(
-            "Upload Style Image (PNG & JPG images only)", type=content_types)
+            "Upload Style Image (PNG & JPG images only)", type=content_types, accept_multiple_files= True, key="default loader" )
     
     with col1:
         if method == "Webcam":

@@ -179,7 +179,7 @@ Recommended CPU: Intel i3 with 8GB memory or equivalent (Efficient cores: 2.5 GH
 
 This project was setup on Windows 10 but other platforms (MacOS and Linux) should be fine to use.
 
-A IDE for the project may be required.
+An integrated development environment (IDE) such as VScode, PyCharm or JupyterLabs for the project may be required.
 Vs Code was used as the IDE of the project but other IDEs can be used. However, if you would like to use vs code: https://code.visualstudio.com.
 
 # References

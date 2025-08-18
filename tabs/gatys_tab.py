@@ -30,7 +30,7 @@ def gatys_interface():
                 st.error("Please select a valid method from the sidebar.")
     with col2:
         style_image = st.file_uploader(
-            "Upload Style Image (PNG & JPG images only)", type=content_types, key="gatys_style_image_uploader")
+            "Upload Style Image (PNG & JPG images only)", type=content_types, key="gatys_style_image_uploader", accept_multiple_files= True)
 
             
 
