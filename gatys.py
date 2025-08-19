@@ -1,6 +1,8 @@
+from gatys_functions import get_model
+from gatys_functions.get_layers import get_layers
 import streamlit as st
-
-
+from gatys_functions.LoopManager import LoopManager
+from shared_utils.file_nav import get_base_name
 def render_gatys_ui_sliders() -> tuple[int, float]:
     # Style intensity slider
     style_intensity : float = st.slider(
@@ -36,7 +38,36 @@ def render_gatys_ui_sliders() -> tuple[int, float]:
     )
     return epoch_slider, style_intensity
 
-def process_gatys(content_image, style_image, epoch_slider : int, style_intensity : float):
+def process_gatys(content_image, style_image, epoch_slider : int, content_weight = 2.5e-8,style_intensity : float = 1e-6, total_variation_weight = 1e-6,ln = "vgg19"):
+    loop_manager = LoopManager()
+    results = get_layers(False,ln)
+    style_layer_names, content_layer_names, style_weights, content_weights = results
+    config_layers = {
+    "style" : style_layer_names,
+    "content" : style_layer_names
+   }
+    w = 512
+    h = 512
+    feature_extractor = get_model(ln,w,h, config_layers=config_layers)
+    config = {
+    "optimizer": "adam",
+    "ln": ln,
+    "lr": 1.0,
+    "size": (w,h),
+    "content_layer_names": content_layer_names,
+    "style_layer_names": style_layer_names,
+    "feature" : feature_extractor,
+    "c_weight": content_weight,
+    "s_weight": style_intensity,
+    "tv_weight": total_variation_weight,
+    "iterations": epoch_slider,
+    }
+    content_name = get_base_name(content_image)
+    style_name = get_base_name(style_image)
+    loop_manager.training_loop(
+                content_image, style_image,
+                content_name, style_name, config=config
+            )
     return None
 
 def generate_gatys_image(content_image, style_image, epoch_slider : int, style_intensity : float):

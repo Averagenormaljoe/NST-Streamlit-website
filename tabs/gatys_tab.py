@@ -21,7 +21,7 @@ def gatys_interface():
                 picture : UploadedFile | None = camera_component()
                 process_gatys(picture, style_image,epoch_slider, style_intensity)
             case 'Webcam':
-                pass
+                
                 
             case 'Video':
         
