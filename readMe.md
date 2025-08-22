@@ -59,9 +59,7 @@ source venv/Scripts/activate (Win&Bash).
 
 'pip install -r requirements.txt'
 
-'pip install dist/adainstylemotion-0.1.0.tar.gz'
-
-'pip install NSTdist/shared_utils-0.1.0.tar.gz'
+'pip install main_dist/stylemotion-0.1.0.tar.gz'
 
 4. Use 'pip list' to ensure that the packages were correctly installed
 

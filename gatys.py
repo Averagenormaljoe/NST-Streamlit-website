@@ -1,7 +1,7 @@
-from gatys_functions import get_model
-from gatys_functions.get_layers import get_layers
+from Gatys_model import get_model
+from Gatys_model.get_layers import get_layers
 import streamlit as st
-from gatys_functions.LoopManager import LoopManager
+from Gatys_model.LoopManager import LoopManager
 from shared_utils.file_nav import get_base_name
 def render_gatys_ui_sliders() -> tuple[int, float]:
     # Style intensity slider

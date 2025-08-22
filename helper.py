@@ -10,7 +10,7 @@ from components import processing_btn
 from API import transfer_style
 import os
 from keras.layers import TFSMLayer
-from AdaIN_functions.NeuralStyleTransfer import NeuralStyleTransfer
+from AdaIN.AdaIN_functions.NeuralStyleTransfer import NeuralStyleTransfer
 def is_pb_model(file_name : str) -> bool:
     return file_name.lower().endswith(".pb")
 
