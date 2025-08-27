@@ -146,7 +146,6 @@ def display_instructions():
            7. For video style transfer, upload a video file and a style image.
            8  For camera input, allow camera access and click "Start Webcam", press take picture, which uses the camera as the content image.
            9. Use the sidebar to collect sample images and videos.  
-           10. Enjoy creating art with StyleMotion!  
         </section>
         """,
         unsafe_allow_html=True
