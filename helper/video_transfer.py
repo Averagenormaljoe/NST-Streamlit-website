@@ -1,4 +1,4 @@
-from AdaIN_functions.image import tensor_toimage
+from AdaIN.AdaIN_functions.image import tensor_toimage
 from video_methods.video_stream import prepare_stream, save_packet, close_stream
 from video_methods.video_interface import display_styled_video
 import os

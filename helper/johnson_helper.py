@@ -2,6 +2,8 @@ from importlib import simple
 from operator import contains
 import os
 from pyexpat import model
+
+import keras
 import imutils
 import cv2
 import numpy as np
@@ -11,6 +13,15 @@ import tensorflow as tf
 import streamlit as st
 import PIL
 from PIL import Image
+from keras.layers import TFSMLayer
+def create_model_from_endpoint(model_path: str):
+    layer = TFSMLayer(model_path, call_endpoint="serving_default")
+
+    model = keras.Sequential([
+        keras.Input(shape=(256, 256, 3)), 
+        layer
+    ])
+    return model
 def get_model_from_path(style_model_path):
     if style_model_path.endswith('.t7') or style_model_path.endswith('.pth'):
         model = cv2.dnn.readNetFromTorch(style_model_path)
@@ -20,6 +31,8 @@ def get_model_from_path(style_model_path):
         model = hub.load(style_model_path)
     elif style_model_path.endswith('.keras'):
         model = tf.keras.models.load_model(style_model_path)
+    elif "forward_feed" in style_model_path:
+        model = create_model_from_endpoint(style_model_path)
     else:
         st.error(f"This model path is invalid: {style_model_path}")
         return None
