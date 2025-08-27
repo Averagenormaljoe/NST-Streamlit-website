@@ -1,16 +1,13 @@
-from pyexpat import model
 import streamlit as st
 from PIL import Image
 from typing import Optional
-from UI_components import camera_component, method_slider
-from ui_video import get_ui_video_sliders
-from ui_video import get_video_uploader
+from helper.UI_components import camera_component, method_slider
+from helper.ui_video import get_ui_video_sliders, get_video_uploader
 from helper import display_instructions, generate_image_btn
-from webcam_methods import process_webcam
+from helper.webcam_methods import process_webcam
 from streamlit.runtime.uploaded_file_manager import UploadedFile
-from upload_types import content_types, video_types
-from ui_video import get_video_uploader
-from video_transfer import video_transfer_style
+from helper.upload_types import content_types, video_types
+from helper.video_transfer import video_transfer_style
 
 def video_process(video_file,style_images,width_resolution : int,height_resolution : int,fps : int):
     style_images = [style_images] if type(style_images) is UploadedFile else style_images

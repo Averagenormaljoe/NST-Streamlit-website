@@ -1,13 +1,12 @@
-from UI_components import method_slider
-from helper import display_instructions
-from ui_video import get_ui_video_sliders, get_video_uploader
+from helper.UI_components import method_slider, camera_component
+from helper.helper import display_instructions
+from helper.ui_video import get_ui_video_sliders, get_video_uploader
 import streamlit as st
-from ui_video import get_video_uploader
-from UI_components import camera_component
-from johnson import johnson_header, johnson_image_input, johnson_webcam_input
-from data import style_models_name,style_models_dict
-from upload_types import content_types, video_types
-from video_transfer import video_transfer_style
+from helper.ui_video import get_video_uploader
+from helper.johnson import johnson_header, johnson_image_input, johnson_webcam_input
+from helper.data import style_models_name,style_models_dict
+from helper.upload_types import content_types, video_types
+from helper.video_transfer import video_transfer_style
 def johnson_interface():
     select_model_name : str | None = st.selectbox("Choose the style model: ", style_models_name, key="johnson_model_selector")
     if select_model_name is None:
