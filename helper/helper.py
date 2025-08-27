@@ -1,4 +1,3 @@
-import requests
 import streamlit as st
 import numpy as np
 import keras
@@ -7,7 +6,7 @@ from io import BytesIO
 from PIL import Image
 import tensorflow as tf
 from components import processing_btn
-from API import transfer_style
+from style_transfer import transfer_style
 import os
 from keras.layers import TFSMLayer
 from AdaIN.AdaIN_functions.NeuralStyleTransfer import NeuralStyleTransfer
@@ -157,25 +156,4 @@ def instruction_warning():
     st.warning('NOTE : You need at least Intel i3 with 8GB memory for proper functioning of this application. ' \
                 + ' Images greater then (2000x2000) are resized to (1000x1000).')
                  
-                
-def load_image_by_url(url : str):
-    try:
-        image = Image.open(BytesIO(requests.get(url).content))
-        return image
-    except Exception as e:
-        st.error(f"Error loading image from URL: {e}")
-        return None
-    
-
-def get_url_image():
-    url : str = st.sidebar.text_input('URL for the content image.')
-    assigned_name : str = 'content.jpg'
-    if st.sidebar.button('Load Image'):
-        try:
-            content_path : str = keras.utils.get_file(os.path.join(os.getcwd(), assigned_name), url)
-            content_image_file = Image.open(content_path)
-            return content_image_file
-        except:
-            st.error("Invalid URL. Please enter a valid image URL.")
-            return None
-      
+        
