@@ -2,7 +2,6 @@ from helper.UI_components import method_slider, camera_component
 from helper.helper import display_instructions
 from helper.ui_video import get_ui_video_sliders, get_video_uploader
 import streamlit as st
-from helper.ui_video import get_video_uploader
 from helper.johnson import johnson_header, johnson_image_input, johnson_webcam_input
 from helper.data import style_models_name,style_models_dict
 from helper.upload_types import content_types, video_types

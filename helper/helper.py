@@ -6,7 +6,7 @@ from io import BytesIO
 from PIL import Image
 import tensorflow as tf
 from helper.components import processing_btn
-from style_transfer import transfer_style
+from helper.style_transfer import transfer_style
 import os
 from keras.layers import TFSMLayer
 from AdaIN.AdaIN_functions.NeuralStyleTransfer import NeuralStyleTransfer
