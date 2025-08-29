@@ -1,3 +1,4 @@
+import os
 import keras
 import imutils
 import cv2
@@ -8,7 +9,7 @@ import tensorflow as tf
 import streamlit as st
 from PIL import Image
 from keras.layers import TFSMLayer
-def create_model_from_endpoint(model_path: str):
+def create_model_from_endpoint(model_path: str,size):
     layer = TFSMLayer(model_path, call_endpoint="serving_default")
 
     model = keras.Sequential([
@@ -16,7 +17,9 @@ def create_model_from_endpoint(model_path: str):
         layer
     ])
     return model
-def get_model_from_path(style_model_path):
+def variables_dir_exists(style_model_path: str) -> bool:
+    return os.path.exists(os.path.join(style_model_path, "variables"))
+def get_model_from_path(style_model_path,size = (256, 256)):
     if style_model_path.endswith('.t7') or style_model_path.endswith('.pth'):
         model = cv2.dnn.readNetFromTorch(style_model_path)
     elif style_model_path.endswith('.pb') or style_model_path.endswith('.pbtxt'):
@@ -25,38 +28,40 @@ def get_model_from_path(style_model_path):
         model = hub.load(style_model_path)
     elif style_model_path.endswith('.keras'):
         model = tf.keras.models.load_model(style_model_path)
-    elif "forward_feed" in style_model_path:
-        model = create_model_from_endpoint(style_model_path)
+    elif variables_dir_exists(style_model_path):
+        model = create_model_from_endpoint(style_model_path,size)
     else:
         st.error(f"This model path is invalid: {style_model_path}")
         return None
     return model
 
+
+def apply_model(img,style_model, show_image=True):
+    test_image = np.expand_dims(img, axis=0)
+    converted_image = test_image / 255.0
+    cast_img = converted_image.astype(np.float32)
+    predicted_img = style_model(cast_img)
+    output = list(predicted_img.values())[0]
+    clip_predicted_img = np.clip(output, 0, 255)
+    int8_predicted_img = clip_predicted_img.astype(np.uint8)
+    output =  int8_predicted_img.astype(np.uint8)
+    test_output = tf.squeeze(output).numpy()
+    predicted_output = tf.squeeze(int8_predicted_img).numpy()
+
+    return test_output   
+
 def style_transfer(image, model):
     if model is None:
         st.error("Model not loaded. Please select a valid model.")
         return None
-    (h, w)  = image.shape[:2]
-    # image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR) #PIL Jpeg to Opencv image
-
-    mean : tuple[float,float,float] = (103.939, 116.779, 123.680)
-    
-    blob : MatLike = cv2.dnn.blobFromImage(image, 1.0, (w, h), mean, swapRB=False, crop=False)
-
-    if hasattr(model, 'forward'):
-        model.setInput(blob)
-        output = model.forward()
+    if  not hasattr(model, 'forward'):
+        print(model.input_shape)
+        (h, w) = (256, 256)
     else:
-        output = model(blob).numpy()
-    output = output.reshape((3, output.shape[2], output.shape[3]))
-    output[0] += mean[0]
-    output[1] += mean[1]
-    output[2] += mean[2]
-    output /= 255.0
-    output = output.transpose(1, 2, 0)
-    output = np.clip(output, 0.0, 1.0)
-    width : int = 500
-    output = imutils.resize(output, width=width)
+        (h, w)  = image.shape[:2]
+
+    output = apply_model(image, model)
+    
     return output
 
 def simple_style_transfer(image_str, model):

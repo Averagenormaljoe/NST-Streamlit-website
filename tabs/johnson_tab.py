@@ -16,7 +16,7 @@ def johnson_interface():
         
         case 'Image':
             content_image = st.file_uploader(
-                    "Upload Content Image (PNG & JPG images only)", type=content_types, key="johnson_content_image_uploader", accept_multiple_files= True)
+                    "Upload Content Image (PNG & JPG images only)", type=content_types, key="johnson_content_image_uploader")
             johnson_image_input(content_image, model_path)
         case 'Webcam':
             johnson_webcam_input(model_path)
