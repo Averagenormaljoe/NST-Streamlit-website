@@ -3,7 +3,7 @@ from PIL import Image
 from typing import Optional
 from helper.UI_components import camera_component, method_slider
 from helper.ui_video import get_ui_video_sliders, get_video_uploader
-from helper import display_instructions, generate_image_btn
+from helper.helper import display_instructions, generate_image_btn
 from helper.webcam_methods import process_webcam
 from streamlit.runtime.uploaded_file_manager import UploadedFile
 from helper.upload_types import content_types, video_types

@@ -5,7 +5,7 @@ import os
 import tempfile
 import cv2
 import numpy as np
-from helper.johnson_helper import style_transfer,get_model_from_path
+from helper.johnson_helper import style_transfer,get_model_from_path, variables_dir_exists
 import streamlit as st
 import av
 from streamlit.runtime.uploaded_file_manager import UploadedFile
@@ -16,11 +16,11 @@ from helper.helper import  open_styled_image
 from helper.video_helper import image_read
 
 def video_validation(input_video: UploadedFile | None,style_image,model_path) -> bool:
-    if style_image is None and not model_path.endswith(".t7"):
-        st.error(f"Could not read style image from {style_image}")
+    if style_image is None and (not model_path.endswith(".t7") and not variables_dir_exists(model_path)):
+        st.error(f"Error: Could not read style image from {style_image}")
         return False
     if input_video is None:
-        st.error(f"Could not read video file {input_video}")
+        st.error(f"Error: Could not read video file {input_video}")
         return False
 
     return True
@@ -82,7 +82,7 @@ def video_transfer_style(input_video : UploadedFile | None,style_image , width :
     if not video_validation(input_video, style_image,model_path):
         return
     print("Model path: ", model_path)
-    if model_path.endswith(".t7") or model_path.endswith('.pth'):
+    if model_path.endswith(".t7") or variables_dir_exists(model_path):
         pil_style_image = None
     else:
         pil_style_image = image_read(style_image)
@@ -116,9 +116,14 @@ def process_frame(width : int, height : int, cap : cv2.VideoCapture, style_image
     fps = cap.get(cv2.CAP_PROP_FPS)
     print("Video Duration: ", cap.get(cv2.CAP_PROP_FRAME_COUNT) / fps)
     output, stream, output_memory_file = prepare_stream(width, height,fps)
+    total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    progress_text = "Stylization time. Please wait."
+    video_bar = st.progress(0, text=progress_text)
     try:
         while True:
             frame_start_time : float = time.time()
+            pos = (int(cap.get(cv2.CAP_PROP_POS_FRAMES)) + 1)
+            video_bar.progress(pos / total_frames, text=progress_text)
             ret, frame = cap.read()
             print(f"ret: {ret}")
             if not ret:
@@ -134,13 +139,14 @@ def process_frame(width : int, height : int, cap : cv2.VideoCapture, style_image
             frame_end_time : float = time.time()
             print(f"Processed frame in {frame_end_time - frame_start_time:.2f} seconds")
     except cv2.error as e:
-        print(f"OpenCV error: {e}")
+        print(f"OpenCV error during video stylization: {e}")
     except Exception as e:
         print(f"Error during video stylization: {e}")
     finally:
         finish_video(cap)
         end_time : float = time.time()
-        print(f"Video style transfer processing time: {end_time - start_time:.2f} seconds")
+        duration = end_time - start_time
+        print(f"Video style transfer processing time: {duration:.2f} seconds")
         
     close_stream(stream, output, output_memory_file)
     return cap, output_memory_file
@@ -151,15 +157,15 @@ def get_stylized_image(frame, style_image, hub_model,model_path : str,width : in
     orig_h, orig_w = frame.shape[0:2]
     input_frame = resize_image(frame, width, orig_h, orig_w)
     try:
-        if model_path.endswith(".t7") or 'forward' in model_path:
+        if model_path.endswith(".t7") or variables_dir_exists(model_path):
             stylized_frame = style_transfer(input_frame,hub_model)
         else:
             resized_input_frame = image_read(input_frame)
             tensor_frame = hub_model(tf.constant(resized_input_frame), tf.constant(style_image))[0]
             stylized_frame = tensor_toimage(tensor_frame)
     except Exception as e:
-        print(f"Error get_stylized_image: {e}")
-        st.error("An error occurred during style transfer. Please check the model and style image.")
+        print(f"Error:: get_stylized_image: {e}")
+        st.error("An error occurred during style transfer.")
         return None
     stylized_image = get_result_image(stylized_frame, orig_w, orig_h)
     return stylized_image
