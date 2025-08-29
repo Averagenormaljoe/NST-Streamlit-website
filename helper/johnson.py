@@ -1,9 +1,9 @@
 import numpy as np
 import streamlit as st
 from PIL import Image
-from helper import display_styled_image
-from johnson_helper import get_model_from_path, style_transfer
-from webcam import webcam_input
+from helper.helper import display_styled_image
+from helper.johnson_helper import get_model_from_path, style_transfer
+from helper.webcam import webcam_input
 def johnson_header():
     st.title('Fast neural style transfer (Johnson)')
 

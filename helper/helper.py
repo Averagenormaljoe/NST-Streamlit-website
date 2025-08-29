@@ -5,7 +5,7 @@ import tensorflow_hub as hub
 from io import BytesIO
 from PIL import Image
 import tensorflow as tf
-from components import processing_btn
+from helper.components import processing_btn
 from style_transfer import transfer_style
 import os
 from keras.layers import TFSMLayer

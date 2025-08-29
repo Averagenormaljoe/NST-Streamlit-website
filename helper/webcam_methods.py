@@ -1,5 +1,5 @@
 import streamlit as st
-from webcam import webcam_input
+from helper.webcam import webcam_input
 
 
 def process_webcam(style_image,stylization_enabled: bool = False):

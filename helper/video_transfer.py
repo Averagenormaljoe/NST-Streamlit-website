@@ -5,15 +5,15 @@ import os
 import tempfile
 import cv2
 import numpy as np
-from johnson_helper import style_transfer,get_model_from_path
+from helper.johnson_helper import style_transfer,get_model_from_path
 import streamlit as st
 import av
 from streamlit.runtime.uploaded_file_manager import UploadedFile
 import tensorflow as tf
-from image_transfer import get_result_image, resize_image
-from components import processing_btn
-from helper import  open_styled_image
-from video_helper import image_read
+from helper.image_transfer import get_result_image, resize_image
+from helper.components import processing_btn
+from helper.helper import  open_styled_image
+from helper.video_helper import image_read
 
 def video_validation(input_video: UploadedFile | None,style_image,model_path) -> bool:
     if style_image is None and not model_path.endswith(".t7"):
@@ -147,11 +147,11 @@ def process_frame(width : int, height : int, cap : cv2.VideoCapture, style_image
 
 
 
-def get_stylized_image(frame, style_image, hub_model,model_path,width):
+def get_stylized_image(frame, style_image, hub_model,model_path : str,width : int):
     orig_h, orig_w = frame.shape[0:2]
     input_frame = resize_image(frame, width, orig_h, orig_w)
     try:
-        if model_path.endswith(".t7"):
+        if model_path.endswith(".t7") or 'forward' in model_path:
             stylized_frame = style_transfer(input_frame,hub_model)
         else:
             resized_input_frame = image_read(input_frame)

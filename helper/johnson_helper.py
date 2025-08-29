@@ -42,9 +42,12 @@ def style_transfer(image, model):
     mean : tuple[float,float,float] = (103.939, 116.779, 123.680)
     
     blob : MatLike = cv2.dnn.blobFromImage(image, 1.0, (w, h), mean, swapRB=False, crop=False)
-    model.setInput(blob)
-    output = model.forward()
 
+    if hasattr(model, 'forward'):
+        model.setInput(blob)
+        output = model.forward()
+    else:
+        output = model(blob).numpy()
     output = output.reshape((3, output.shape[2], output.shape[3]))
     output[0] += mean[0]
     output[1] += mean[1]

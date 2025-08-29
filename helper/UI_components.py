@@ -1,9 +1,8 @@
-from requests import get
 import streamlit as st
 from streamlit_image_comparison import image_comparison
 from PIL import Image
 
-from styles import get_header_style, get_title_style
+from helper.styles import get_header_style, get_title_style
 
 def method_slider(key="method_selector") -> str:
     method =  st.selectbox('Select your chosen mode', options=['Image','Webcam', 'Camera', 'Video'], key=key)
