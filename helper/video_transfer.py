@@ -98,7 +98,7 @@ def video_transfer_style(input_video : UploadedFile | None,style_image , width :
     cap = video_setup(name,width,height,fps)
     if not valid_video_setup(cap):
         return
-    cap,converted_video = process_frame(width, height, cap, pil_style_image, model_path)
+    cap,converted_video = process_frame(width, height,fps, cap, pil_style_image, model_path)
     print("cap: ", cap)
     if cap is None:
         st.error("Could not process video frames.")
@@ -110,11 +110,12 @@ def video_transfer_style(input_video : UploadedFile | None,style_image , width :
 
 
     
-def process_frame(width : int, height : int, cap : cv2.VideoCapture, style_image, model_path : str):
+def process_frame(width : int, height : int,fps, cap : cv2.VideoCapture, style_image, model_path : str):
     hub_model = get_model_from_path(model_path)
     print("Hub model: ", hub_model)
     start_time : float = time.time()
-    fps = cap.get(cv2.CAP_PROP_FPS)
+    if fps is None:
+        fps = cap.get(cv2.CAP_PROP_FPS)
     print("Video Duration: ", cap.get(cv2.CAP_PROP_FRAME_COUNT) / fps)
     output, stream, output_memory_file = prepare_stream(width, height,fps)
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
