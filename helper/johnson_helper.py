@@ -29,7 +29,6 @@ def get_forward_feed_model(model_path: str,size: tuple):
     return model
 
 def create_model_from_endpoint(model_path: str,size : tuple):
-    
     if is_AdaIN(model_path):
         model = get_AdaIN_model(model_path, size)
         return model    
