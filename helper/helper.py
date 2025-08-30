@@ -9,41 +9,12 @@ from helper.components import processing_btn
 from helper.style_transfer import transfer_style
 import os
 from keras.layers import TFSMLayer
-#from AdaIN.AdaIN_functions.NeuralStyleTransfer import NeuralStyleTransfer
-def is_pb_model(file_name : str) -> bool:
-    return file_name.lower().endswith(".pb")
-
-def is_keras_model(file_name : str) -> bool:
-    return file_name.lower().endswith(".keras")
-
-
-def contains_pb_model(dir_path: str) -> bool:
-    if not os.path.isdir(dir_path):
-        return False
-    return any(file.lower().endswith(".pb") for file in os.listdir(dir_path))
-
-
-def load_model(model_path : str):
-    if is_keras_model(model_path):
-        model = keras.saving.load_model(model_path)
-        return model
-    
-    elif contains_pb_model(model_path):
-        print(model_path)
-        loaded = tf.saved_model.load(model_path)
-        print("Signature:",loaded.signatures["serving_default"].structured_input_signature)
-        model = TFSMLayer(model_path, call_endpoint="serving_default")
-        return model
-    else:
-        # Load the model from TensorFlow Hub
-        hub_module = hub.load(model_path)
-    return hub_module
-
+from helper.johnson_helper import get_model_from_path
 def generate_styled_image(content_image, style_image, model_path : str):
     print("model_path: ", model_path)
     
 
-    hub_module = load_model(model_path)
+    hub_module = get_model_from_path(model_path)
     generated_image = open_styled_image(content_image, style_image, hub_module)
     return generated_image
     
@@ -101,17 +72,9 @@ def download_generated_image(generated_image):
 
 
     
-def get_model_path(use_main : bool = False) -> str:
-    if use_main:
-        main_model_path : str = "main_model/model.keras"
-        return main_model_path
-    
-    magenta_model_path : str = "https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2"
-    # Path of the pre-trained TF model
-    model_path: str =  magenta_model_path   
-    return model_path
-def generate_image_btn(content_image,style_image):
-    if content_image is not None and style_image is not None:
+
+def generate_image_btn(model_path,content_image,style_image):
+    if content_image is not None and style_image is not None and model_path is not None:
         if st.button("Generate Styled Image"):
             with st.spinner("Styling Images...will take about 20-30 secs"):
                 is_processing : bool = True
@@ -120,7 +83,6 @@ def generate_image_btn(content_image,style_image):
                 open_style_image = Image.open(style_image)
            
                 # Path of the pre-trained TF model
-                model_path: str = get_model_path(True)
                 generated_image = generate_styled_image(open_content_image, open_style_image, model_path)
                 is_processing = processing_btn(is_processing)
                 display_styled_image(generated_image, is_processing)

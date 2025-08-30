@@ -37,3 +37,4 @@ def tabs_display():
     with tab2:
          johnson_tab()
     # # -------------Gatys Model Section------------------------------------------------        
+

@@ -8,8 +8,8 @@ from helper.webcam_methods import process_webcam
 from streamlit.runtime.uploaded_file_manager import UploadedFile
 from helper.upload_types import content_types, video_types
 from helper.video_transfer import video_transfer_style
-
-def video_process(video_file,style_images,width_resolution : int,height_resolution : int,fps : int):
+from helper.adain_data import style_models_name,style_models_dict
+def video_process(video_file,style_images,width_resolution : int,height_resolution : int,fps : int,model_path):
     style_images = [style_images] if type(style_images) is UploadedFile else style_images
     if video_file is not None and style_images is not None:
         print(style_images)
@@ -17,9 +17,6 @@ def video_process(video_file,style_images,width_resolution : int,height_resoluti
         st.info(f"{len(open_style_imgs)} style image(s) selected.")
         if st.button("Generate Styled Video"):
             with st.spinner("Stylizing video... This may take a few minutes."):
-                # read style images as numpy arrays
-                #sStylize video (implement this function in your API)
-                model_path = "https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2"
                 video_transfer_style(
                     video_file,  open_style_imgs[0], width_resolution,height_resolution,fps=fps,model_path=model_path
                     )
@@ -27,28 +24,31 @@ def video_process(video_file,style_images,width_resolution : int,height_resoluti
 if "webcam_stylization_enabled" not in st.session_state:
     st.session_state.webcam_stylization_enabled = False
 
-def default_interface(method: str = "Image", content_image: Optional[UploadedFile] | None = None, style_image: Optional[UploadedFile] = None, picture: Optional[UploadedFile] = None, video_uploader: Optional[UploadedFile] = None):
- 
+def default_interface(model_path : str,method: str = "Image", content_image: Optional[UploadedFile] | None = None, style_image: Optional[UploadedFile] = None, picture: Optional[UploadedFile] = None, video_uploader: Optional[UploadedFile] = None):
+
     print("Chosen method:",method)
     match method:
         case 'Image':
             st.markdown('<h3 style="text-align:center;">Image Style Transfer</h3>', unsafe_allow_html=True)
             print("Content Image: ", content_image)
             print("Style Image: ", style_image)
-            generate_image_btn(content_image, style_image)
+            generate_image_btn(model_path,content_image, style_image)
         case 'Video':
             width_resolution, height_resolution,fps,content_weight, style_weight = get_ui_video_sliders()
-            video_process(video_uploader, style_image, width_resolution, height_resolution, fps)
+            video_process(video_uploader, style_image, width_resolution, height_resolution, fps,model_path)
         case 'Camera':
             if picture is not None:
-                generate_image_btn(picture, style_image)
+                generate_image_btn(model_path,picture, style_image)
         case 'Webcam':
             print("In webcam mode")
         case _:
             st.error("Please select a valid method from the sidebar.")
 def default_tab():
         # Upload Images
-
+    select_model_name : str | None = st.selectbox("Choose the style model: ", style_models_name, key="style_motion_model_selector")
+    if select_model_name is None:
+        st.error("Please select a style model.")
+    model_path = style_models_dict[select_model_name]
     content_image = None
     style_image = None
     picture = None
@@ -69,13 +69,13 @@ def default_tab():
           
     with col2:
         style_image = st.file_uploader(
-            "Upload Style Image (PNG & JPG images only)", type=content_types, accept_multiple_files= True, key="default loader" )
+            "Upload Style Image (PNG & JPG images only)", type=content_types, key="default loader" )
     
     with col1:
         if method == "Webcam":
-              process_webcam(style_image,True)
+              process_webcam(model_path,style_image,True)
     
     
     
-    default_interface(method=method, content_image=content_image, style_image=style_image, picture=picture,video_uploader=video_uploader)
+    default_interface(model_path,method=method, content_image=content_image, style_image=style_image, picture=picture,video_uploader=video_uploader)
     display_instructions()

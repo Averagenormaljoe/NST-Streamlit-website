@@ -9,7 +9,16 @@ import tensorflow as tf
 import streamlit as st
 from PIL import Image
 from keras.layers import TFSMLayer
-def create_model_from_endpoint(model_path: str,size):
+def create_model_from_endpoint(model_path: str,size : tuple):
+    
+    if "AdaIN" in model_path:
+        input1 = tf.keras.Input(shape=(224, 224, 3))
+        input2 = tf.keras.Input(shape=(224, 224, 3))
+
+        output = TFSMLayer(model_path)((input1, input2))
+
+        model = tf.keras.Model(inputs=[input1, input2], outputs=output) 
+        return model    
     layer = TFSMLayer(model_path, call_endpoint="serving_default")
 
     model = keras.Sequential([

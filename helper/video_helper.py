@@ -15,14 +15,3 @@ def image_read(image : MatLike):
   new_image = new_image[tf.newaxis, :]
   
   return new_image
-
-
-
-
-def open_style_image(style_image):
- 
-    open_style_im : MatLike = cv2.imread(style_image)
-    colored_style_im : MatLike = cv2.cvtColor(open_style_im, cv2.COLOR_BGR2RGB)
-    processed_style_im = image_read(colored_style_im)
-    
-    return processed_style_im
