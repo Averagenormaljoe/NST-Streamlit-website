@@ -1,6 +1,6 @@
 import os
 import keras
-from helper.model_validation import is_AdaIN
+from helper.model_validation import is_AdaIN, variables_dir_exists
 import cv2
 import numpy as np
 from cv2.typing import MatLike
@@ -35,10 +35,9 @@ def create_model_from_endpoint(model_path: str,size : tuple):
         return model    
     model = get_forward_feed_model(model_path)
     return model
-def variables_dir_exists(style_model_path: str) -> bool:
-    return os.path.exists(os.path.join(style_model_path, "variables"))
+
 def get_model_from_path(style_model_path,size = (224, 224)):
-    if style_model_path is None or isinstance(style_model_path,str):
+    if style_model_path is None or not isinstance(style_model_path,str):
         st.error("get_model_from_path:: error: model path is not a string or is none.")
         return None
     if style_model_path.endswith('.t7') or style_model_path.endswith('.pth'):
