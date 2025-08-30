@@ -1,6 +1,6 @@
 import os
 import keras
-import imutils
+from helper.model_validation import is_AdaIN
 import cv2
 import numpy as np
 from cv2.typing import MatLike
@@ -9,7 +9,17 @@ import tensorflow as tf
 import streamlit as st
 from PIL import Image
 from keras.layers import TFSMLayer
-def create_model_from_endpoint(model_path: str,size):
+
+def get_AdaIN_model(model_path: str,size : tuple):
+    content_input = tf.keras.Input(shape=(size[0], size[1], 3))
+    style_input = tf.keras.Input(shape=(size[0], size[1], 3))
+
+    output = TFSMLayer(model_path)((content_input, content_input))
+    inputs = [content_input, style_input]
+    model = tf.keras.Model(inputs=inputs, outputs=output) 
+    return model    
+
+def get_forward_feed_model(model_path: str):
     layer = TFSMLayer(model_path, call_endpoint="serving_default")
 
     model = keras.Sequential([
@@ -17,9 +27,20 @@ def create_model_from_endpoint(model_path: str,size):
         layer
     ])
     return model
+
+def create_model_from_endpoint(model_path: str,size : tuple):
+    
+    if is_AdaIN(model_path):
+        model = get_AdaIN_model(model_path, size)
+        return model    
+    model = get_forward_feed_model(model_path)
+    return model
 def variables_dir_exists(style_model_path: str) -> bool:
     return os.path.exists(os.path.join(style_model_path, "variables"))
-def get_model_from_path(style_model_path,size = (256, 256)):
+def get_model_from_path(style_model_path,size = (224, 224)):
+    if style_model_path is None or isinstance(style_model_path,str):
+        st.error("get_model_from_path:: error: model path is not a string or is none.")
+        return None
     if style_model_path.endswith('.t7') or style_model_path.endswith('.pth'):
         model = cv2.dnn.readNetFromTorch(style_model_path)
     elif style_model_path.endswith('.pb') or style_model_path.endswith('.pbtxt'):
@@ -37,6 +58,12 @@ def get_model_from_path(style_model_path,size = (256, 256)):
 
 
 def apply_model(img,style_model, show_image=True):
+    if img is None:
+        st.error("apply_model:: image is none or invalid.")
+        return
+    if style_model is None:
+        st.error("apply_model:: style_model is none or invalid")
+        return 
     test_image = np.expand_dims(img, axis=0)
     converted_image = test_image / 255.0
     cast_img = converted_image.astype(np.float32)
@@ -46,8 +73,6 @@ def apply_model(img,style_model, show_image=True):
     int8_predicted_img = clip_predicted_img.astype(np.uint8)
     output =  int8_predicted_img.astype(np.uint8)
     test_output = tf.squeeze(output).numpy()
-    predicted_output = tf.squeeze(int8_predicted_img).numpy()
-
     return test_output   
 
 def style_transfer(image, model):

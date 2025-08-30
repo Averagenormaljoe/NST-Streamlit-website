@@ -1,4 +1,5 @@
 #from AdaIN.AdaIN_functions.image import tensor_toimage
+from helper.model_validation import is_AdaIN
 from video_methods.video_stream import prepare_stream, save_packet, close_stream
 from video_methods.video_interface import display_styled_video
 import os
@@ -82,7 +83,7 @@ def video_transfer_style(input_video : UploadedFile | None,style_image , width :
     if not video_validation(input_video, style_image,model_path):
         return
     print("Model path: ", model_path)
-    if model_path.endswith(".t7") or variables_dir_exists(model_path):
+    if ((model_path.endswith(".t7") or variables_dir_exists(model_path))) and not is_AdaIN(model_path):
         pil_style_image = None
     else:
         pil_style_image = image_read(style_image)

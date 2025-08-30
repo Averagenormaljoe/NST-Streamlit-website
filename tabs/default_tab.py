@@ -10,8 +10,11 @@ from helper.upload_types import content_types, video_types
 from helper.video_transfer import video_transfer_style
 from helper.adain_data import style_models_name,style_models_dict
 def video_process(video_file,style_images,width_resolution : int,height_resolution : int,fps : int,model_path):
+    if fps is None or height_resolution is None or width_resolution is None:
+        st.error("The provided height, fps or width resolution is invalid")
+        return
     style_images = [style_images] if type(style_images) is UploadedFile else style_images
-    if video_file is not None and style_images is not None:
+    if video_file is not None and style_images is not None and model_path is not None :
         print(style_images)
         open_style_imgs = [Image.open(img) for img in style_images]
         st.info(f"{len(open_style_imgs)} style image(s) selected.")
