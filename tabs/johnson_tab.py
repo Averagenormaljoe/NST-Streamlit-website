@@ -3,11 +3,13 @@ from helper.helper import display_instructions
 from helper.ui_video import get_ui_video_sliders, get_video_uploader
 import streamlit as st
 from helper.johnson import johnson_header, johnson_image_input, johnson_webcam_input
-from helper.data import style_models_name,style_models_dict
 from helper.upload_types import content_types, video_types
 from helper.video_transfer import video_transfer_style
+from helper.model_dirs import get_model_dirs
 def johnson_interface():
-    select_model_name : str | None = st.selectbox("Choose the style model: ", style_models_name, key="johnson_model_selector")
+    dir_path : str = "forward_model"
+    model_dirs,style_models_dict = get_model_dirs(dir_path)
+    select_model_name : str | None = st.selectbox("Choose the style model: ", model_dirs, key="johnson_model_selector")
     if select_model_name is None:
         st.error("Please select a style model.")
     model_path = style_models_dict[select_model_name]
