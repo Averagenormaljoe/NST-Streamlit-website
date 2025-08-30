@@ -3,6 +3,8 @@ import numpy as np
 import tensorflow as tf
 from cv2.typing import MatLike
 
+from helper.image_transfer import get_result_image
+
 
 def resize_image(input_image,name : str="Content Image"):
     size_threshold : tuple[int, int] = (2000,2000)
@@ -55,24 +57,22 @@ def transfer_style(content_image, style_image, hub_module):
     
     print("Generating stylized image now...wait a minute")
     # Stylize image.
-    outputs = process_image(content_numpy_image, style_tf_image, hub_module)
+    stylized_image = process_image(content_numpy_image, style_tf_image, hub_module)
     
-    stylized_image = get_stylized_image(outputs)
+
     return stylized_image
 
 def process_image(content_image,style_image,hub_module): 
     start_time = tf.timestamp()
     content_image = tf.image.resize(content_image, [224, 224])
     style_image = tf.image.resize(style_image, [224, 224])
-    outputs = hub_module(
-        tf.constant(content_image),
-        tf.constant(style_image)
-    )
-  
+    outputs = hub_module(inputs=(content_image, style_image))
+    stylized_image = get_stylized_image(outputs)
+    test_output = get_result_image(stylized_image, 224, 224)
     end_time = tf.timestamp()
     processing_time : float = float(end_time - start_time)
     print(f"Stylizing completed in {processing_time:.2f} seconds...")
-    return outputs
+    return test_output
 def get_stylized_image(outputs):
     output_image = outputs[0]
     # reshape the stylized image

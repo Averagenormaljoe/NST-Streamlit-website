@@ -1,7 +1,10 @@
 
 import streamlit as st
+from gatys_model import gatys_functions
 
 from shared_utils.file_nav import get_base_name
+from gatys_functions.LoopManager import LoopManager
+from gatys_functions.get_model import get_model
 def render_gatys_ui_sliders() -> tuple[int, float]:
     # Style intensity slider
     style_intensity : float = st.slider(
@@ -37,12 +40,55 @@ def render_gatys_ui_sliders() -> tuple[int, float]:
     )
     return epoch_slider, style_intensity
 
-def process_gatys(content_image, style_image, epoch_slider : int, content_weight = 2.5e-8,style_intensity : float = 1e-6, total_variation_weight = 1e-6,ln = "vgg19"):
+def process_gatys(content_path, style_path, epoch_slider : int, content_weight = 2.5e-8,style_weight : float = 1e-6, total_variation_weight = 1e-6,ln = "vgg19"):
 
     w = 512
     h = 512
-
-    return None
+    style_layer_names = [
+    "block1_conv1",
+    "block2_conv1",
+    "block3_conv1",
+    "block4_conv1",
+    "block5_conv1",
+    ]
+    # content layers
+    content_layer_names = ["block5_conv2"]
+    config_layers = {
+    "style" : style_layer_names,
+    "content" : style_layer_names
+    }
+    
+    feature_extractor = get_model("vgg",w,h, config_layers=config_layers)
+    config = {
+    "optimizer": "adam",
+    "ln": "vgg19",
+    "lr": 1.0,
+    "size": (512, 512),
+    "content_layer_names": content_layer_names,
+    "style_layer_names": style_layer_names,
+    "feature" : feature_extractor,
+    "c_weight": content_weight,
+    "s_weight": style_weight,
+    "tv_weight": total_variation_weight,
+    "video_mode": False
+    
+  }
+    content_name = get_base_name(content_path)
+    style_name = get_base_name(style_path)
+    loop_manager = LoopManager(config)
+    results = loop_manager.training_loop(
+            content_path, style_path,
+            content_name, style_name, config=config
+        )
+    if results is None:
+        print(f"Gatys process for ({content_name}) and ({style_name}). Next loop...")
+        return None
+    results = loop_manager.training_loop(
+        content_path, style_path,
+        content_name, style_name, config=config
+    )
+    generated_images, best_image,log_data = results
+    return best_image.get_image()
 
 def generate_gatys_image(content_image, style_image, epoch_slider : int, style_intensity : float):
     return None

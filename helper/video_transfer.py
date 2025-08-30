@@ -1,4 +1,4 @@
-from AdaIN.AdaIN_functions.image import tensor_toimage
+#from AdaIN.AdaIN_functions.image import tensor_toimage
 from video_methods.video_stream import prepare_stream, save_packet, close_stream
 from video_methods.video_interface import display_styled_video
 import os
@@ -161,8 +161,8 @@ def get_stylized_image(frame, style_image, hub_model,model_path : str,width : in
             stylized_frame = style_transfer(input_frame,hub_model)
         else:
             resized_input_frame = image_read(input_frame)
-            tensor_frame = hub_model(tf.constant(resized_input_frame), tf.constant(style_image))[0]
-            stylized_frame = tensor_toimage(tensor_frame)
+            stylized_frame = hub_model(tf.constant(resized_input_frame), tf.constant(style_image))[0]
+            #stylized_frame = tensor_toimage(tensor_frame)
     except Exception as e:
         print(f"Error:: get_stylized_image: {e}")
         st.error("An error occurred during style transfer.")
