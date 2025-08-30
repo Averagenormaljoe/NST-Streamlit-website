@@ -14,16 +14,16 @@ def get_AdaIN_model(model_path: str,size : tuple):
     content_input = tf.keras.Input(shape=(size[0], size[1], 3))
     style_input = tf.keras.Input(shape=(size[0], size[1], 3))
 
-    output = TFSMLayer(model_path)((content_input, content_input))
+    outputs = TFSMLayer(model_path)((content_input, style_input))
     inputs = [content_input, style_input]
-    model = tf.keras.Model(inputs=inputs, outputs=output) 
+    model = tf.keras.Model(inputs=inputs, outputs=outputs) 
     return model    
 
-def get_forward_feed_model(model_path: str):
+def get_forward_feed_model(model_path: str,size: tuple):
     layer = TFSMLayer(model_path, call_endpoint="serving_default")
 
     model = keras.Sequential([
-        keras.Input(shape=(256, 256, 3)), 
+        keras.Input(shape=(size[0], size[1], 3)), 
         layer
     ])
     return model
@@ -33,7 +33,8 @@ def create_model_from_endpoint(model_path: str,size : tuple):
     if is_AdaIN(model_path):
         model = get_AdaIN_model(model_path, size)
         return model    
-    model = get_forward_feed_model(model_path)
+    forward_feed_size = (256,256)
+    model = get_forward_feed_model(model_path,forward_feed_size)
     return model
 
 def get_model_from_path(style_model_path,size = (224, 224)):
