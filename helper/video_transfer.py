@@ -1,12 +1,12 @@
 #from AdaIN.AdaIN_functions.image import tensor_toimage
-from helper.model_validation import is_AdaIN
+from helper.model_validation import is_AdaIN, is_forward_feed, variables_dir_exists
 from video_methods.video_stream import prepare_stream, save_packet, close_stream
 from video_methods.video_interface import display_styled_video
 import os
 import tempfile
 import cv2
 import numpy as np
-from helper.johnson_helper import style_transfer,get_model_from_path, variables_dir_exists
+from helper.johnson_helper import style_transfer,get_model_from_path
 import streamlit as st
 import av
 from streamlit.runtime.uploaded_file_manager import UploadedFile
@@ -158,7 +158,7 @@ def get_stylized_image(frame, style_image, hub_model,model_path : str,width : in
     orig_h, orig_w = frame.shape[0:2]
     input_frame = resize_image(frame, width, orig_h, orig_w)
     try:
-        if model_path.endswith(".t7") or variables_dir_exists(model_path):
+        if is_forward_feed(model_path):
             stylized_frame = style_transfer(input_frame,hub_model)
         else:
             resized_input_frame = image_read(input_frame)

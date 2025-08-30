@@ -1,3 +1,4 @@
+from helper.model_dirs import get_model_dirs
 import streamlit as st
 from PIL import Image
 from typing import Optional
@@ -8,7 +9,7 @@ from helper.webcam_methods import process_webcam
 from streamlit.runtime.uploaded_file_manager import UploadedFile
 from helper.upload_types import content_types, video_types
 from helper.video_transfer import video_transfer_style
-from helper.adain_data import style_models_name,style_models_dict
+
 def video_process(video_file,style_images,width_resolution : int,height_resolution : int,fps : int,model_path):
     if fps is None or height_resolution is None or width_resolution is None:
         st.error("The provided height, fps or width resolution is invalid")
@@ -48,7 +49,9 @@ def default_interface(model_path : str,method: str = "Image", content_image: Opt
             st.error("Please select a valid method from the sidebar.")
 def default_tab():
         # Upload Images
-    select_model_name : str | None = st.selectbox("Choose the style model: ", style_models_name, key="style_motion_model_selector")
+    dir_path = "main_model"
+    model_dirs,style_models_dict = get_model_dirs(dir_path)
+    select_model_name : str | None = st.selectbox("Choose the style model: ", model_dirs, key="style_motion_model_selector")
     if select_model_name is None:
         st.error("Please select a style model.")
     model_path = style_models_dict[select_model_name]
