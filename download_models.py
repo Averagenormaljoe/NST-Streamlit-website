@@ -12,7 +12,7 @@ def download_model(id, output_name, extracted_name):
 
 file_url_1 = "1MOm62RcSUFxrd1ROykidFzsGGZds1ENf"
 output_name_1 = "forward_model.zip"
-extracted_name_1 = "forward_feed"
+extracted_name_1 = "forward_model"
 
 file_url_2 = "18eDaP-1QOR2Y6Jzog5wFQp6Q5XwTdSUx"
 output_name_2 = "main_model.zip"
