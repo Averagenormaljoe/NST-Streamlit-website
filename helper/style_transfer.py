@@ -67,13 +67,13 @@ def process_image(content_image,style_image,hub_module):
     content_image = tf.image.resize(content_image, [224, 224])
     style_image = tf.image.resize(style_image, [224, 224])
     outputs = hub_module(inputs=(content_image, style_image))
-    stylized_image = get_stylized_image(outputs)
+    stylized_image = get_model_image(outputs)
     test_output = get_result_image(stylized_image, 224, 224)
     end_time = tf.timestamp()
     processing_time : float = float(end_time - start_time)
     print(f"Stylizing completed in {processing_time:.2f} seconds...")
     return test_output
-def get_stylized_image(outputs):
+def get_model_image(outputs):
     output_image = outputs[0]
     # reshape the stylized image
     stylized_image = np.array(output_image)
