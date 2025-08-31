@@ -1,8 +1,11 @@
+import os
 import gdown
 import zipfile
 
 
 def download_model(id, output_name, extracted_name):
+    if os.path.exists(output_name):
+        return
     url = f"https://drive.google.com/uc?export=download&id={id}"
     gdown.download(url, output_name, quiet=False)
     
