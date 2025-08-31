@@ -19,8 +19,10 @@ def get_ice_servers():
         )
         return [{"urls": ["stun:stun.l.google.com:19302"]}]
 
-    client = Client(account_sid, auth_token)
+    try:
+        client = Client(account_sid, auth_token)
 
-    token = client.tokens.create()
-
+        token = client.tokens.create()
+    except Exception as e:
+        print(f"Error while getting credentials: {e}") 
     return token.ice_servers

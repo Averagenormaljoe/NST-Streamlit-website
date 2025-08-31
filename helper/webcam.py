@@ -17,9 +17,11 @@ def webcam_input(style_model_name,style_image,webcam_stylization : bool = True, 
     def load_model(model_name, width):  # `width` is not used when loading the model, but is necessary as a cache key.
             model = get_model_from_path(model_name)
             return model
-
-
-    model = load_model(style_model_name, width)
+   
+    try: 
+        model = load_model(style_model_name, width)
+    except Exception as e:
+        print(f"Error while loading model for webcam: {e}")
     style_image_list = [style_image] if not isinstance(style_image, list) else style_image  
     open_style_image = Image.open(style_image_list[0]) if style_image_list else None
     def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
