@@ -4,7 +4,7 @@ from helper.UI_components import example_images, header
 from tabs.johnson_tab import johnson_tab
 def tabs_display():
     tab_list : list[str] = ["Johnson model"]
-    tab1 = st.tabs(tab_list)
+    tab1, = st.tabs(tab_list)
 
     # -------------Header Section------------------------------------------------
 
