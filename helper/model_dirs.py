@@ -1,6 +1,7 @@
 import os
-def get_model_dirs(model_dir = "forward_model") -> tuple[list[str], dict[str,str]]:
-
+def get_model_dirs(dir_name = "forward_model") -> tuple[list[str], dict[str,str]]:
+    root = os.getcwd()
+    model_dir = os.path.join(root, dir_name)
     if not os.path.exists(model_dir):
         raise ValueError(f"Error: The ({model_dir}) directory does not exist.")
 
