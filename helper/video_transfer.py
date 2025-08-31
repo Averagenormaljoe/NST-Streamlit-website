@@ -1,5 +1,6 @@
 #from AdaIN.AdaIN_functions.image import tensor_toimage
 from helper.model_validation import is_AdaIN, is_forward_feed, variables_dir_exists
+from helper.style_transfer import get_model_image
 from video_methods.video_stream import prepare_stream, save_packet, close_stream
 from video_methods.video_interface import display_styled_video
 import os
@@ -78,7 +79,7 @@ def end_video(output_video_path: str, is_processing: bool = False):
     return is_processing
     
 
-def video_transfer_style(input_video : UploadedFile | None,style_image , width : int =256,height : int =256,fps : int =30, model_path : str = ""):
+def video_transfer_style(input_video : UploadedFile | None,style_image : UploadedFile | None , width : int =256,height : int =256,fps : int =30, model_path : str = ""):
     is_processing : bool = True
     if not video_validation(input_video, style_image,model_path):
         return
@@ -125,7 +126,8 @@ def process_frame(width : int, height : int,fps, cap : cv2.VideoCapture, style_i
         while True:
             frame_start_time : float = time.time()
             pos = (int(cap.get(cv2.CAP_PROP_POS_FRAMES)) + 1)
-            video_bar.progress(pos / total_frames, text=progress_text)
+            pos_ratio = min(pos / total_frames, 1.0)
+            video_bar.progress(pos_ratio, text=progress_text)
             ret, frame = cap.read()
             print(f"ret: {ret}")
             if not ret:
@@ -153,7 +155,13 @@ def process_frame(width : int, height : int,fps, cap : cv2.VideoCapture, style_i
     close_stream(stream, output, output_memory_file)
     return cap, output_memory_file
 
-
+def tensor_toimage(tensor : tf.Tensor):
+  tensor =tensor*255
+  tensor = np.array(tensor, dtype=np.uint8)
+  if np.ndim(tensor)>3:
+    assert tensor.shape[0]==1
+    tensor=tensor[0]
+  return tensor
 
 def get_stylized_image(frame, style_image, hub_model,model_path : str,width : int):
     orig_h, orig_w = frame.shape[0:2]
@@ -163,11 +171,11 @@ def get_stylized_image(frame, style_image, hub_model,model_path : str,width : in
             stylized_frame = style_transfer(input_frame,hub_model)
         else:
             resized_input_frame = image_read(input_frame)
-            stylized_frame = hub_model(tf.constant(resized_input_frame), tf.constant(style_image))[0]
-            #stylized_frame = tensor_toimage(tensor_frame)
+            outputs = hub_model(inputs=(resized_input_frame, style_image))
+            stylized_frame = get_model_image(outputs)
     except Exception as e:
         print(f"Error:: get_stylized_image: {e}")
-        st.error("An error occurred during style transfer.")
+        st.error(f"An error occurred during style transfer {e}.")
         return None
     stylized_image = get_result_image(stylized_frame, orig_w, orig_h)
     return stylized_image

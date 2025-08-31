@@ -20,7 +20,7 @@ def webcam_input(style_model_name,style_image,webcam_stylization : bool = True, 
 
 
     model = load_model(style_model_name, width)
-    style_image_list = [style_image] if isinstance(style_image, str) else style_image  
+    style_image_list = [style_image] if not isinstance(style_image, list) else style_image  
     open_style_image = Image.open(style_image_list[0]) if style_image_list else None
     def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
         if (style_image is None and type != "johnson" ) or webcam_stylization is False:
@@ -45,12 +45,14 @@ def webcam_input(style_model_name,style_image,webcam_stylization : bool = True, 
         image = get_result_image(transferred, orig_w, orig_h)
         result = av.VideoFrame.from_ndarray(image, format="bgr24")
         return result
-
-    ctx = webrtc_streamer(
-        key="neural-style-transfer",
-        video_frame_callback=video_frame_callback,
-        rtc_configuration={"iceServers": get_ice_servers()},
-        media_stream_constraints={"video": True, "audio": False},
-    )
+    try: 
+        ctx = webrtc_streamer(
+            key="neural-style-transfer",
+            video_frame_callback=video_frame_callback,
+            rtc_configuration={"iceServers": get_ice_servers()},
+            media_stream_constraints={"video": True, "audio": False},
+        )
+    except Exception as e:
+        print(f"Error during webcam: {e}")
     if style_image is None and type != "johnson":
         st.error("Please upload a style image.")
