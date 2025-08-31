@@ -10,9 +10,8 @@ from streamlit_session_memo import st_session_memo
 from helper.johnson_helper import get_model_from_path, style_transfer
 
 
-def webcam_input(style_model_name,style_image,webcam_stylization : bool = True, type: str = "main"):
-    WIDTH = st.sidebar.select_slider('QUALITY (May reduce the speed)', list(range(150, 501, 50)))
-    width = WIDTH
+def webcam_input(style_model_name,style_image,webcam_stylization : bool = True, type: str = "main",width = 256):
+
 
     @st_session_memo
     def load_model(model_name, width):  # `width` is not used when loading the model, but is necessary as a cache key.
