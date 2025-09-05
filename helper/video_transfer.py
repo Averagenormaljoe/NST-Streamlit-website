@@ -125,7 +125,8 @@ def process_frame(width : int, height : int,fps, cap : cv2.VideoCapture, style_i
         while True:
             frame_start_time : float = time.time()
             pos = (int(cap.get(cv2.CAP_PROP_POS_FRAMES)) + 1)
-            video_bar.progress(pos / total_frames, text=progress_text)
+            progress = min(pos / total_frames, 1.0)
+            video_bar.progress(progress, text=progress_text)
             ret, frame = cap.read()
             print(f"ret: {ret}")
             if not ret:
