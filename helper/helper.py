@@ -16,7 +16,7 @@ def generate_styled_image(content_image, style_image, model_path : str):
     generated_image = open_styled_image(content_image, style_image, hub_module)
     return generated_image
     
-def open_styled_image(content_image, style_image, hub_module):
+def open_styled_image(content_image, style_image, hub_module,resize_style= True):
   
     if content_image is None or style_image is None:
         st.error("Please upload both content and style images.")
@@ -28,7 +28,7 @@ def open_styled_image(content_image, style_image, hub_module):
     # Load the pre-trained model
 
     # Transfer style
-    styled_image = transfer_style(pli_content_image, pli_style_image, hub_module)
+    styled_image = transfer_style(pli_content_image, pli_style_image, hub_module,resize_style)
     
     return styled_image               
 
