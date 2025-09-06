@@ -23,8 +23,11 @@ def webcam_input(style_model_name,style_image,webcam_stylization : bool = True, 
     if model is None:
         st.error("Invalid model during webcam mode.")
         return
-    style_image_list = [style_image] if not isinstance(style_image, list) else style_image  
-    open_style_image = Image.open(style_image_list[0]) if style_image_list else None
+    if type == "main":
+        style_image_list = [style_image] if not isinstance(style_image, list) else style_image  
+        open_style_image = Image.open(style_image_list[0]) if style_image_list else None
+    else:
+        open_style_image = None
     def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
         if (style_image is None and type != "johnson" ) or webcam_stylization is False:
             return frame
