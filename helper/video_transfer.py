@@ -7,7 +7,8 @@ import os
 import tempfile
 import cv2
 import numpy as np
-from helper.johnson_helper import style_transfer,get_model_from_path
+from helper.load_model import get_model_from_path
+from helper.johnson_helper import style_transfer
 import streamlit as st
 import av
 from streamlit.runtime.uploaded_file_manager import UploadedFile

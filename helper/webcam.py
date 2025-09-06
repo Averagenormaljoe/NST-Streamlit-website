@@ -1,4 +1,5 @@
 from PIL import Image
+from helper.load_model import get_model_from_path
 import streamlit as st
 from streamlit_webrtc import webrtc_streamer
 import av
@@ -7,7 +8,7 @@ from helper.image_transfer import frame_to_image, get_result_image, resize_image
 from helper.helper import open_styled_image
 from helper.turn import get_ice_servers
 from streamlit_session_memo import st_session_memo
-from helper.johnson_helper import get_model_from_path, style_transfer
+from helper.johnson_helper import  style_transfer
 
 
 def webcam_input(style_model_name,style_image,webcam_stylization : bool = True, type: str = "main",width = 256):
