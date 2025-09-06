@@ -21,9 +21,12 @@ def get_ice_servers():
         logger.error(f"Log error: {e}")
         traceback.print_exc()
         return [{"urls": ["stun:stun.l.google.com:19302"]}]
+    try: 
+        client = Client(account_sid, auth_token)
 
-    client = Client(account_sid, auth_token)
-
-    token = client.tokens.create()
-
+        token = client.tokens.create()
+    except Exception as e:
+        logger.error(f"Authentication error error: {e}")
+        return [{"urls": ["stun:stun.l.google.com:19302"]}]
+        
     return token.ice_servers
