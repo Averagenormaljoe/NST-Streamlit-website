@@ -63,13 +63,13 @@ def transfer_style(content_image, style_image, hub_module,resize_style= True):
 
     return stylized_image
 
-def process_image(content_image,style_image,hub_module): 
+def process_image(content_image,style_image,hub_module, output_size = (224,224)): 
     start_time = tf.timestamp()
     content_image = tf.image.resize(content_image, [224, 224])
     style_image = tf.image.resize(style_image, [224, 224])
     outputs = hub_module(inputs=(content_image, style_image))
     stylized_image = get_stylized_image(outputs)
-    test_output = get_result_image(stylized_image, 224, 224)
+    test_output = get_result_image(stylized_image, output_size[0], output_size[1])
     end_time = tf.timestamp()
     processing_time : float = float(end_time - start_time)
     print(f"Stylizing completed in {processing_time:.2f} seconds...")

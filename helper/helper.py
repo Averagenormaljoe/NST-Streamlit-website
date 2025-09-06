@@ -1,12 +1,9 @@
 import streamlit as st
 import numpy as np
-import tensorflow_hub as hub
 from io import BytesIO
 from PIL import Image
 from helper.components import processing_btn
 from helper.style_transfer import transfer_style
-import os
-from keras.layers import TFSMLayer
 from helper.load_model import get_model_from_path
 def generate_styled_image(content_image, style_image, model_path : str):
     print("model_path: ", model_path)
