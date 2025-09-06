@@ -1,13 +1,14 @@
 #from AdaIN.AdaIN_functions.image import tensor_toimage
 from helper.model_validation import is_AdaIN, is_forward_feed, variables_dir_exists
-from helper.style_transfer import get_model_image
+from helper.style_transfer import transfer_style
 from video_methods.video_stream import prepare_stream, save_packet, close_stream
 from video_methods.video_interface import display_styled_video
 import os
 import tempfile
 import cv2
 import numpy as np
-from helper.johnson_helper import style_transfer,get_model_from_path
+from helper.load_model import get_model_from_path
+from helper.johnson_helper import style_transfer
 import streamlit as st
 import av
 from streamlit.runtime.uploaded_file_manager import UploadedFile
@@ -16,7 +17,7 @@ from helper.image_transfer import get_result_image, resize_image
 from helper.components import processing_btn
 from helper.helper import  open_styled_image
 from helper.video_helper import image_read
-
+import traceback
 def video_validation(input_video: UploadedFile | None,style_image,model_path) -> bool:
     if style_image is None and (not model_path.endswith(".t7") and not variables_dir_exists(model_path)):
         st.error(f"Error: Could not read style image from {style_image}")
@@ -126,8 +127,8 @@ def process_frame(width : int, height : int,fps, cap : cv2.VideoCapture, style_i
         while True:
             frame_start_time : float = time.time()
             pos = (int(cap.get(cv2.CAP_PROP_POS_FRAMES)) + 1)
-            pos_ratio = min(pos / total_frames, 1.0)
-            video_bar.progress(pos_ratio, text=progress_text)
+            progress = min(pos / total_frames, 1.0)
+            video_bar.progress(progress, text=progress_text)
             ret, frame = cap.read()
             print(f"ret: {ret}")
             if not ret:
@@ -144,8 +145,10 @@ def process_frame(width : int, height : int,fps, cap : cv2.VideoCapture, style_i
             print(f"Processed frame in {frame_end_time - frame_start_time:.2f} seconds")
     except cv2.error as e:
         print(f"OpenCV error during video stylization: {e}")
+        traceback.print_exc()
     except Exception as e:
         print(f"Error during video stylization: {e}")
+        traceback.print_exc()
     finally:
         finish_video(cap)
         end_time : float = time.time()
@@ -168,22 +171,23 @@ def get_stylized_image(frame, style_image, hub_model,model_path : str,width : in
     input_frame = resize_image(frame, width, orig_h, orig_w)
     try:
         if is_forward_feed(model_path):
+            print("Feedforward mode")
             stylized_frame = style_transfer(input_frame,hub_model)
         else:
-            resized_input_frame = image_read(input_frame)
-            outputs = hub_model(inputs=(resized_input_frame, style_image))
-            stylized_frame = get_model_image(outputs)
+            print("AdaIN mode")
+            expanded_frame = np.expand_dims(input_frame, axis=0)
+            stylized_frame = get_transformed_frame(expanded_frame, style_image,hub_model)
     except Exception as e:
         print(f"Error:: get_stylized_image: {e}")
-        st.error(f"An error occurred during style transfer {e}.")
+        traceback.print_exc()
+        st.error("An error occurred during style transfer.")
         return None
     stylized_image = get_result_image(stylized_frame, orig_w, orig_h)
     return stylized_image
 
 
-def get_transformed_frame(width : int, height : int,frame, style_image, hub_module):
-    resized_frame = cv2.resize(frame, (width, height))
-    stylized_image = open_styled_image(resized_frame, style_image, hub_module)
+def get_transformed_frame(frame, style_image, hub_module):
+    stylized_image = open_styled_image(frame, style_image, hub_module,False)
     if stylized_image is None:
         st.error("Frame was not processed. Please try again.")
         return None
