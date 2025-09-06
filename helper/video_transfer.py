@@ -144,8 +144,10 @@ def process_frame(width : int, height : int,fps, cap : cv2.VideoCapture, style_i
             print(f"Processed frame in {frame_end_time - frame_start_time:.2f} seconds")
     except cv2.error as e:
         print(f"OpenCV error during video stylization: {e}")
+        traceback.print_exc()
     except Exception as e:
         print(f"Error during video stylization: {e}")
+        traceback.print_exc()
     finally:
         finish_video(cap)
         end_time : float = time.time()
@@ -166,8 +168,8 @@ def get_stylized_image(frame, style_image, hub_model,model_path : str,width : in
             stylized_frame = style_transfer(input_frame,hub_model)
         else:
             print("AdaIN mode")
-            stylized_frame = get_transformed_frame(frame, style_image,hub_model)
-            #stylized_frame = tensor_toimage(tensor_frame)
+            expanded_frame = np.expand_dims(input_frame, axis=0)
+            stylized_frame = get_transformed_frame(expanded_frame, style_image,hub_model)
     except Exception as e:
         print(f"Error:: get_stylized_image: {e}")
         traceback.print_exc()
