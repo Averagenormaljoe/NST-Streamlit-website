@@ -69,7 +69,8 @@ def default_tab():
         case 'Webcam':
             pass
         case 'Camera':
-            picture = camera_component()
+            camera_key = "main_model"
+            picture = camera_component(camera_key)
         case 'Video':
             video_uploader = get_video_uploader(video_types=video_types, key="video_uploader")
           
