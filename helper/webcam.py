@@ -24,7 +24,7 @@ def webcam_input(style_model_name,style_image,webcam_stylization : bool = True, 
     if model is None:
         st.error("Invalid model during webcam mode.")
         return
-    if type == "main":
+    if type == "main" and style_image is not None:
         style_image_list = [style_image] if not isinstance(style_image, list) else style_image  
         open_style_image = Image.open(style_image_list[0]) if style_image_list else None
     else:
