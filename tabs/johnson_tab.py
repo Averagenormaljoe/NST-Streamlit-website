@@ -7,7 +7,7 @@ from helper.upload_types import content_types, video_types
 from helper.video_transfer import video_transfer_style
 from helper.model_dirs import get_model_dirs
 def johnson_interface():
-    dir_path : str = "forward_model"
+    dir_path : str = "forward_feed"
     model_dirs,style_models_dict = get_model_dirs(dir_path)
     select_model_name : str | None = st.selectbox("Choose the style model: ", model_dirs, key="johnson_model_selector")
     if select_model_name is None:
