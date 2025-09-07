@@ -20,5 +20,9 @@ output_name_1 = "forward_model.zip"
 extracted_name_1 = "forward_model"
 
 
+file_url_2 = "1r8E-kicBnwE85MwFnQkKUlHQxFAn22Ik"
+output_name_2 = "main_model.zip"
+extracted_name_2 = "main_model"
 
 download_model(file_url_1, output_name_1, extracted_name_1)
+download_model(file_url_2, output_name_2, extracted_name_2)

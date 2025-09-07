@@ -9,8 +9,8 @@ def method_slider(key="method_selector") -> str:
     if method is None:
         return ""
     return method
-def camera_component():
-    enable : bool = st.checkbox("Enable camera")
+def camera_component(key = "main_model"):
+    enable : bool = st.checkbox("Enable camera",key=key)
     picture = st.camera_input("Take a picture", disabled=not enable)
     if picture is None:
         st.warning("Please take a picture using the camera.")
