@@ -4,8 +4,6 @@ import tensorflow as tf
 from cv2.typing import MatLike
 
 from helper.image_transfer import get_result_image
-
-
 def resize_image(input_image,name : str="Content Image"):
     size_threshold : tuple[int, int] = (2000,2000)
     resizing_shape : tuple[int, int]  = (1000,1000)
@@ -68,7 +66,7 @@ def process_image(content_image,style_image,hub_module, output_size = (224,224))
     content_image = tf.image.resize(content_image, [224, 224])
     style_image = tf.image.resize(style_image, [224, 224])
     outputs = hub_module(inputs=(content_image, style_image))
-    stylized_image = get_stylized_image(outputs)
+    stylized_image = get_model_image(outputs)
     test_output = get_result_image(stylized_image, output_size[0], output_size[1])
     end_time = tf.timestamp()
     processing_time : float = float(end_time - start_time)

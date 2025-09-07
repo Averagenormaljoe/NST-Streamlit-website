@@ -8,7 +8,7 @@ def get_video_uploader(video_types=["mp4", "gif","mov"], key: str = "video_uploa
 
     return video_file
 
-def get_ui_video_sliders() -> tuple[int, int, int, float, float]: 
+def get_ui_video_sliders() -> tuple[float, float, float]: 
     # Resolution slider
     # width
     width_resolution = st.slider(
@@ -29,6 +29,13 @@ def get_ui_video_sliders() -> tuple[int, int, int, float, float]:
         help="Set the frames per second for the output video."
     )
     
+
+    
+    
+    return width_resolution, height_resolution, fps
+
+
+def get_weight_sliders() -> tuple[float, float, float]:
     content_weight = st.slider(
     "Select Content Weight",
     min_value=0.1, max_value=10.0, value=1.0, step=0.1,
@@ -39,6 +46,11 @@ def get_ui_video_sliders() -> tuple[int, int, int, float, float]:
     min_value=0.1, max_value=10.0, value=1.0, step=0.1,
     help="Adjust how much the style is applied to the content."
     ) 
+    total_variation_weight = st.slider(
+    "Select Total Variation Weight",
+    min_value=0.1, max_value=10.0, value=1.0, step=0.1,
+    help="Controls the total variation weight."
+    ) 
     
     
-    return width_resolution, height_resolution, fps, content_weight, style_weight
+    return  content_weight, style_weight,total_variation_weight

@@ -38,7 +38,7 @@ def default_interface(model_path : str,method: str = "Image", content_image: Opt
             print("Style Image: ", style_image)
             generate_image_btn(model_path,content_image, style_image)
         case 'Video':
-            width_resolution, height_resolution,fps,content_weight, style_weight = get_ui_video_sliders()
+            width_resolution, height_resolution,fps = get_ui_video_sliders()
             video_process(video_uploader, style_image, width_resolution, height_resolution, fps,model_path)
         case 'Camera':
             if picture is not None:
@@ -69,7 +69,8 @@ def default_tab():
         case 'Webcam':
             pass
         case 'Camera':
-            picture = camera_component()
+            camera_key = "main_model"
+            picture = camera_component(camera_key)
         case 'Video':
             video_uploader = get_video_uploader(video_types=video_types, key="video_uploader")
           
