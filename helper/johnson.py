@@ -22,6 +22,10 @@ def johnson_image_input(content_image, style_model_path: str | None) :
         with st.spinner("Stylizing video... This may take a few minutes."):
             open_content_image = Image.open(content_image)
             pli_content_image = np.array(open_content_image)
+            if pli_content_image is None:
+                st.error("Failed to load content image.")
+                return
+                
             size = open_content_image.size
             
             model = get_model_from_path(style_model_path,size)

@@ -7,33 +7,37 @@ from helper.style_transfer import transfer_style
 from helper.load_model import get_model_from_path
 def generate_styled_image(content_image, style_image, model_path : str):
     print("model_path: ", model_path)
-    
 
-    hub_module = get_model_from_path(model_path)
-    generated_image = open_styled_image(content_image, style_image, hub_module)
+    style_model = get_model_from_path(model_path)
+    generated_image = open_styled_image(content_image, style_image, style_model)
     return generated_image
     
-def open_styled_image(content_image, style_image, hub_module,resize_style= True):
+def open_styled_image(content_image, style_image, model,resize_style : bool= True):
   
     if content_image is None or style_image is None:
         st.error("Please upload both content and style images.")
         return None
-
+    if model is None:
+        st.error("Please select a valid model")
+        return None
     # Convert PIL Image to numpy array
     pli_content_image = np.array(content_image)
     pli_style_image = np.array(style_image)
     # Load the pre-trained model
 
     # Transfer style
-    styled_image = transfer_style(pli_content_image, pli_style_image, hub_module,resize_style)
+    styled_image = transfer_style(pli_content_image, pli_style_image, model,resize_style)
     
     return styled_image               
 
-def display_styled_image(generated_image, is_processing: bool = False, show_balloons : bool = False):
+def display_styled_image(generated_image, is_processing: bool = False, show_balloons : bool = False) -> None:
     
     if generated_image is not None and show_balloons:
         # some balloons
         st.balloons()
+    if generated_image is None:
+        st.error("No image generated.")
+        return
 
     col1, col2 = st.columns(2)
     with col1:
@@ -49,7 +53,7 @@ def display_styled_image(generated_image, is_processing: bool = False, show_ball
         download_generated_image(denormalize_generated_image)
         
 
-def download_generated_image(generated_image):
+def download_generated_image(generated_image) -> None:
     if generated_image is None:
         st.error("No image generated.")
         return

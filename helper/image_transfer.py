@@ -2,7 +2,7 @@ from PIL import Image
 import numpy as np
 import av
 
-def frame_to_image(frame: av.VideoFrame, verbose= 0) -> np.ndarray:
+def frame_to_image(frame: av.VideoFrame, verbose : int = 0) -> np.ndarray:
     if verbose > 0:
         print("frame:", frame, "type:", type(frame))
     return frame.to_ndarray(format="bgr24")

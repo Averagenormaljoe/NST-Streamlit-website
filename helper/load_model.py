@@ -10,7 +10,7 @@ import streamlit as st
 from PIL import Image
 from keras.layers import TFSMLayer
 
-def get_AdaIN_model(model_path: str,size : tuple):
+def get_AdaIN_model(model_path: str,size : tuple[int,int]):
     content_input = tf.keras.Input(shape=(size[0], size[1], 3))
     style_input = tf.keras.Input(shape=(size[0], size[1], 3))
 
@@ -19,7 +19,7 @@ def get_AdaIN_model(model_path: str,size : tuple):
     model = tf.keras.Model(inputs=inputs, outputs=outputs) 
     return model    
 
-def get_forward_feed_model(model_path: str,size: tuple):
+def get_forward_feed_model(model_path: str,size: tuple[int,int]):
     layer = TFSMLayer(model_path, call_endpoint="serving_default")
 
     model = keras.Sequential([
@@ -36,7 +36,7 @@ def create_model_from_endpoint(model_path: str,size : tuple):
     model = get_forward_feed_model(model_path,forward_feed_size)
     return model
 
-def get_model_from_path(style_model_path,size = (224, 224)):
+def get_model_from_path(style_model_path : str,size : tuple[int,int] = (224, 224)):
     if style_model_path is None or not isinstance(style_model_path,str):
         st.error("get_model_from_path:: error: model path is not a string or is none.")
         return None

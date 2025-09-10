@@ -5,7 +5,7 @@ import streamlit as st
 from PIL import Image
 from keras.layers import TFSMLayer
 
-def apply_model(img,style_model, show_image=True):
+def apply_model(img,style_model, show_image : bool =True):
     if img is None:
         st.error("apply_model:: image is none or invalid.")
         return
@@ -37,11 +37,15 @@ def style_transfer(image, model):
     
     return output
 
-def simple_style_transfer(image_str, model):
+def simple_style_transfer(image_path : str, model):
     if model is None:
         return None
-    open_image = Image.open(image_str)
+    open_image = Image.open(image_path)
+    if open_image is None:
+        return None
     styled_image = style_transfer(open_image, model)
+    if styled_image  is None:
+        raise ValueError("Styled_image is none.")
     return styled_image
 
 
