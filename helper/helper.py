@@ -1,3 +1,4 @@
+from helper.display_image_details import display_image_details
 import streamlit as st
 import numpy as np
 from io import BytesIO
@@ -61,7 +62,7 @@ def download_generated_image(generated_image) -> None:
     img = Image.fromarray(generated_image)
     buffered : BytesIO = BytesIO()
     img.save(buffered, format="JPEG")
-
+    display_image_details(img)
     st.download_button(
         label="Download image",
         data=buffered.getvalue(),

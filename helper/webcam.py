@@ -44,7 +44,7 @@ def webcam_input(style_model_name : str,style_image,webcam_stylization : bool = 
         image = frame_to_image(frame)
 
        
-        if model is None:
+        if model is None or style_model_name is None or type is None:
             return image
 
         orig_h, orig_w = image.shape[0:2]
