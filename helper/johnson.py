@@ -1,3 +1,4 @@
+import time
 import numpy as np
 import streamlit as st
 from PIL import Image
@@ -35,8 +36,12 @@ def johnson_image_input(content_image, style_model_path: str | None) :
                     return
 
                 # Transfer style
+                
                 generated_image = style_transfer(pli_content_image, model)
+                start_time = time.time()
                 display_styled_image(generated_image)
+                end_time = (time.time() - start_time)
+                print(f"Image Mode Johnson in {end_time} seconds")
     except Exception as e:
         traceback.print_exc()
         mes = f"Error for 'johnson_image_input': {e}"

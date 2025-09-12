@@ -116,7 +116,10 @@ def video_transfer_style(input_video : UploadedFile | None,style_image : Uploade
         cap = video_setup(name,width,height,fps)
         if not valid_video_setup(cap):
             return
+        start_time = time.time()
         cap,converted_video = process_frame(width, height,fps, cap, pil_style_image, model_path)
+        end_time = (time.time() - start_time)
+        print(f"Video Mode for model ({model_path}) in {end_time} seconds.")
         print("cap: ", cap)
         if cap is None:
             st.error("Could not process video frames.")
