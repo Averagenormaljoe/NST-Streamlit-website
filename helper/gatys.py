@@ -27,13 +27,13 @@ def render_gatys_ui_sliders() -> tuple[int, float]:
           min_value=1, max_value=1000, value=10, step=1,
           help="Set the number of epochs for the style transfer. More epochs may yield better results but will take longer."
       )
-    optimizer = st.selectbox(
+    optimizer : str = st.selectbox(
         "Select Optimizer",
         options=["Adam", "SGD"],
         index=0,
         help="Choose the optimizer for the style transfer process."
     )
-    lr = st.slider(
+    lr : float = st.slider(
         "Select Learning Rate",
         min_value=0.0, max_value=1.0, value=0.1, step=0.01,
         help="Set the learning rate for the optimizer."

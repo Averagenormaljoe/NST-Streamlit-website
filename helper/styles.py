@@ -1,4 +1,4 @@
-def get_header_style():
+def get_header_style() -> str:
     return "text-align:center;font-size: 20px;font-weight: 550;"
-def get_title_style():
+def get_title_style() -> str:
     return "text-align: center;font-size: 50px;font-weight: 350;font-family:Cursive"

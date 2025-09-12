@@ -3,13 +3,13 @@ from streamlit_image_comparison import image_comparison
 from PIL import Image
 
 from helper.styles import get_header_style, get_title_style
-
-def method_slider(key="method_selector") -> str:
-    method =  st.selectbox('Select your chosen mode', options=['Image','Webcam', 'Camera', 'Video'], key=key)
+from PIL import ImageFile
+def method_slider(key : str ="method_selector") -> str:
+    method : str =  st.selectbox('Select your chosen mode', options=['Image','Webcam', 'Camera', 'Video'], key=key)
     if method is None:
         return ""
     return method
-def camera_component(key = "main_model"):
+def camera_component(key : str = "main_model"):
     enable : bool = st.checkbox("Enable camera",key=key)
     picture = st.camera_input("Take a picture", disabled=not enable)
     if picture is None:
@@ -18,13 +18,13 @@ def camera_component(key = "main_model"):
     
     return picture
 
-def display_image(image_path: str):
+def display_image(image_path: str) -> None:
 
-    img = Image.open(image_path)
+    img : ImageFile = Image.open(image_path)
     resized_img = img.resize((190, 250))
     st.image(resized_img)
 
-def example_images():
+def example_images() -> None:
     
     st.title("Example Images")
     col1, col2 = st.columns(2)
@@ -55,9 +55,9 @@ def example_images():
     col1,col2 = st.columns(2)
     with col1:
         st.video("./assets/video/man_at_sea_sliced.mp4")
-def header():
-    header_style = get_header_style()
-    title_style = get_title_style()
+def header() -> None:
+    header_style : str = get_header_style()
+    title_style : str = get_title_style()
     st.markdown(
         '<h1 style="text-align:center;">Neural Style Transfer App</h1>', unsafe_allow_html=True)
     st.markdown(
