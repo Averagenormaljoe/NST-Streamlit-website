@@ -1,5 +1,5 @@
 import streamlit as st
-def initial_page_config():
+def initial_page_config() -> None:
     st.set_page_config(page_title="Style motion - Style Transfer",
                     page_icon="./assets/favicon.png", layout="centered")
 
