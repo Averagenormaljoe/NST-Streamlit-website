@@ -10,7 +10,7 @@ def resize_image(input_image,name : str="Content Image"):
 
     input_image_shape : tuple[int,int] = input_image.shape
     
-    resize_content = True if input_image_shape[0] > size_threshold[0] or input_image_shape[1] > size_threshold[1] else False
+    resize_content : bool = True if input_image_shape[0] > size_threshold[0] or input_image_shape[1] > size_threshold[1] else False
   
     if resize_content is True:
         print(f"{name} bigger than {size_threshold}, resizing to {resizing_shape}")
@@ -40,7 +40,7 @@ def resize_tf_style(style_image):
     style_tf_image = tf.image.resize(style_image, resize_style_shape)
     return style_tf_image
 
-def transfer_style(content_image, style_image, hub_module,resize_style= True):
+def transfer_style(content_image, style_image, hub_module,resize_style : bool = True):
     if style_image is None:
         return content_image
     print("Starting style transfer: ", style_image)
@@ -61,11 +61,11 @@ def transfer_style(content_image, style_image, hub_module,resize_style= True):
 
     return stylized_image
 
-def process_image(content_image,style_image,hub_module, output_size : tuple[int,int] = (224,224)): 
+def process_image(content_image,style_image,model, output_size : tuple[int,int] = (224,224)): 
     start_time = tf.timestamp()
     content_image = tf.image.resize(content_image, [224, 224])
     style_image = tf.image.resize(style_image, [224, 224])
-    outputs = hub_module(inputs=( style_image,content_image))
+    outputs = model(inputs=( style_image,content_image))
     stylized_image = get_model_image(outputs)
     test_output = get_result_image(stylized_image, output_size[0], output_size[1])
     end_time = tf.timestamp()

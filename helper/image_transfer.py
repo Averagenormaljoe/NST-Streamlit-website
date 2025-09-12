@@ -7,8 +7,8 @@ def frame_to_image(frame: av.VideoFrame, verbose : int = 0) -> np.ndarray:
         print("frame:", frame, "type:", type(frame))
     return frame.to_ndarray(format="bgr24")
 def get_result_image(transferred: np.ndarray, orig_w: int, orig_h: int) -> np.ndarray:
-    result = Image.fromarray((transferred * 255).astype(np.uint8))
-    image = np.asarray(result.resize((orig_w, orig_h)))
+    result : Image = Image.fromarray((transferred * 255).astype(np.uint8))
+    image : np.ndarray = np.asarray(result.resize((orig_w, orig_h)))
     return image
 def resize_image(image: np.ndarray, width: int, orig_h: int, orig_w: int) -> np.ndarray:
     return np.asarray(Image.fromarray(image).resize((width, int(width * orig_h / orig_w))))
