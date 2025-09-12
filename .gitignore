@@ -35,6 +35,7 @@ MANIFEST
 *AdaIN_functions
 *shared_utils
 *video_utils
+*forward_model*
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt

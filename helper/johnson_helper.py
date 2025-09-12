@@ -12,15 +12,18 @@ def apply_model(img,style_model, show_image : bool =True):
     if style_model is None:
         st.error("apply_model:: style_model is none or invalid")
         return 
-    test_image = np.expand_dims(img, axis=0)
-    converted_image = test_image / 255.0
-    cast_img = converted_image.astype(np.float32)
-    predicted_img = style_model(cast_img)
-    output = list(predicted_img.values())[0]
-    clip_predicted_img = np.clip(output, 0, 255)
-    int8_predicted_img = clip_predicted_img.astype(np.uint8)
-    output =  int8_predicted_img.astype(np.uint8)
-    test_output = tf.squeeze(output).numpy()
+    try:
+        test_image = np.expand_dims(img, axis=0)
+        converted_image = test_image / 255.0
+        cast_img = converted_image.astype(np.float32)
+        predicted_img = style_model(cast_img)
+        output = list(predicted_img.values())[0]
+        clip_predicted_img = np.clip(output, 0, 255)
+        int8_predicted_img = clip_predicted_img.astype(np.uint8)
+        output =  int8_predicted_img.astype(np.uint8)
+        test_output = tf.squeeze(output).numpy()
+    except Exception as e:
+        print(f"Error for 'apply_model': {e}")
     return test_output   
 
 def style_transfer(image, model):
@@ -32,9 +35,10 @@ def style_transfer(image, model):
         (h, w) = (256, 256)
     else:
         (h, w)  = image.shape[:2]
-
-    output = apply_model(image, model)
-    
+    try:
+        output = apply_model(image, model)
+    except Exception as e:
+        print(f"Error for 'style_transfer': {e}")
     return output
 
 def simple_style_transfer(image_path : str, model):

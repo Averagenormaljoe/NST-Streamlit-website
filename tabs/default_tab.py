@@ -1,3 +1,4 @@
+import traceback
 from helper.model_dirs import get_model_dirs
 import streamlit as st
 from PIL import Image
@@ -11,42 +12,53 @@ from helper.upload_types import content_types, video_types
 from helper.video_transfer import video_transfer_style
 
 def video_process(video_file,style_images,width_resolution : int,height_resolution : int,fps : int,model_path):
-    if fps is None or height_resolution is None or width_resolution is None:
-        st.error("The provided height, fps or width resolution is invalid")
-        return
-    style_images = [style_images] if type(style_images) is UploadedFile else style_images
-    if video_file is not None and style_images is not None and model_path is not None :
-        print(style_images)
-        open_style_imgs = [Image.open(img) for img in style_images]
-        st.info(f"{len(open_style_imgs)} style image(s) selected.")
-        if st.button("Generate Styled Video"):
-            with st.spinner("Stylizing video... This may take a few minutes."):
-                video_transfer_style(
-                    video_file,  open_style_imgs[0], width_resolution,height_resolution,fps=fps,model_path=model_path
-                    )
+    try:
+        if fps is None or height_resolution is None or width_resolution is None:
+            st.error("The provided height, fps or width resolution is invalid")
+            return
+        style_images = [style_images] if type(style_images) is UploadedFile else style_images
+        if video_file is not None and style_images is not None and model_path is not None :
+            print(style_images)
+            open_style_imgs = [Image.open(img) for img in style_images]
+            st.info(f"{len(open_style_imgs)} style image(s) selected.")
+            if st.button("Generate Styled Video"):
+                with st.spinner("Stylizing video... This may take a few minutes."):
+                    video_transfer_style(
+                        video_file,  open_style_imgs[0], width_resolution,height_resolution,fps=fps,model_path=model_path
+                        )
+    except Exception as e:
+        traceback.print_exc()
+        mes = f"Error for 'video_process': {e}"
+        print(mes)  
+        st.error(mes)
 
 if "webcam_stylization_enabled" not in st.session_state:
     st.session_state.webcam_stylization_enabled = False
 
 def default_interface(model_path : str,method: str = "Image", content_image: Optional[UploadedFile] | None = None, style_image: Optional[UploadedFile] = None, picture: Optional[UploadedFile] = None, video_uploader: Optional[UploadedFile] = None):
-
-    print("Chosen method:",method)
-    match method:
-        case 'Image':
-            st.markdown('<h3 style="text-align:center;">Image Style Transfer</h3>', unsafe_allow_html=True)
-            print("Content Image: ", content_image)
-            print("Style Image: ", style_image)
-            generate_image_btn(model_path,content_image, style_image)
-        case 'Video':
-            width_resolution, height_resolution,fps = get_ui_video_sliders()
-            video_process(video_uploader, style_image, width_resolution, height_resolution, fps,model_path)
-        case 'Camera':
-            if picture is not None:
-                generate_image_btn(model_path,picture, style_image)
-        case 'Webcam':
-            print("In webcam mode")
-        case _:
-            st.error("Please select a valid method from the sidebar.")
+    try:
+        print("Chosen method:",method)
+        match method:
+            case 'Image':
+                st.markdown('<h3 style="text-align:center;">Image Style Transfer</h3>', unsafe_allow_html=True)
+                print("Content Image: ", content_image)
+                print("Style Image: ", style_image)
+                generate_image_btn(model_path,content_image, style_image)
+            case 'Video':
+                width_resolution, height_resolution,fps = get_ui_video_sliders()
+                video_process(video_uploader, style_image, width_resolution, height_resolution, fps,model_path)
+            case 'Camera':
+                if picture is not None:
+                    generate_image_btn(model_path,picture, style_image)
+            case 'Webcam':
+                print("In webcam mode")
+            case _:
+                st.error("Please select a valid method from the sidebar.")
+    except Exception as e:
+        traceback.print_exc()
+        mes = f"Error for 'default_interface': {e}"
+        print(mes)  
+        st.error(mes)
 def default_tab():
         # Upload Images
     dir_path = "main_model"
