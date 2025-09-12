@@ -4,15 +4,14 @@ import zipfile
 
 
 def download_model(id, output_name, extracted_name):
-    if os.path.exists(output_name):
-        return
-    url = f"https://drive.google.com/uc?export=download&id={id}"
-    gdown.download(url, output_name, quiet=False)
-    
-    with zipfile.ZipFile(output_name, 'r') as f:
-        f.extractall(extracted_name)
+    if not os.path.exists(output_name) and not os.path.exists(extracted_name):
+        url = f"https://drive.google.com/uc?export=download&id={id}"
+        gdown.download(url, output_name, quiet=False)
+    if os.path.exists(output_name) and not os.path.exists(extracted_name):
+        with zipfile.ZipFile(output_name, 'r') as f:
+            f.extractall(extracted_name)
     if os.path.exists(output_name) and os.path.exists(extracted_name):
-        os.remove(output_name)
+            os.remove(output_name)
 
 
 file_url_1 = "1MOm62RcSUFxrd1ROykidFzsGGZds1ENf"
