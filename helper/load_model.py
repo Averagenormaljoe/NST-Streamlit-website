@@ -60,4 +60,6 @@ def get_model_from_path(style_model_path : str,size : tuple[int,int] = (224, 224
         mes = f"Error for 'get_model_from_path': {e}"
         print(mes)  
         st.error(mes)
+    if model is None:
+        st.error("Loaded model cannot be None")
     return model
