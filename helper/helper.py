@@ -87,12 +87,14 @@ def download_generated_image(generated_image) -> None:
             )
     except Exception as e:
         traceback.print_exc()
-        print(f"Error for 'download_generated_image': {e}")  
+        mes : str = f"Error for 'download_generated_image': {e}"
+        print(mes)  
+        st.error(mes)
 
 
     
 
-def generate_image_btn(model_path,content_image,style_image):
+def generate_image_btn(model_path : str,content_image,style_image):
     try:
         if content_image is not None and style_image is not None and model_path is not None:
             if st.button("Generate Styled Image"):
@@ -112,7 +114,7 @@ def generate_image_btn(model_path,content_image,style_image):
         mes = f"Error for 'generate_image_btn': {e}"
         print(mes)  
         st.error(mes)        
-def display_instructions():
+def display_instructions() -> None:
     st.markdown("</br>", unsafe_allow_html=True)
 
     st.markdown(
@@ -137,7 +139,7 @@ def display_instructions():
         unsafe_allow_html=True
     )
 
-def instruction_warning():
+def instruction_warning() -> None:
     st.warning('NOTE : You need at least Intel i3 with 8GB memory for proper functioning of this application. ' \
                 + ' Images greater then (2000x2000) are resized to (1000x1000).')
                  

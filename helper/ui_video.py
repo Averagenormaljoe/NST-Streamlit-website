@@ -1,5 +1,6 @@
 import streamlit as st
-def get_video_uploader(video_types=["mp4", "gif","mov"], key: str = "video_uploader"):
+from streamlit.runtime.uploaded_file_manager import UploadedFile
+def get_video_uploader(video_types : list[str]=["mp4", "gif","mov"], key: str = "video_uploader") -> UploadedFile | None:
     video_file = st.file_uploader(
         "Upload Video (MP4 & gif only)", type=video_types, key=key
     )
