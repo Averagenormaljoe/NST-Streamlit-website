@@ -1,3 +1,4 @@
+import traceback
 import streamlit as st
 from streamlit_image_comparison import image_comparison
 from PIL import Image
@@ -19,10 +20,14 @@ def camera_component(key : str = "main_model"):
     return picture
 
 def display_image(image_path: str) -> None:
-
-    img : ImageFile = Image.open(image_path)
-    resized_img = img.resize((190, 250))
-    st.image(resized_img)
+    try:
+        img : ImageFile = Image.open(image_path)
+        resized_img = img.resize((190, 250))
+        st.image(resized_img)
+    except Exception as e:
+        traceback.print_exc()
+        print(f"Error for 'display_image': {e}")  
+   
 
 def example_images() -> None:
     

@@ -19,14 +19,21 @@ from helper.helper import  open_styled_image
 from helper.video_helper import image_read
 import traceback
 def video_validation(input_video: UploadedFile | None,style_image,model_path) -> bool:
-    if style_image is None and (not model_path.endswith(".t7") and not variables_dir_exists(model_path)):
-        st.error(f"Error: Could not read style image from {style_image}")
-        return False
-    if input_video is None:
-        st.error(f"Error: Could not read video file {input_video}")
-        return False
+    try:
+        if style_image is None and (not model_path.endswith(".t7") and not variables_dir_exists(model_path)):
+            st.error(f"Error: Could not read style image from {style_image}")
+            return False
+        if input_video is None:
+            st.error(f"Error: Could not read video file {input_video}")
+            return False
 
-    return True
+        return True
+    except Exception as e:
+        traceback.print_exc()
+        mes = f"Error for 'video_validation': {e}"
+        print(mes)  
+        st.error(mes)
+    return False
 
 def generate_temp_paths(video_name : str = "input_video.mp4") -> tuple[str, str]:
     temp_dir : str = tempfile.mkdtemp()
@@ -37,34 +44,42 @@ from typing import Optional
 import time
 
 def video_setup(name : str, width: int, height: int, fps: int = 30) -> tuple[Optional[cv2.VideoCapture], Optional[cv2.VideoWriter], Optional[str]]:
-    if not os.path.exists(name):
-        st.error(f"Video file {name} does not exist.")
-        return None, None, None
-    cap = cv2.VideoCapture(name)
-    video_fps = cap.get(cv2.CAP_PROP_FPS)
-    video_seconds = cap.get(cv2.CAP_PROP_FRAME_COUNT) / video_fps
-    print(f"Video_FPS: {video_fps}, Video_Seconds: {video_seconds:.2f}")
-    if not cap.isOpened():
-        st.error(f"Could not open video file {name} for cap.")
-        return None, None, None
-
-    
-    return cap
+    try: 
+        if not os.path.exists(name):
+            st.error(f"Video file {name} does not exist.")
+            return None, None, None
+        cap = cv2.VideoCapture(name)
+        video_fps = cap.get(cv2.CAP_PROP_FPS)
+        video_seconds = cap.get(cv2.CAP_PROP_FRAME_COUNT) / video_fps
+        print(f"Video_FPS: {video_fps}, Video_Seconds: {video_seconds:.2f}")
+        if not cap.isOpened():
+            st.error(f"Could not open video file {name} for cap.")
+            return None, None, None
+        return cap
+    except Exception as e:
+        traceback.print_exc()
+        print(f"Error for 'process_webcam': {e}")  
+    return None, None, None
 def get_temp_video(input_video):
     tfile = tempfile.NamedTemporaryFile(delete=False)
     tfile.write(input_video.read())
     return tfile.name
 
 def prepare_directory(input_video,name):
+    try:
+        name = get_temp_video(input_video)
+        if not os.path.exists(name):
+            st.error(f"Could not save video file to {name}.")
+            return False, name
+        print(f"Video file saved to {name}")
+        return True,name
 
-
-    name = get_temp_video(input_video)
-    if not os.path.exists(name):
-        st.error(f"Could not save video file to {name}.")
-        return False, name
-    print(f"Video file saved to {name}")
-    return True,name
-
+    except Exception as e:
+        traceback.print_exc()
+        mes = f"Error for 'prepare_directory': {e}"
+        print(mes)  
+        st.error(mes)
+    return False, name
 def valid_video_setup(cap):
     if cap is None:
         st.error("Could not open video file.")
@@ -81,33 +96,36 @@ def end_video(output_video_path: str, is_processing: bool = False):
     
 
 def video_transfer_style(input_video : UploadedFile | None,style_image : UploadedFile | None , width : int =256,height : int =256,fps : int =30, model_path : str = ""):
-    is_processing : bool = True
-    if not video_validation(input_video, style_image,model_path):
-        return
-    print("Model path: ", model_path)
-    if ((model_path.endswith(".t7") or variables_dir_exists(model_path))) and not is_AdaIN(model_path):
-        pil_style_image = None
-    else:
-        pil_style_image = image_read(style_image)
+    try:
+        is_processing : bool = True
+        if not video_validation(input_video, style_image,model_path):
+            return
+        print("Model path: ", model_path)
+        if ((model_path.endswith(".t7") or variables_dir_exists(model_path))) and not is_AdaIN(model_path):
+            pil_style_image = None
+        else:
+            pil_style_image = image_read(style_image)
 
-    is_processing = processing_btn(is_processing)
-    print("input_video: ", input_video)
-    name = input_video.name if input_video else ""
-    print(f"Input video name: {name}")
-    state,name = prepare_directory(input_video,name)
-    if not state:
-        return
-    cap = video_setup(name,width,height,fps)
-    if not valid_video_setup(cap):
-        return
-    cap,converted_video = process_frame(width, height,fps, cap, pil_style_image, model_path)
-    print("cap: ", cap)
-    if cap is None:
-        st.error("Could not process video frames.")
-        return
-    is_processing = end_video(converted_video , is_processing)
-   
-  
+        is_processing = processing_btn(is_processing)
+        print("input_video: ", input_video)
+        name = input_video.name if input_video else ""
+        print(f"Input video name: {name}")
+        state,name = prepare_directory(input_video,name)
+        if not state:
+            return
+        cap = video_setup(name,width,height,fps)
+        if not valid_video_setup(cap):
+            return
+        cap,converted_video = process_frame(width, height,fps, cap, pil_style_image, model_path)
+        print("cap: ", cap)
+        if cap is None:
+            st.error("Could not process video frames.")
+            return
+        is_processing = end_video(converted_video , is_processing)
+    except Exception as e:
+        traceback.print_exc()
+        print(f"Error for 'video_transfer_style': {e}")  
+    
  
 
 
@@ -187,9 +205,16 @@ def get_stylized_image(frame, style_image, hub_model,model_path : str,width : in
 
 
 def get_transformed_frame(frame, style_image, hub_module):
-    stylized_image = open_styled_image(frame, style_image, hub_module,False)
-    if stylized_image is None:
-        st.error("Frame was not processed. Please try again.")
-        return None
-    stylized_resized_frame = (stylized_image * 255).astype(np.uint8)
-    return stylized_resized_frame[0]
+    try:
+        stylized_image = open_styled_image(frame, style_image, hub_module,False)
+        if stylized_image is None:
+            st.error("Frame was not processed. Please try again.")
+            return None
+        stylized_resized_frame = (stylized_image * 255).astype(np.uint8)
+        return stylized_resized_frame[0]
+    except Exception as e:
+        traceback.print_exc()
+        mes = f"Error for 'get_transformed_frame': {e}"
+        print(mes)  
+        st.error(mes)
+    return None

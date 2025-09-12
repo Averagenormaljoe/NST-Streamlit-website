@@ -1,3 +1,4 @@
+import traceback
 from PIL import Image
 from helper.load_model import get_model_from_path
 import streamlit as st
@@ -38,28 +39,33 @@ def webcam_input(style_model_name : str,style_image,webcam_stylization : bool = 
     except Exception as e:
         print(f"Error: {e}")
     def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
-        if (style_image is None and type != "johnson" ) or webcam_stylization is False:
-            return frame
+        try: 
+            if (style_image is None and type != "johnson" ) or webcam_stylization is False:
+                return frame
+        
+            image = frame_to_image(frame)
 
-        image = frame_to_image(frame)
+        
+            if model is None or style_model_name is None or type is None:
+                return image
 
-       
-        if model is None or style_model_name is None or type is None:
+            orig_h, orig_w = image.shape[0:2]
+
+            # cv2.resize used in a forked thread may cause memory leaks
+            input = resize_image(image, width, orig_h, orig_w)
+            if type == "main":
+                transferred = open_styled_image(input,open_style_image,model)
+            elif type == "johnson":
+                transferred = style_transfer(input, model)
+
+        
+            image = get_result_image(transferred, orig_w, orig_h)
+            result = av.VideoFrame.from_ndarray(image, format="bgr24")
+            return result
+        except Exception as e:
+            traceback.print_exc()
+            print(f"Error for 'video_frame_callback': {e}")
             return image
-
-        orig_h, orig_w = image.shape[0:2]
-
-        # cv2.resize used in a forked thread may cause memory leaks
-        input = resize_image(image, width, orig_h, orig_w)
-        if type == "main":
-            transferred = open_styled_image(input,open_style_image,model)
-        elif type == "johnson":
-            transferred = style_transfer(input, model)
-
-    
-        image = get_result_image(transferred, orig_w, orig_h)
-        result = av.VideoFrame.from_ndarray(image, format="bgr24")
-        return result
     try: 
         ctx = webrtc_streamer(
             key="neural-style-transfer",

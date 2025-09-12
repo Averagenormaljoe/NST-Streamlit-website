@@ -1,4 +1,5 @@
 import os
+import traceback
 import keras
 from helper.model_validation import is_AdaIN, variables_dir_exists
 import cv2
@@ -37,20 +38,26 @@ def create_model_from_endpoint(model_path: str,size : tuple):
     return model
 
 def get_model_from_path(style_model_path : str,size : tuple[int,int] = (224, 224)):
-    if style_model_path is None or not isinstance(style_model_path,str):
-        st.error("get_model_from_path:: error: model path is not a string or is none.")
-        return None
-    if style_model_path.endswith('.t7') or style_model_path.endswith('.pth'):
-        model = cv2.dnn.readNetFromTorch(style_model_path)
-    elif style_model_path.endswith('.pb') or style_model_path.endswith('.pbtxt'):
-        model = cv2.dnn.readNetFromTensorflow(style_model_path)
-    elif "tfhub" in style_model_path:
-        model = hub.load(style_model_path)
-    elif style_model_path.endswith('.keras'):
-        model = tf.keras.models.load_model(style_model_path)
-    elif variables_dir_exists(style_model_path):
-        model = create_model_from_endpoint(style_model_path,size)
-    else:
-        st.error(f"This model path is invalid: {style_model_path}")
-        return None
+    try:
+        if style_model_path is None or not isinstance(style_model_path,str):
+            st.error("get_model_from_path:: error: model path is not a string or is none.")
+            return None
+        if style_model_path.endswith('.t7') or style_model_path.endswith('.pth'):
+            model = cv2.dnn.readNetFromTorch(style_model_path)
+        elif style_model_path.endswith('.pb') or style_model_path.endswith('.pbtxt'):
+            model = cv2.dnn.readNetFromTensorflow(style_model_path)
+        elif "tfhub" in style_model_path:
+            model = hub.load(style_model_path)
+        elif style_model_path.endswith('.keras'):
+            model = tf.keras.models.load_model(style_model_path)
+        elif variables_dir_exists(style_model_path):
+            model = create_model_from_endpoint(style_model_path,size)
+        else:
+            st.error(f"This model path is invalid: {style_model_path}")
+            return None
+    except Exception as e:
+        traceback.print_exc()
+        mes = f"Error for 'get_model_from_path': {e}"
+        print(mes)  
+        st.error(mes)
     return model
