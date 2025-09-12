@@ -2,10 +2,10 @@ from PIL import Image
 import numpy as np
 import av
 
-def frame_to_image(frame: av.VideoFrame, verbose : int = 0) -> np.ndarray:
+def frame_to_image(frame: av.VideoFrame, verbose : int = 0, frame_format :str = "bgr24") -> np.ndarray:
     if verbose > 0:
         print("frame:", frame, "type:", type(frame))
-    return frame.to_ndarray(format="bgr24")
+    return frame.to_ndarray(format=frame_format)
 def get_result_image(transferred: np.ndarray, orig_w: int, orig_h: int) -> np.ndarray:
     result : Image = Image.fromarray((transferred * 255).astype(np.uint8))
     image : np.ndarray = np.asarray(result.resize((orig_w, orig_h)))
