@@ -55,7 +55,3 @@ def johnson_webcam_input(style_model_path: str | None ):
         mes = f"Error for 'johnson_webcam_input': {e}"
         print(mes)  
         st.error(mes)
-
-def johnson_video_input(style_model_path: str | None, style_image, width=500):
-    return style_model_path, style_image, width
-
