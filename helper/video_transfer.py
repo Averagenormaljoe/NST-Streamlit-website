@@ -43,7 +43,7 @@ def generate_temp_paths(video_name : str = "input_video.mp4") -> tuple[str, str]
     return temp_dir, temp_path
 
 
-def video_setup(name : str, width: int, height: int, fps: int = 30) -> tuple[Optional[cv2.VideoCapture], Optional[cv2.VideoWriter], Optional[str]]:
+def video_setup(name : str, width: int, height: int, fps: int = 30) -> Optional[cv2.VideoCapture] | None:
     try: 
         if not os.path.exists(name):
             st.error(f"Video file {name} does not exist.")
@@ -54,16 +54,21 @@ def video_setup(name : str, width: int, height: int, fps: int = 30) -> tuple[Opt
         print(f"Video_FPS: {video_fps}, Video_Seconds: {video_seconds:.2f}")
         if not cap.isOpened():
             st.error(f"Could not open video file {name} for cap.")
-            return None, None, None
+            return None
         return cap
     except Exception as e:
         traceback.print_exc()
         print(f"Error for 'process_webcam': {e}")  
-    return None, None, None
-def get_temp_video(input_video):
-    tfile = tempfile.NamedTemporaryFile(delete=False)
-    tfile.write(input_video.read())
-    return tfile.name
+    return None
+def get_temp_video(input_video) -> str:
+    try:
+        tfile = tempfile.NamedTemporaryFile(delete=False)
+        tfile.write(input_video.read())
+        return tfile.name
+    except Exception as e:
+        traceback.print_exc()
+        print(f"Error for 'get_temp_video': {e}") 
+        return ""
 
 def prepare_directory(input_video,name):
     try:

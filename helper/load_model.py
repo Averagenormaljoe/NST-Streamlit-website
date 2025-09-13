@@ -12,8 +12,8 @@ from PIL import Image
 from keras.layers import TFSMLayer
 
 def get_AdaIN_model(model_path: str,size : tuple[int,int]):
-    content_input = tf.keras.Input(shape=(size[0], size[1], 3))
-    style_input = tf.keras.Input(shape=(size[0], size[1], 3))
+    content_input = tf.keras.Input(shape=(None, None, 3))
+    style_input = tf.keras.Input(shape=(None, None, 3))
 
     outputs = TFSMLayer(model_path)((content_input, style_input))
     inputs = [content_input, style_input]
@@ -24,7 +24,7 @@ def get_forward_feed_model(model_path: str,size: tuple[int,int]):
     layer = TFSMLayer(model_path, call_endpoint="serving_default")
 
     model = keras.Sequential([
-        keras.Input(shape=(size[0], size[1], 3)), 
+        keras.Input(shape=(None, None, 3)), 
         layer
     ])
     return model
@@ -55,11 +55,13 @@ def get_model_from_path(style_model_path : str,size : tuple[int,int] = (224, 224
         else:
             st.error(f"This model path is invalid: {style_model_path}")
             return None
+        if model is None:
+            st.error("Loaded model cannot be None")
+        
+        return model
     except Exception as e:
         traceback.print_exc()
         mes = f"Error for 'get_model_from_path': {e}"
         print(mes)  
         st.error(mes)
-    if model is None:
-        st.error("Loaded model cannot be None")
-    return model
+        return None

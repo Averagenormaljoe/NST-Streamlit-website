@@ -11,7 +11,7 @@ from streamlit.runtime.uploaded_file_manager import UploadedFile
 from helper.upload_types import content_types, video_types
 from helper.video_transfer import video_transfer_style
 
-def video_process(video_file,style_images,width_resolution : int,height_resolution : int,fps : int,model_path):
+def video_process(video_file,style_images,width_resolution : int,height_resolution : int,fps : int,model_path) -> None:
     try:
         if fps is None or height_resolution is None or width_resolution is None:
             st.error("The provided height, fps or width resolution is invalid")
@@ -35,7 +35,7 @@ def video_process(video_file,style_images,width_resolution : int,height_resoluti
 if "webcam_stylization_enabled" not in st.session_state:
     st.session_state.webcam_stylization_enabled = False
 
-def default_interface(model_path : str,method: str = "Image", content_image: Optional[UploadedFile] | None = None, style_image: Optional[UploadedFile] = None, picture: Optional[UploadedFile] = None, video_uploader: Optional[UploadedFile] = None):
+def default_interface(model_path : str,method: str = "Image", content_image: Optional[UploadedFile] | None = None, style_image: Optional[UploadedFile] = None, picture: Optional[UploadedFile] = None, video_uploader: Optional[UploadedFile] = None) -> None:
     try:
         print("Chosen method:",method)
         match method:
@@ -59,7 +59,7 @@ def default_interface(model_path : str,method: str = "Image", content_image: Opt
         mes = f"Error for 'default_interface': {e}"
         print(mes)  
         st.error(mes)
-def default_tab():
+def default_tab() -> None:
         # Upload Images
     dir_path = "main_model"
     model_dirs,style_models_dict = get_model_dirs(dir_path)

@@ -1,33 +1,35 @@
 
 import numpy as np
 import tensorflow as tf
-from helper.style_transfer import resize_then_covert
+from helper.style_transfer import resize_image
 import streamlit as st
 from PIL import Image
-from keras.layers import TFSMLayer
 
-def apply_model(img,style_model, show_image : bool =True):
+def apply_model(img,style_model):
     if img is None:
         st.error("apply_model:: image is none or invalid.")
-        return
+        return None
     if style_model is None:
         st.error("apply_model:: style_model is none or invalid")
-        return 
-    try:
-        test_image = np.expand_dims(img, axis=0)
-        converted_image = test_image / 255.0
-        cast_img = converted_image.astype(np.float32)
-        predicted_img = style_model(cast_img)
-        output = list(predicted_img.values())[0]
-        clip_predicted_img = np.clip(output, 0, 255)
-        int8_predicted_img = clip_predicted_img.astype(np.uint8)
-        output =  int8_predicted_img.astype(np.uint8)
-        test_output = tf.squeeze(output).numpy()
-    except Exception as e:
-        print(f"Error for 'apply_model': {e}")
+        return  None
+    test_image = np.expand_dims(img, axis=0)
+    converted_image = test_image / 255.0
+    cast_img = converted_image.astype(np.float32)
+    
+    print("Input shape:", cast_img.shape)
+    print("Model expected input:", style_model.input_shape)
+    print("johnson model:", style_model)
+    predicted_img = style_model(cast_img)
+    print("Image contents:", predicted_img)
+    output = list(predicted_img.values())[0]
+    clip_predicted_img = np.clip(output, 0, 255)
+    output = clip_predicted_img.astype(np.uint8)
+    test_output = tf.squeeze(output).numpy()
+    
     return test_output   
 
-def style_transfer(image, model,resize=True):
+
+def style_transfer(image, model,resize=False):
     if model is None:
         st.error("Model not loaded. Please select a valid model.")
         return None
@@ -38,11 +40,14 @@ def style_transfer(image, model,resize=True):
         (h, w)  = image.shape[:2]
     try:
         
-        content_numpy_image = resize_then_covert(image, "Content Image") if resize else image
+        content_numpy_image = resize_image(image, "Content Image") if resize else image
+        print("content_numpy_image_shape:", content_numpy_image.shape)
         output = apply_model(content_numpy_image, model)
+        print("Done")
+        return output
     except Exception as e:
         print(f"Error for 'style_transfer': {e}")
-    return output
+    return None
 
 def simple_style_transfer(image_path : str, model):
     if model is None:

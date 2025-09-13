@@ -12,11 +12,11 @@ from streamlit_session_memo import st_session_memo
 from helper.johnson_helper import  style_transfer
 
 
-def webcam_input(style_model_name : str,style_image,webcam_stylization : bool = True, type: str = "main",width : int = 256):
+def webcam_input(style_model_name : str,style_image,webcam_stylization : bool = True, type: str = "main",width : int = 256) -> None:
 
 
     @st_session_memo
-    def load_model(model_name, width):  # `width` is not used when loading the model, but is necessary as a cache key.
+    def load_model(model_name : str, width : int):  # `width` is not used when loading the model, but is necessary as a cache key.
             model = get_model_from_path(model_name)
             return model
     if style_model_name is None:  

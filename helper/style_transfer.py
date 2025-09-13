@@ -74,11 +74,12 @@ def transfer_style(content_image, style_image, hub_module,resize_style : bool = 
         print(f"Error for 'transfer_style': {e}")
         return content_image
 
-def process_image(content_image,style_image,model, output_size : tuple[int,int] = (224,224)): 
+def process_image(content_image,style_image,model, output_size : tuple[int,int] = (224,224),resize = False): 
     try:
         start_time = tf.timestamp()
-        content_image = tf.image.resize(content_image, [224, 224])
-        style_image = tf.image.resize(style_image, [224, 224])
+        if resize:
+            content_image = tf.image.resize(content_image, [224, 224])
+            style_image = tf.image.resize(style_image, [224, 224])
         outputs = model(inputs=( style_image,content_image))
         stylized_image = get_model_image(outputs)
         test_output = get_result_image(stylized_image, output_size[0], output_size[1])
@@ -91,8 +92,13 @@ def process_image(content_image,style_image,model, output_size : tuple[int,int] 
   
     return test_output
 def get_model_image(outputs):
-    output_image = outputs[0]
-    # reshape the stylized image
-    stylized_image = np.array(output_image)
+    try:
+        output_image = outputs[0]
+        # reshape the stylized image
+        stylized_image = np.array(output_image)
 
-    return stylized_image   
+        return stylized_image   
+    except Exception as e:
+        traceback.print_exc()
+        print(f"Error for 'get_model_image': {e}")  
+  

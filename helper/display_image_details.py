@@ -10,4 +10,4 @@ def display_image_details(image) -> None:
             return
     except Exception as e:
         print(f"Error: Failed to display image details {e}")
-        st.error("Failed to display the details of the uploaded image.")
+        st.error(f"Failed to display the details of the uploaded image. Message: {e}.")
