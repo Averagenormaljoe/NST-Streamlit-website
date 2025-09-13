@@ -39,7 +39,7 @@ def style_transfer(image, model,resize=True):
     else:
         (h, w)  = image.shape[:2]
     try:
-        
+        print(f"Image shape prior to resizing: {image.shape}")
         content_numpy_image = resize_image(image, "Content Image") if resize else image
         print("content_numpy_image_shape:", content_numpy_image.shape)
         output = apply_model(content_numpy_image, model)

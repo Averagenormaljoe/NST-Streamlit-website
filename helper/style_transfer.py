@@ -16,7 +16,7 @@ def resize_image(input_image,name : str="Content Image"):
     
         if resize_content is True:
             print(f"{name} bigger than {size_threshold}, resizing to {resizing_shape}")
-            get_resize_image(input_image,resizing_shape)
+            return get_resize_image(input_image,resizing_shape)
 
         print(f"{name} Shape: ", input_image_shape)
         return input_image
@@ -28,25 +28,41 @@ def resize_image(input_image,name : str="Content Image"):
 
 
 def get_resize_image(image,resizing_shape : tuple[int,int]):
-    input_image : MatLike = cv2.resize(image,(resizing_shape[0],resizing_shape[1]))
-    numpy_input_image = np.array(input_image)
-    return numpy_input_image
+    try:
+        input_image : MatLike = cv2.resize(image,(resizing_shape[0],resizing_shape[1]))
+        numpy_input_image = np.array(input_image)
+        return numpy_input_image
+    except Exception as e:
+        traceback.print_exc()
+        print(f"Error for 'get_resize_image': {e}")  
+        return None
 
 def convert_to_numpy_image(image):
     return image.astype(np.float32)[np.newaxis, ...] / 255.
     
 
 def resize_then_covert(image,name : str):
-    resized_image = resize_image(image, name)
-    # Convert to float32 numpy array, add batch dimension, and normalize to range [0, 1]. Example using numpy:
-    numpy_image = convert_to_numpy_image(resized_image)
-    return numpy_image
+    try:
+        resized_image = resize_image(image, name)
+        # Convert to float32 numpy array, add batch dimension, and normalize to range [0, 1]. Example using numpy:
+        numpy_image = convert_to_numpy_image(resized_image)
+        return numpy_image
+    except Exception as e:
+        traceback.print_exc()
+        print(f"Error for 'resize_then_covert': {e}")  
+        return None
 
 
 def resize_tf_style(style_image): 
-    resize_style_shape: tuple[int, int] = (256, 256)
-    style_tf_image = tf.image.resize(style_image, resize_style_shape)
-    return style_tf_image
+    try:
+        resize_style_shape: tuple[int, int] = (256, 256)
+        style_tf_image = tf.image.resize(style_image, resize_style_shape)
+        return style_tf_image
+    except Exception as e:
+        traceback.print_exc()
+        print(f"Error for 'resize_tf_style': {e}")  
+        return None
+
 
 def transfer_style(content_image, style_image, hub_module,resize_style : bool = True,resize  : bool  = True):
     try:
