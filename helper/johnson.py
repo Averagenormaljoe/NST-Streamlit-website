@@ -1,3 +1,4 @@
+import traceback
 import numpy as np
 import streamlit as st
 from PIL import Image
@@ -44,10 +45,16 @@ def johnson_image_input(content_image, style_model_path: str | None) :
         st.error(mes)
 
 def johnson_webcam_input(style_model_path: str | None ):
-    if style_model_path is None:
-        st.error("Please select a style model.")
-        return
-    webcam_input(style_model_path, None, webcam_stylization=True, type="johnson")
+    try:
+        if style_model_path is None:
+            st.error("Please select a style model.")
+            return
+        webcam_input(style_model_path, None, webcam_stylization=True, type="johnson")
+    except Exception as e:
+        traceback.print_exc()
+        mes = f"Error for 'johnson_webcam_input': {e}"
+        print(mes)  
+        st.error(mes)
 
 def johnson_video_input(style_model_path: str | None, style_image, width=500):
     return style_model_path, style_image, width
