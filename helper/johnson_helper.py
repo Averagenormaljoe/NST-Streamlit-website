@@ -16,6 +16,8 @@ def apply_model(img,style_model):
         test_image = np.expand_dims(img, axis=0)
         converted_image = test_image / 255.0
         cast_img = converted_image.astype(np.float32)
+        print("cast_img:", cast_img.shape)
+        print("model shape:", style_model.input_shape)
         predicted_img = style_model(cast_img)
         output = list(predicted_img.values())[0]
         clip_predicted_img = np.clip(output, 0, 255)

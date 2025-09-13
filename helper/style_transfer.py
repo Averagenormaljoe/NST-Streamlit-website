@@ -19,13 +19,13 @@ def resize_image(input_image,name : str="Content Image"):
             get_resize_image(input_image,resizing_shape)
 
         print(f"{name} Shape: ", input_image_shape)
-
+        return input_image
     except Exception as e:
         traceback.print_exc()
         print(f"Error for 'resize_image': {e}")  
         return None
 
-    return input_image
+
 
 def get_resize_image(image,resizing_shape : tuple[int,int]):
     input_image : MatLike = cv2.resize(image,(resizing_shape[0],resizing_shape[1]))
