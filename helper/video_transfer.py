@@ -18,6 +18,8 @@ from helper.components import processing_btn
 from helper.helper import  open_styled_image
 from helper.video_helper import image_read
 import traceback
+from typing import Optional
+import time
 def video_validation(input_video: UploadedFile | None,style_image,model_path) -> bool:
     try:
         if style_image is None and (not model_path.endswith(".t7") and not variables_dir_exists(model_path)):
@@ -40,10 +42,8 @@ def generate_temp_paths(video_name : str = "input_video.mp4") -> tuple[str, str]
     temp_path: str = os.path.join(temp_dir, video_name)
     return temp_dir, temp_path
 
-from typing import Optional
-import time
 
-def video_setup(name : str, width: int, height: int, fps: int = 30) -> tuple[Optional[cv2.VideoCapture], Optional[cv2.VideoWriter], Optional[str]]:
+def video_setup(name : str, width: int, height: int, fps: int = 30) -> Optional[cv2.VideoCapture] | None:
     try: 
         if not os.path.exists(name):
             st.error(f"Video file {name} does not exist.")
@@ -54,16 +54,21 @@ def video_setup(name : str, width: int, height: int, fps: int = 30) -> tuple[Opt
         print(f"Video_FPS: {video_fps}, Video_Seconds: {video_seconds:.2f}")
         if not cap.isOpened():
             st.error(f"Could not open video file {name} for cap.")
-            return None, None, None
+            return None
         return cap
     except Exception as e:
         traceback.print_exc()
         print(f"Error for 'process_webcam': {e}")  
-    return None, None, None
-def get_temp_video(input_video):
-    tfile = tempfile.NamedTemporaryFile(delete=False)
-    tfile.write(input_video.read())
-    return tfile.name
+    return None
+def get_temp_video(input_video) -> str:
+    try:
+        tfile = tempfile.NamedTemporaryFile(delete=False)
+        tfile.write(input_video.read())
+        return tfile.name
+    except Exception as e:
+        traceback.print_exc()
+        print(f"Error for 'get_temp_video': {e}") 
+        return ""
 
 def prepare_directory(input_video,name):
     try:

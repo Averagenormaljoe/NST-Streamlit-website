@@ -20,7 +20,7 @@ def generate_styled_image(content_image, style_image, model_path : str):
         print(mes)  
         st.error(mes)
     
-def open_styled_image(content_image, style_image, model,resize_style : bool= True):
+def open_styled_image(content_image, style_image, model,resize_style : bool= True) -> None:
     try:
         if content_image is None or style_image is None:
             st.error("Please upload both content and style images.")
@@ -94,7 +94,7 @@ def download_generated_image(generated_image) -> None:
 
     
 
-def generate_image_btn(model_path : str,content_image,style_image):
+def generate_image_btn(model_path,content_image,style_image) -> None:
     try:
         if content_image is not None and style_image is not None and model_path is not None:
             if st.button("Generate Styled Image"):
