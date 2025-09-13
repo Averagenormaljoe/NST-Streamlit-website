@@ -26,7 +26,10 @@ def webcam_input(style_model_name : str,style_image,webcam_stylization : bool = 
     if style_model_name is None:  
         st.error("Model type has not been specified.")
         return None
-    model = load_model(style_model_name, width)
+    try: 
+        model = load_model(style_model_name, width)
+    except Exception as e:
+        print(f"Error when loading model with 'load_model' function: {e}")
     if model is None:
         st.error("Invalid model during webcam mode.")
         return

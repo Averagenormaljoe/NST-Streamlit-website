@@ -1,6 +1,7 @@
 
 import numpy as np
 import tensorflow as tf
+from helper.style_transfer import resize_then_covert
 import streamlit as st
 from PIL import Image
 from keras.layers import TFSMLayer
@@ -26,7 +27,7 @@ def apply_model(img,style_model, show_image : bool =True):
         print(f"Error for 'apply_model': {e}")
     return test_output   
 
-def style_transfer(image, model):
+def style_transfer(image, model,resize=True):
     if model is None:
         st.error("Model not loaded. Please select a valid model.")
         return None
@@ -36,7 +37,9 @@ def style_transfer(image, model):
     else:
         (h, w)  = image.shape[:2]
     try:
-        output = apply_model(image, model)
+        
+        content_numpy_image = resize_then_covert(image, "Content Image") if resize else image
+        output = apply_model(content_numpy_image, model)
     except Exception as e:
         print(f"Error for 'style_transfer': {e}")
     return output
