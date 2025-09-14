@@ -91,6 +91,7 @@ def transfer_style(content_image, style_image, hub_module,resize_style : bool = 
         return content_image
 
 def process_image(content_image,style_image,model, output_size : tuple[int,int] = (224,224),resize = False): 
+    
     try:
         start_time = tf.timestamp()
         if resize:

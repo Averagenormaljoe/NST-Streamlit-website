@@ -1,11 +1,18 @@
 
+import time
 import numpy as np
 import tensorflow as tf
 from helper.style_transfer import resize_image
 import streamlit as st
 from PIL import Image
+import cv2
+
+
+
 
 def apply_model(img,style_model):
+    if style_model is None:
+        raise ValueError("Failed to load model.")
     if img is None:
         st.error("apply_model:: image is none or invalid.")
         return None
@@ -13,12 +20,17 @@ def apply_model(img,style_model):
         st.error("apply_model:: style_model is none or invalid")
         return  None
     try:
-        test_image = np.expand_dims(img, axis=0)
+        resized_img = cv2.resize(img, (712, 712), interpolation=cv2.INTER_LINEAR)
+        test_image = np.expand_dims(resized_img, axis=0)
         converted_image = test_image / 255.0
         cast_img = converted_image.astype(np.float32)
         print("cast_img:", cast_img.shape)
         print("model shape:", style_model.input_shape)
+        start_time = time.perf_counter()
         predicted_img = style_model(cast_img)
+        end_time = time.perf_counter()
+        duration : float = end_time - start_time
+        print("Process time took:", {duration})
         output = list(predicted_img.values())[0]
         clip_predicted_img = np.clip(output, 0, 255)
         output = clip_predicted_img.astype(np.uint8)
