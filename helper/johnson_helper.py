@@ -10,7 +10,7 @@ import cv2
 
 
 
-def apply_model(img,style_model):
+def apply_model(img,style_model, output_size = (256,256)):
     if style_model is None:
         raise ValueError("Failed to load model.")
     if img is None:
@@ -19,18 +19,20 @@ def apply_model(img,style_model):
     if style_model is None:
         st.error("apply_model:: style_model is none or invalid")
         return  None
+    style_model.trainable = False
     try:
-        resized_img = cv2.resize(img, (712, 712), interpolation=cv2.INTER_LINEAR)
+        #sizes = [(256, 256), (512, 512), (768, 768), (1024, 1024), (1280, 1280)]
+        x = (512, 512)
+        resized_img = cv2.resize(img,x, interpolation=cv2.INTER_LINEAR)
         test_image = np.expand_dims(resized_img, axis=0)
-        converted_image = test_image / 255.0
-        cast_img = converted_image.astype(np.float32)
+        cast_img = test_image.astype(np.float32) 
         print("cast_img:", cast_img.shape)
         print("model shape:", style_model.input_shape)
         start_time = time.perf_counter()
         predicted_img = style_model(cast_img)
         end_time = time.perf_counter()
         duration : float = end_time - start_time
-        print("Process time took:", {duration})
+        print("Process time took:", f"{duration} for {x[0]}x{x[1]}" )
         output = list(predicted_img.values())[0]
         clip_predicted_img = np.clip(output, 0, 255)
         output = clip_predicted_img.astype(np.uint8)

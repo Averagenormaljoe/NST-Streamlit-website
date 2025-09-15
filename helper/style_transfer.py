@@ -103,11 +103,12 @@ def process_image(content_image,style_image,model, output_size : tuple[int,int] 
         end_time = tf.timestamp()
         processing_time : float = float(end_time - start_time)
         print(f"Stylizing completed in {processing_time:.2f} seconds...")
+        return test_output
     except Exception as e:
         traceback.print_exc()
         print(f"Error for 'process_image': {e}")  
   
-    return test_output
+
 def get_model_image(outputs):
     try:
         output_image = outputs[0]

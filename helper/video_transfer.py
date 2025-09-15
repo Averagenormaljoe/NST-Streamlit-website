@@ -176,7 +176,7 @@ def process_frame(width : int, height : int,fps, cap : cv2.VideoCapture, style_i
         finish_video(cap)
         end_time : float = time.time()
         duration = end_time - start_time
-        print(f"Video style transfer processing time: {duration:.2f} seconds")
+        print(f"Video style transfer processing time: {duration} seconds")
         
     close_stream(stream, output, output_memory_file)
     return cap, output_memory_file
