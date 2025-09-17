@@ -81,7 +81,7 @@ def transfer_style(content_image, style_image, hub_module,resize_style : bool = 
         
         print("Generating stylized image now...wait a minute")
         # Stylize image.
-        stylized_image = process_image(content_numpy_image, style_tf_image, hub_module)
+        stylized_image = process_image(content_numpy_image, style_tf_image, hub_module,resize = True)
         
 
         return stylized_image

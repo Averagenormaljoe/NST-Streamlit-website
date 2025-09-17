@@ -198,8 +198,7 @@ def get_stylized_image(frame, style_image, hub_model,model_path : str,width : in
             stylized_frame = style_transfer(input_frame,hub_model)
         else:
             print("AdaIN mode")
-            expanded_frame = np.expand_dims(input_frame, axis=0)
-            stylized_frame = get_transformed_frame(expanded_frame, style_image,hub_model)
+            stylized_frame = get_transformed_frame(frame, style_image,hub_model)
     except Exception as e:
         print(f"Error:: get_stylized_image: {e}")
         traceback.print_exc()

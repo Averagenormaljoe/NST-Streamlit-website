@@ -10,7 +10,7 @@ import cv2
 
 
 
-def apply_model(img,style_model, output_size = (256,256)):
+def apply_model(img,style_model, output_size = (256,256), show_duration: bool = False):
     if style_model is None:
         raise ValueError("Failed to load model.")
     if img is None:
@@ -21,7 +21,6 @@ def apply_model(img,style_model, output_size = (256,256)):
         return  None
     style_model.trainable = False
     try:
-        #sizes = [(256, 256), (512, 512), (768, 768), (1024, 1024), (1280, 1280)]
         x = (512, 512)
         resized_img = cv2.resize(img,x, interpolation=cv2.INTER_LINEAR)
         test_image = np.expand_dims(resized_img, axis=0)
@@ -33,17 +32,19 @@ def apply_model(img,style_model, output_size = (256,256)):
         end_time = time.perf_counter()
         duration : float = end_time - start_time
         print("Process time took:", f"{duration} for {x[0]}x{x[1]}" )
+        if show_duration:
+            st.success(f"Process time took: {duration} seconds for resolution {x[0]}x{x[1]}.")
         output = list(predicted_img.values())[0]
         clip_predicted_img = np.clip(output, 0, 255)
         output = clip_predicted_img.astype(np.uint8)
         test_output = tf.squeeze(output).numpy()
-        return test_output  
+        return test_output
     except Exception as e:
         print(f"Error for 'apply_model': {e}")
     return None
  
 
-def style_transfer(image, model,resize=True):
+def style_transfer(image, model,resize=True,  show_duration: bool = False):
     if model is None:
         st.error("Model not loaded. Please select a valid model.")
         return None
@@ -56,7 +57,7 @@ def style_transfer(image, model,resize=True):
         print(f"Image shape prior to resizing: {image.shape}")
         content_numpy_image = resize_image(image, "Content Image") if resize else image
         print("content_numpy_image_shape:", content_numpy_image.shape)
-        output = apply_model(content_numpy_image, model)
+        output = apply_model(content_numpy_image, model,show_duration=show_duration)
         return output
     except Exception as e:
         print(f"Error for 'style_transfer': {e}")
