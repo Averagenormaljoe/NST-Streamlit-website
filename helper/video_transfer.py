@@ -152,6 +152,7 @@ def process_frame(width : int, height : int,fps, cap : cv2.VideoCapture, style_i
     video_bar = st.progress(0, text=progress_text)
     try:
         @st.cache_data(ttl=60)  
+        @st.cache_resource(ttl=1)
         def video_loop():
             while True:
                 frame_start_time : float = time.time()
