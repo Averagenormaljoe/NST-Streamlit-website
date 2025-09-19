@@ -70,8 +70,9 @@ def webcam_input(style_model_name : str,style_image,webcam_stylization : bool = 
             print(f"Error for 'video_frame_callback': {e}")
             return image
     try: 
+        key = f"neural_style_transfer_{type}"
         ctx = webrtc_streamer(
-            key="neural-style-transfer",
+            key=key,
             video_frame_callback=video_frame_callback,
             rtc_configuration={"iceServers": get_ice_servers()},
             media_stream_constraints={"video": True, "audio": False},
