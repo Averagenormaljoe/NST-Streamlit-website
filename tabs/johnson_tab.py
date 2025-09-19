@@ -29,8 +29,8 @@ def johnson_interface():
                 picture = camera_component(camera_key)
                 johnson_image_input(picture, model_path)
             case "Video":
-                video_uploader = get_video_uploader(video_types=video_types, key="video_uploader")
-                width_resolution, height_resolution,fps = get_ui_video_sliders()
+                video_uploader = get_video_uploader(video_types=video_types, key="johnson_video_uploader")
+                width_resolution, height_resolution,fps = get_ui_video_sliders("johnson")
                 if video_uploader is not None:
                     if st.button("Generate Styled Video"):
                         with st.spinner("Stylizing video... This may take a few minutes."):

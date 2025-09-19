@@ -70,12 +70,9 @@ def transfer_style(content_image, style_image, hub_module,resize_style : bool = 
             return content_image
         print("Starting style transfer: ", style_image)
 
-        content_numpy_image = resize_then_covert(content_image, "Content Image") if resize else content_image
-        if resize_style and resize:
-            style_numpy_image = resize_then_covert(style_image, "Style Image")
-            style_tf_image = resize_tf_style(style_numpy_image)
-        else:
-            style_tf_image = style_image
+        content_numpy_image = convert_to_numpy_image(content_image)
+        style_tf_image = convert_to_numpy_image(style_image)
+  
         print("Loading pre-trained model...")
         # The hub.load() loads any TF Hub model
         
@@ -94,6 +91,8 @@ def process_image(content_image,style_image,model, output_size : tuple[int,int] 
     
     try:
         start_time = tf.timestamp()
+        print("Content image shape:", content_image.shape)
+        print("Style image shape:", style_image.shape)
         if resize:
             content_image = tf.image.resize(content_image, [224, 224])
             style_image = tf.image.resize(style_image, [224, 224])

@@ -1,6 +1,6 @@
 #from AdaIN.AdaIN_functions.image import tensor_toimage
 from helper.model_validation import is_AdaIN, is_forward_feed, variables_dir_exists
-from helper.style_transfer import transfer_style
+from helper.style_transfer import convert_to_numpy_image, transfer_style
 from video_methods.video_stream import prepare_stream, save_packet, close_stream
 from video_methods.video_interface import display_styled_video
 import os
@@ -11,6 +11,7 @@ from helper.load_model import get_model_from_path
 from helper.johnson_helper import style_transfer
 import streamlit as st
 import av
+from PIL import Image
 from streamlit.runtime.uploaded_file_manager import UploadedFile
 import tensorflow as tf
 from helper.image_transfer import get_result_image, resize_image
@@ -101,6 +102,8 @@ def end_video(output_video_path: str, is_processing: bool = False):
     
 
 def video_transfer_style(input_video : UploadedFile | None,style_image : UploadedFile | None , width : int =256,height : int =256,fps : int =30, model_path : str = ""):
+    if input_video is None or model_path is None or style_image is None:
+        return
     try:
         is_processing : bool = True
         if not video_validation(input_video, style_image,model_path):
@@ -109,7 +112,8 @@ def video_transfer_style(input_video : UploadedFile | None,style_image : Uploade
         if ((model_path.endswith(".t7") or variables_dir_exists(model_path))) and not is_AdaIN(model_path):
             pil_style_image = None
         else:
-            pil_style_image = image_read(style_image)
+            
+            pil_style_image = np.array(style_image)
 
         is_processing = processing_btn(is_processing)
         print("input_video: ", input_video)
@@ -214,8 +218,7 @@ def get_transformed_frame(frame, style_image, hub_module):
         if stylized_image is None:
             st.error("Frame was not processed. Please try again.")
             return None
-        stylized_resized_frame = (stylized_image * 255).astype(np.uint8)
-        return stylized_resized_frame[0]
+        return stylized_image
     except Exception as e:
         traceback.print_exc()
         mes = f"Error for 'get_transformed_frame': {e}"
