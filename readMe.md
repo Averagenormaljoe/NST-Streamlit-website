@@ -82,8 +82,6 @@ The main StyleMotion model (AdaIN) is stored in the 'main_model' directory.
 
 The Ruber model is stored in the 'Ruber' directory.
 
-The Gatys model is managed as a script due to its being an optimization loop.
-
 You can visit the website, which is running from this link:
 
 [https://stylemotion-app.streamlit.app/](https://stylemotion-app.streamlit.app/).
@@ -110,10 +108,6 @@ The code for creating the models is stored in another GitHub repository called:
 
 This is the StyleMotion model is the main model for the report and default recommended model for general usage.
 It supports multi neural style transfer, video, real-time. This is based on the AdaIN paper.
-
-### Gatys et al. Model
-
-This model trades speed for sylization quality. Note that WebCam mode is not available with this model.
 
 ### Johnson et al. Model
 
