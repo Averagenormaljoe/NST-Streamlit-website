@@ -102,7 +102,7 @@ def end_video(output_video_path: str, is_processing: bool = False):
     
 
 def video_transfer_style(input_video : UploadedFile | None,style_image : UploadedFile | None , width : int =256,height : int =256,fps : int =30, model_path : str = ""):
-    if input_video is None or model_path is None or style_image is None:
+    if input_video is None or model_path is None or (style_image is None and not variables_dir_exists(model_path)):
         return
     try:
         is_processing : bool = True
