@@ -100,7 +100,7 @@ def end_video(output_video_path: str, is_processing: bool = False):
     is_processing = display_styled_video(output_video_path,is_processing)
     return is_processing
     
-@st.cache_data(ttl=60)
+
 def video_transfer_style(input_video : UploadedFile | None,style_image : UploadedFile | None , width : int =256,height : int =256,fps : int =30, model_path : str = ""):
     if input_video is None or model_path is None or (style_image is None and not variables_dir_exists(model_path)):
         return
@@ -138,7 +138,7 @@ def video_transfer_style(input_video : UploadedFile | None,style_image : Uploade
  
 
 
-@st.cache_data(ttl=60) 
+
 def process_frame(width : int, height : int,fps, cap : cv2.VideoCapture, style_image, model_path : str):
     hub_model = get_model_from_path(model_path)
     print("Hub model: ", hub_model)
@@ -151,25 +151,28 @@ def process_frame(width : int, height : int,fps, cap : cv2.VideoCapture, style_i
     progress_text = "Stylization time. Please wait."
     video_bar = st.progress(0, text=progress_text)
     try:
-        while True:
-            frame_start_time : float = time.time()
-            pos = (int(cap.get(cv2.CAP_PROP_POS_FRAMES)) + 1)
-            progress = min(pos / total_frames, 1.0)
-            video_bar.progress(progress, text=progress_text)
-            ret, frame = cap.read()
-            print(f"ret: {ret}")
-            if not ret:
-                print("Video has finished due to 'ret'. Exiting ...")
-                break
-   
-            stylized_image = get_stylized_image(frame, style_image, hub_model,model_path,width)
-            if stylized_image is None:
-                print("Stylized frame is empty. Skipping frame...")
-                continue
-            stream_frame = av.VideoFrame.from_ndarray(stylized_image, format='bgr24')  
-            save_packet(stream, output, stream_frame)
-            frame_end_time : float = time.time()
-            print(f"Processed frame in {frame_end_time - frame_start_time:.2f} seconds")
+        @st.cache_data(ttl=60)  
+        def video_loop():
+            while True:
+                frame_start_time : float = time.time()
+                pos = (int(cap.get(cv2.CAP_PROP_POS_FRAMES)) + 1)
+                progress = min(pos / total_frames, 1.0)
+                video_bar.progress(progress, text=progress_text)
+                ret, frame = cap.read()
+                print(f"ret: {ret}")
+                if not ret:
+                    print("Video has finished due to 'ret'. Exiting ...")
+                    break
+    
+                stylized_image = get_stylized_image(frame, style_image, hub_model,model_path,width)
+                if stylized_image is None:
+                    print("Stylized frame is empty. Skipping frame...")
+                    continue
+                stream_frame = av.VideoFrame.from_ndarray(stylized_image, format='bgr24')  
+                save_packet(stream, output, stream_frame)
+                frame_end_time : float = time.time()
+                print(f"Processed frame in {frame_end_time - frame_start_time:.2f} seconds")
+        video_loop()
     except cv2.error as e:
         print(f"OpenCV error during video stylization: {e}")
         traceback.print_exc()
