@@ -59,8 +59,6 @@ source venv/Scripts/activate (Win&Bash).
 
 'pip install -r requirements.txt'
 
-'pip install main_dist/stylemotion-0.1.0.tar.gz'
-
 4. Use 'pip list' to ensure that the packages were correctly installed
 
 5. To start streamlit project, run in the terminal:
