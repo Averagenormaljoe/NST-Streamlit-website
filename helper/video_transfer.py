@@ -115,7 +115,7 @@ def video_transfer_style(input_video : UploadedFile | None,style_image : Uploade
             
             pil_style_image = np.array(style_image)
 
-        is_processing = processing_btn(is_processing)
+        is_processing = processing_btn(is_processing,f"video_{model_path}")
         print("input_video: ", input_video)
         name = input_video.name if input_video else ""
         print(f"Input video name: {name}")

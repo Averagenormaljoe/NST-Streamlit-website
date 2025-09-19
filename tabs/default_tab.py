@@ -21,7 +21,7 @@ def video_process(video_file,style_images,width_resolution : int,height_resoluti
             print(style_images)
             open_style_imgs = [Image.open(img) for img in style_images]
             st.info(f"{len(open_style_imgs)} style image(s) selected.")
-            if st.button("Generate Styled Video"):
+            if st.button("Generate Styled Video", key="main_video_button"):
                 with st.spinner("Stylizing video... This may take a few minutes."):
                     video_transfer_style(
                         video_file,  open_style_imgs[0], width_resolution,height_resolution,fps=fps,model_path=model_path

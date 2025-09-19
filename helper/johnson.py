@@ -20,7 +20,7 @@ def johnson_image_input(content_image, style_model_path: str | None, output_size
     if style_model_path is None:
         st.error("Please select a style model.")
         return 
-    if st.button("Generate Style Image"):
+    if st.button("Generate Style Image", key="johnson_image_button"):
         with st.spinner("Stylizing Image... This may take a few minutes."):
             open_content_image = Image.open(content_image)
             pli_content_image = np.array(open_content_image)
