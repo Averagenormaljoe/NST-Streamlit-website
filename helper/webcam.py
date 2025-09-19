@@ -10,7 +10,6 @@ from helper.helper import open_styled_image
 from helper.turn import get_ice_servers
 from streamlit_session_memo import st_session_memo
 from helper.johnson_helper import  style_transfer
-
 def webcam_input(style_model_name : str,style_image,webcam_stylization : bool = True, type: str = "main",width : int = 256) -> None:
 
 
