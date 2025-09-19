@@ -97,7 +97,7 @@ def download_generated_image(generated_image) -> None:
 def generate_image_btn(model_path,content_image,style_image) -> None:
     try:
         if content_image is not None and style_image is not None and model_path is not None:
-            if st.button("Generate Styled Image"):
+            if st.button("Generate Styled Image", key="main_image_button"):
                 with st.spinner("Styling Images...will take about 20-30 secs"):
                     is_processing : bool = True
                     # Convert the uploaded image to a PIL Image
@@ -106,7 +106,7 @@ def generate_image_btn(model_path,content_image,style_image) -> None:
             
                     # Path of the pre-trained TF model
                     generated_image = generate_styled_image(open_content_image, open_style_image, model_path)
-                    is_processing = processing_btn(is_processing)
+                    is_processing = processing_btn(is_processing,"main")
                     display_styled_image(generated_image, is_processing)
                     return generated_image
     except Exception as e:

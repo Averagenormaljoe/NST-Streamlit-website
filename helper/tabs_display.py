@@ -26,7 +26,7 @@ def tabs_display() -> None:
 
     # -------------Body Section------------------------------------------------
     with tab1:
-        default_tab()
+        johnson_tab()
 
                 
     # # -------------Gatys Model Section------------------------------------------------        

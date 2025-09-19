@@ -1,10 +1,10 @@
 import traceback
 import streamlit as st
 from streamlit.runtime.uploaded_file_manager import UploadedFile
-def processing_btn(is_processing : bool) -> bool:
+def processing_btn(is_processing : bool,prefix = "") -> bool:
     try:
         if is_processing:
-            if st.button("Stop Processing"):
+            if st.button("Stop Processing", key =f"{prefix}_stop_button"):
                 is_processing = False
                 st.warning("Processing stopped by user.")
                 
