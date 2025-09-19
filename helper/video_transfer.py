@@ -100,7 +100,7 @@ def end_video(output_video_path: str, is_processing: bool = False):
     is_processing = display_styled_video(output_video_path,is_processing)
     return is_processing
     
-
+@st.cache_data(ttl=60)
 def video_transfer_style(input_video : UploadedFile | None,style_image : UploadedFile | None , width : int =256,height : int =256,fps : int =30, model_path : str = ""):
     if input_video is None or model_path is None or (style_image is None and not variables_dir_exists(model_path)):
         return
@@ -138,7 +138,7 @@ def video_transfer_style(input_video : UploadedFile | None,style_image : Uploade
  
 
 
-    
+@st.cache_data(ttl=60) 
 def process_frame(width : int, height : int,fps, cap : cv2.VideoCapture, style_image, model_path : str):
     hub_model = get_model_from_path(model_path)
     print("Hub model: ", hub_model)
