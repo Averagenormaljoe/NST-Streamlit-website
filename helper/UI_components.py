@@ -12,7 +12,7 @@ def method_slider(key : str ="method_selector") -> str:
     return method
 def camera_component(key : str = "main_model"):
     enable : bool = st.checkbox("Enable camera",key=key)
-    picture = st.camera_input("Take a picture", disabled=not enable)
+    picture = st.camera_input("Take a picture", disabled=not enable,key=f"{key}_camera")
     if picture is None:
         st.warning("Please take a picture using the camera.")
         return None
@@ -79,18 +79,5 @@ def header() -> None:
     st.image(image="./assets/nst.png")
     st.markdown("</br>", unsafe_allow_html=True)
 
-def output_size() -> tuple[int,int]:
-    width_slider : int = st.slider(
-          "Select Epochs",
-          min_value=1, max_value=1000, value=10, step=1,
-          help="Set the number of epochs for the style transfer. More epochs may yield better results but will take longer."
-    )
-    height_slider : int = st.slider(
-          "Select Epochs",
-          min_value=1, max_value=1000, value=10, step=1,
-          help="Set the number of epochs for the style transfer. More epochs may yield better results but will take longer."
-    )
-    return width_slider,height_slider
-    
     
     
