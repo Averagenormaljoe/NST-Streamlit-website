@@ -18,6 +18,7 @@ def get_AdaIN_model(model_path: str,size : tuple[int,int]):
     outputs = TFSMLayer(model_path)((content_input, style_input))
     inputs = [content_input, style_input]
     model = tf.keras.Model(inputs=inputs, outputs=outputs) 
+    print("Using AdaIN")
     return model    
 
 def get_forward_feed_model(model_path: str,size: tuple[int,int]):
@@ -38,6 +39,7 @@ def create_model_from_endpoint(model_path: str,size : tuple):
     return model
 
 def get_model_from_path(style_model_path : str,size : tuple[int,int] = (224, 224)):
+    
     try:
         if style_model_path is None or not isinstance(style_model_path,str):
             st.error("get_model_from_path:: error: model path is not a string or is none.")
