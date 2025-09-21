@@ -100,7 +100,7 @@ The page_config.py file is used for
 ## The Model creation code
 
 The code for creating the models is stored in another GitHub repository called:
-[https://github.com/Averagenormaljoe/Neural-Style-Transfer](https://github.com/Averagenormaljoe/Neural-Style-Transfer)
+[https://github.com/Averagenormaljoe/NST-Final-Project](https://github.com/Averagenormaljoe/NST-Final-Project)
 
 ## Selectable models
 
