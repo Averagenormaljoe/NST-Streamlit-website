@@ -57,15 +57,5 @@ def style_transfer(image, model,resize=True,  show_duration: bool = False):
         print(f"Error for 'style_transfer': {e}")
     return None
 
-def simple_style_transfer(image_path : str, model):
-    if model is None:
-        return None
-    open_image = Image.open(image_path)
-    if open_image is None:
-        return None
-    styled_image = style_transfer(open_image, model)
-    if styled_image  is None:
-        raise ValueError("Styled_image is none.")
-    return styled_image
 
 
