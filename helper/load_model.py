@@ -44,11 +44,7 @@ def get_model_from_path(style_model_path : str,size : tuple[int,int] = (224, 224
         if style_model_path is None or not isinstance(style_model_path,str):
             st.error("get_model_from_path:: error: model path is not a string or is none.")
             return None
-        if style_model_path.endswith('.t7') or style_model_path.endswith('.pth'):
-            model = cv2.dnn.readNetFromTorch(style_model_path)
-        elif style_model_path.endswith('.pb') or style_model_path.endswith('.pbtxt'):
-            model = cv2.dnn.readNetFromTensorflow(style_model_path)
-        elif "tfhub" in style_model_path:
+        if "tfhub" in style_model_path:
             model = hub.load(style_model_path)
         elif style_model_path.endswith('.keras'):
             model = tf.keras.models.load_model(style_model_path)
