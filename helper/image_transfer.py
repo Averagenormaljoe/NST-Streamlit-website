@@ -7,6 +7,10 @@ def frame_to_image(frame: av.VideoFrame, verbose : int = 0) -> np.ndarray:
         print("frame:", frame, "type:", type(frame))
     return frame.to_ndarray(format="bgr24")
 # Code adapted from 'https://github.com/whitphx/style-transfer-web-app/blob/main/input.py'
+# Website: GitHub
+# Author: Yuichiro Tachibana (Tsuchiya)
+# Date: Apr 27, 2023
+# Date of access: 21/09/2025
 def get_result_image(transferred: np.ndarray, orig_w: int, orig_h: int) -> np.ndarray:
     result : Image = Image.fromarray((transferred * 255).astype(np.uint8))
     image : np.ndarray = np.asarray(result.resize((orig_w, orig_h)))
