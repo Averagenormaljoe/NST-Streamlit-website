@@ -1,4 +1,3 @@
-#from AdaIN.AdaIN_functions.image import tensor_toimage
 from helper.model_validation import is_AdaIN, is_forward_feed, variables_dir_exists
 from helper.style_transfer import convert_to_numpy_image, transfer_style
 from video_methods.video_stream import prepare_stream, save_packet, close_stream
@@ -188,13 +187,7 @@ def process_frame(width : int, height : int,fps, cap : cv2.VideoCapture, style_i
     close_stream(stream, output, output_memory_file)
     return cap, output_memory_file
 
-def tensor_toimage(tensor : tf.Tensor):
-  tensor =tensor*255
-  tensor = np.array(tensor, dtype=np.uint8)
-  if np.ndim(tensor)>3:
-    assert tensor.shape[0]==1
-    tensor=tensor[0]
-  return tensor
+
 
 def get_stylized_image(frame, style_image, hub_model,model_path : str,width : int):
     orig_h, orig_w = frame.shape[0:2]
