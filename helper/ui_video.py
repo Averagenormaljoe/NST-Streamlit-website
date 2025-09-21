@@ -14,21 +14,21 @@ def get_ui_video_sliders(prefix = "") -> tuple[float, float, float]:
     width_resolution = st.slider(
         "Select Output Resolution (Width)", 
         min_value=256, max_value=1080, value=512, step=64, 
-        help="Set the width (in pixels) for the output video. Height will be scaled proportionally.",
+        help="Resolution in Width",
         key=f"{prefix}_width"
     )
     # height
     height_resolution = st.slider(
         "Select Output Resolution (WHeight)", 
         min_value=256, max_value=1080, value=512, step=64, 
-        help="Set the Height(in pixels) for the output video.",
+        help="Resolution in Height.",
         key=f"{prefix}_height",
     )
     # FPS slider
     fps = st.slider(
         "Select Output FPS (Frames Per Second)", 
         min_value=1, max_value=30, value=30, step=1, 
-        help="Set the frames per second for the output video.",
+        help="FPS for Video.",
         key=f"{prefix}_fps"
     )
     
