@@ -48,11 +48,7 @@ def style_transfer(image, model,resize=True,  show_duration: bool = False):
     if model is None:
         st.error("Model not loaded. Please select a valid model.")
         return None
-    if  not hasattr(model, 'forward'):
-        print(model.input_shape)
-        (h, w) = (256, 256)
-    else:
-        (h, w)  = image.shape[:2]
+
     try:
         print(f"Image shape prior to resizing: {image.shape}")
         content_numpy_image = resize_image(image, "Content Image") if resize else image
