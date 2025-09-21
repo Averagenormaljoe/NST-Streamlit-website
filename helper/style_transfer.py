@@ -44,17 +44,6 @@ def convert_to_numpy_image(image):
 
 
 
-def resize_tf_style(style_image): 
-    try:
-        resize_style_shape: tuple[int, int] = (256, 256)
-        style_tf_image = tf.image.resize(style_image, resize_style_shape)
-        return style_tf_image
-    except Exception as e:
-        traceback.print_exc()
-        print(f"Error for 'resize_tf_style': {e}")  
-        return None
-
-
 def transfer_style(content_image, style_image, hub_module,resize_style : bool = True,resize  : bool  = True):
     try:
         if style_image is None:
