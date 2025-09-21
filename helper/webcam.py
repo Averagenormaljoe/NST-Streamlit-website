@@ -12,7 +12,11 @@ from streamlit_session_memo import st_session_memo
 from helper.johnson_helper import  style_transfer
 def webcam_input(style_model_name : str,style_image,webcam_stylization : bool = True, type: str = "main",width : int = 256) -> None:
 
-
+    # Code adapted from 'https://github.com/whitphx/style-transfer-web-app/blob/main/input.py'
+    # Website: GitHub
+    # Author: Yuichiro Tachibana (Tsuchiya)
+    # Date: Apr 27, 2023
+    # Date of access: 21/09/2025
     @st_session_memo
     def load_model(model_name : str, width : int):  # `width` is not used when loading the model, but is necessary as a cache key.
             model = get_model_from_path(model_name)
@@ -75,6 +79,7 @@ def webcam_input(style_model_name : str,style_image,webcam_stylization : bool = 
             rtc_configuration={"iceServers": get_ice_servers()},
             media_stream_constraints={"video": True, "audio": False},
         )
+    # end of adapted code    
     except Exception as e:
         print(f"Error during webcam: {e}")
     if style_image is None and type != "johnson":
