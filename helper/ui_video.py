@@ -38,25 +38,3 @@ def get_ui_video_sliders(prefix = "") -> tuple[float, float, float]:
     return width_resolution, height_resolution, fps
 
 
-def get_weight_sliders(prefix = "") -> tuple[float, float, float]:
-    content_weight = st.slider(
-    "Select Content Weight",
-    min_value=0.1, max_value=10.0, value=1.0, step=0.1,
-    help="Adjust how much the original content is preserved in the output.",
-    key=f"{prefix}_content_weight"
-    ) 
-    style_weight = st.slider(
-    "Select Style Weight",
-    min_value=0.1, max_value=10.0, value=1.0, step=0.1,
-    help="Adjust how much the style is applied to the content.",
-    key=f"{prefix}_style_weight"
-    ) 
-    total_variation_weight = st.slider(
-    "Select Total Variation Weight",
-    min_value=0.1, max_value=10.0, value=1.0, step=0.1,
-    help="Controls the total variation weight.",
-    key=f"{prefix}_total_variation_weight"
-    ) 
-    
-    
-    return  content_weight, style_weight,total_variation_weight
