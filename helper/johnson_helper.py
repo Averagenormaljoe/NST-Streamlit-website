@@ -2,7 +2,6 @@
 import time
 import numpy as np
 import tensorflow as tf
-from helper.style_transfer import resize_image
 import streamlit as st
 from PIL import Image
 import cv2
@@ -51,9 +50,8 @@ def style_transfer(image, model,resize=True,  show_duration: bool = False):
 
     try:
         print(f"Image shape prior to resizing: {image.shape}")
-        content_numpy_image = resize_image(image, "Content Image") if resize else image
-        print("content_numpy_image_shape:", content_numpy_image.shape)
-        output = apply_model(content_numpy_image, model,show_duration=show_duration)
+        print("image_shape:", image.shape)
+        output = apply_model(image, model,show_duration=show_duration)
         return output
     except Exception as e:
         print(f"Error for 'style_transfer': {e}")
