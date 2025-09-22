@@ -111,7 +111,7 @@ It supports multi neural style transfer, video, real-time. This is based on the 
 
 ### Johnson et al. Model
 
-This is the forward pass model. The user is presented with a select of models (such as 'candy.t7', 'la_muse.t7' and 'the_wave.t7')
+This is the forward pass model. The user is presented with a select of models (such as 'Black_Iris_III', 'candy' and 'feathers')
 
 ## Modes
 
