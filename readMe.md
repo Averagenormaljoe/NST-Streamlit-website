@@ -95,7 +95,7 @@ The tabs directory contains the interface for each of the models.
 
 ## Code
 
-The page_config.py file is used for
+The page_config.py file is used for setting the configuration setting of the website.
 
 ## The Model creation code
 
@@ -174,6 +174,8 @@ Vs Code was used as the IDE of the project but other IDEs can be used. However, 
 
 # References
 
+[1]
+
 Coded adapted from 'https://github.com/deepeshdm/PixelMix/tree/main'.
 
 Website Title: PixelMix
@@ -183,3 +185,15 @@ Website: GitHub
 Author: Deepesh Mhatre
 
 Date: Mar 2, 2022
+
+[2]
+
+Streaming Code adapted from 'https://github.com/whitphx/style-transfer-web-app/blob/main/input.py'
+
+Website: GitHub
+
+Author: Yuichiro Tachibana (Tsuchiya)
+
+Date: Apr 27, 2023
+
+Date of access: 21/09/2025
