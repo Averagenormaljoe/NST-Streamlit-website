@@ -123,8 +123,7 @@ Accepts a content or style image (.PNG, .JPEG, .JPG) and outputs a stylized vide
 
 ### Video
 
-Accepts a video (.MP4 or .GIF) and a style image (.PNG, .JPEG, .JPG) and outputs a stylized video. Takes noticeably longer than image mode.  
-Note that when using the Gatys model, this process will take a long time (around 2 hours).
+Accepts a video (.MP4 or .GIF) and a style image (.PNG, .JPEG, .JPG) and outputs a stylized video. Takes noticeably longer than image mode.
 
 ### Camera
 
