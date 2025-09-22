@@ -1,4 +1,3 @@
-#from AdaIN.AdaIN_functions.image import tensor_toimage
 from helper.model_validation import is_AdaIN, is_forward_feed, variables_dir_exists
 from helper.style_transfer import convert_to_numpy_image, transfer_style
 from video_methods.video_stream import prepare_stream, save_packet, close_stream
@@ -17,7 +16,6 @@ import tensorflow as tf
 from helper.image_transfer import get_result_image, resize_image
 from helper.components import processing_btn
 from helper.helper import  open_styled_image
-from helper.video_helper import image_read
 import traceback
 from typing import Optional
 import time
@@ -138,7 +136,7 @@ def video_transfer_style(input_video : UploadedFile | None,style_image : Uploade
  
 
 
-    
+
 def process_frame(width : int, height : int,fps, cap : cv2.VideoCapture, style_image, model_path : str):
     hub_model = get_model_from_path(model_path)
     print("Hub model: ", hub_model)
@@ -151,25 +149,29 @@ def process_frame(width : int, height : int,fps, cap : cv2.VideoCapture, style_i
     progress_text = "Stylization time. Please wait."
     video_bar = st.progress(0, text=progress_text)
     try:
-        while True:
-            frame_start_time : float = time.time()
-            pos = (int(cap.get(cv2.CAP_PROP_POS_FRAMES)) + 1)
-            progress = min(pos / total_frames, 1.0)
-            video_bar.progress(progress, text=progress_text)
-            ret, frame = cap.read()
-            print(f"ret: {ret}")
-            if not ret:
-                print("Video has finished due to 'ret'. Exiting ...")
-                break
-   
-            stylized_image = get_stylized_image(frame, style_image, hub_model,model_path,width)
-            if stylized_image is None:
-                print("Stylized frame is empty. Skipping frame...")
-                continue
-            stream_frame = av.VideoFrame.from_ndarray(stylized_image, format='bgr24')  
-            save_packet(stream, output, stream_frame)
-            frame_end_time : float = time.time()
-            print(f"Processed frame in {frame_end_time - frame_start_time:.2f} seconds")
+        @st.cache_data(ttl=60)  
+        @st.cache_resource(ttl=1)
+        def video_loop():
+            while True:
+                frame_start_time : float = time.time()
+                pos = (int(cap.get(cv2.CAP_PROP_POS_FRAMES)) + 1)
+                progress = min(pos / total_frames, 1.0)
+                video_bar.progress(progress, text=progress_text)
+                ret, frame = cap.read()
+                print(f"ret: {ret}")
+                if not ret:
+                    print("Video has finished due to 'ret'. Exiting ...")
+                    break
+    
+                stylized_image = get_stylized_image(frame, style_image, hub_model,model_path,width)
+                if stylized_image is None:
+                    print("Stylized frame is empty. Skipping frame...")
+                    continue
+                stream_frame = av.VideoFrame.from_ndarray(stylized_image, format='bgr24')  
+                save_packet(stream, output, stream_frame)
+                frame_end_time : float = time.time()
+                print(f"Processed frame in {frame_end_time - frame_start_time:.2f} seconds")
+        video_loop()
     except cv2.error as e:
         print(f"OpenCV error during video stylization: {e}")
         traceback.print_exc()
@@ -185,13 +187,7 @@ def process_frame(width : int, height : int,fps, cap : cv2.VideoCapture, style_i
     close_stream(stream, output, output_memory_file)
     return cap, output_memory_file
 
-def tensor_toimage(tensor : tf.Tensor):
-  tensor =tensor*255
-  tensor = np.array(tensor, dtype=np.uint8)
-  if np.ndim(tensor)>3:
-    assert tensor.shape[0]==1
-    tensor=tensor[0]
-  return tensor
+
 
 def get_stylized_image(frame, style_image, hub_model,model_path : str,width : int):
     orig_h, orig_w = frame.shape[0:2]

@@ -41,27 +41,7 @@ def convert_to_numpy_image(image):
     return image.astype(np.float32)[np.newaxis, ...] / 255.
     
 
-def resize_then_covert(image,name : str):
-    try:
-        resized_image = resize_image(image, name)
-        # Convert to float32 numpy array, add batch dimension, and normalize to range [0, 1]. Example using numpy:
-        numpy_image = convert_to_numpy_image(resized_image)
-        return numpy_image
-    except Exception as e:
-        traceback.print_exc()
-        print(f"Error for 'resize_then_covert': {e}")  
-        return None
 
-
-def resize_tf_style(style_image): 
-    try:
-        resize_style_shape: tuple[int, int] = (256, 256)
-        style_tf_image = tf.image.resize(style_image, resize_style_shape)
-        return style_tf_image
-    except Exception as e:
-        traceback.print_exc()
-        print(f"Error for 'resize_tf_style': {e}")  
-        return None
 
 
 def transfer_style(content_image, style_image, hub_module,resize_style : bool = True,resize  : bool  = True):
@@ -74,7 +54,6 @@ def transfer_style(content_image, style_image, hub_module,resize_style : bool = 
         style_tf_image = convert_to_numpy_image(style_image)
   
         print("Loading pre-trained model...")
-        # The hub.load() loads any TF Hub model
         
         print("Generating stylized image now...wait a minute")
         # Stylize image.
