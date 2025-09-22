@@ -54,7 +54,6 @@ def transfer_style(content_image, style_image, hub_module,resize_style : bool = 
         style_tf_image = convert_to_numpy_image(style_image)
   
         print("Loading pre-trained model...")
-        # The hub.load() loads any TF Hub model
         
         print("Generating stylized image now...wait a minute")
         # Stylize image.
