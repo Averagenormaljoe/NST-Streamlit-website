@@ -58,7 +58,7 @@ def example_images() -> None:
         display_image(image_path="./assets/style/art5.png")
     
     col1,col2 = st.columns(2)
-    with col1:
+    with col2:
         st.video("./assets/video/man_at_sea_sliced.mp4")
 def header() -> None:
     header_style : str = get_header_style()
@@ -66,7 +66,7 @@ def header() -> None:
     st.markdown(
         '<h1 style="text-align:center;">Neural Style Transfer App</h1>', unsafe_allow_html=True)
     st.markdown(
-        f'<p style={header_style} >Choose a image from the sidebar to get started!</p>', unsafe_allow_html=True)
+        f'<p style={header_style} >Drag and drop a image into the image selection box to get started!</p>', unsafe_allow_html=True)
     st.markdown(
         f'<p style={header_style}>Change methods using the dropdown menu</p>', unsafe_allow_html=True)
     
